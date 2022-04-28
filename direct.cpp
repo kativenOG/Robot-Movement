@@ -7,7 +7,7 @@ using namespace std;
 using namespace Eigen;
 
 void robot::ur5::setT10f(float th1){
-    T10f<< cos(th1),-sin(th1),0,0, 
+    T10f<<   cos(th1),-sin(th1),0,0, 
              sin(th1),cos(th1),0,0,
              0,0,1,d[0],
              0,0,0,1;
@@ -59,6 +59,6 @@ void robot::ur5::ur5direct(float th[6],Vector3f &x,Matrix3f &r){ // i parametri 
     r  = T06.block(0,0,3,3); // Matrice di Eulero 
 
     // Debugging 
-    printf("Pozione xe del EE: %f \n",x);
-    printf("Angolazione del EE: %f \n",r);
+    //printf("Pozione xe del EE: %f \n",x);
+    //printf("Angolazione del EE: %f \n",r);
 }
