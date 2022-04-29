@@ -120,7 +120,7 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, float 
     xE_1 = xE;
     phiE_1 = phiE;
 }
-
+/*
 int main(){
     ur5 u;
     RowVectorXf v1(6);
@@ -144,4 +144,4 @@ int main(){
          << endl;
 
     return 0;
-}
+}*/
