@@ -113,7 +113,7 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, Matrix
     Th_1 = Th;
 }
 
-int main(){
+/*int main(){
     ur5 u;
     RowVectorXf v1(6);
     v1 << 3.60739, -0.560554, 2.27689, 2.99605, 1.5708, -2.03659;
@@ -128,4 +128,4 @@ int main(){
          << endl;
 
     return 0;
-}
+}*/
