@@ -64,13 +64,18 @@ Vector3f ur5::rotm2eul(Matrix3f &m)
     return v;
 }
 
-void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, float deltaT, MatrixXf &Th_1, MatrixXf &xE_1, MatrixXf &phiE_1){
-    // MatrixXf qEs_t = ur5inverse(xEs, eul2rotm(phiEs).inverse());
+void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1){
+    Vector3f x;
+    Matrix3f r;
+    float y[6];
+    for(int i=0; i<6; i++){
+        y[i]=qEs(i);
+    }
+    ur5direct(y, x, r);
+    float deltaT=sqrt(pow((x(0)-xEf(0)),2)+pow((x(1)-xEf(1)),2)+pow((x(2)-xEf(2)),2))/50;
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
     int s1 = 6;
-    int s2 = qEf_t.cols();
-    // RowVectorXf qEs = qEs_t.block(0,0,1,s1);
-    RowVectorXf qEf = qEf_t.block(0, 0, 1, s2);
+    RowVectorXf qEf = qEf_t.block(0, 0, 1, 6);
     MatrixXf A(s1, 4);
     int minT=0;
     int maxT=1;
@@ -103,25 +108,12 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, float 
         for (int k = 0; k < s1 + 1; k++){
             Th(counter, k) = J(k);
         }
-        Vector3f x;
-        Matrix3f r;
-        float t[6] = {J(1), J(2), J(3), J(4), J(5), J(6)};
-        ur5direct(t, x, r);
-        Vector3f phi = rotm2eul(r);
-        xE(counter, 0) = J(0);
-        phiE(counter, 0) = J(0);
-        for (int u = 0; u < 3; u++){
-            xE(counter, u + 1) = x(u);
-            phiE(counter, u + 1) = phi(u);
-        }
         counter++;
     }
     Th_1 = Th;
-    xE_1 = xE;
-    phiE_1 = phiE;
 }
 
-int main(){
+/*int main(){
     ur5 u;
     RowVectorXf v1(6);
     v1 << 3.60739, -0.560554, 2.27689, 2.99605, 1.5708, -2.03659;
@@ -130,18 +122,8 @@ int main(){
     Vector3f v3;
     v3 << M_PI / 4, M_PI / 4, M_PI / 4;
     MatrixXf Th;
-    MatrixXf xE;
-    MatrixXf phiE;
-    u.p2pMotionPlan(v1, v2, v3, 0.01, Th, xE, phiE);
-    cout << "Th" << endl
-         << Th << endl
-         << endl;
-    cout << "xE" << endl
-         << xE << endl
-         << endl;
-    cout << "phiE" << endl
-         << phiE << endl
-         << endl;
+    u.p2pMotionPlan(v1, v2, v3, Th);
+    cout << "Th" << endl << Th << endl << endl;
 
     return 0;
-}
+}*/
