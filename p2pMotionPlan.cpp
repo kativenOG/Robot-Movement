@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Eigen/Dense>
+//#include <Eigen/Dense>
 #include <math.h>
 #include "ur5.h"
 #include "inverse.cpp"
@@ -10,12 +10,6 @@ using namespace robot;
 
 Matrix3f ur5::eul2rotm(Vector3f &v)
 {
-    if (v.size() != 3)
-    {
-        cerr << "wrong vector size" << endl;
-        exit(0);
-    }
-
     Matrix3f rotm;
     float s_1 = sin(v(0));
     float c_1 = cos(v(0));
@@ -37,26 +31,21 @@ Matrix3f ur5::eul2rotm(Vector3f &v)
     return rotm;
 }
 
-Vector3f ur5::rotm2eul(Matrix3f &m)
-{
+Vector3f ur5::rotm2eul(Matrix3f &m){
     Vector3f v;
-    if (m(2, 0) < 1)
-    {
-        if (m(2, 0) > -1)
-        {
+    if (m(2, 0) < 1){
+        if (m(2, 0) > -1){
             v(0) = atan2(m(1, 0), m(0, 0));
             v(1) = asin(-m(2, 0));
             v(2) = atan2(m(2, 1), m(2, 2));
         }
-        else
-        {
+        else{
             v(0) = -atan2(-m(1, 2), m(1, 1));
             v(1) = M_PI / 2;
             v(2) = 0;
         }
     }
-    else
-    {
+    else{
         v(0) = atan2(-m(1, 2), m(1, 1));
         v(1) = -M_PI / 2;
         v(2) = 0;
@@ -64,7 +53,7 @@ Vector3f ur5::rotm2eul(Matrix3f &m)
     return v;
 }
 
-void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1){
+void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1){
     Vector3f x;
     Matrix3f r;
     float y[6];
@@ -72,14 +61,14 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, Matrix
         y[i]=qEs(i);
     }
     ur5direct(y, x, r);
-    float deltaT=sqrt(pow((x(0)-xEf(0)),2)+pow((x(1)-xEf(1)),2)+pow((x(2)-xEf(2)),2))/50;
+    float deltaT=sqrt( pow((x(0)-xEf(0)),2) + pow((x(1)-xEf(1)),2) + pow((x(2)-xEf(2)),2) )/50;
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
-    int s1 = 6;
-    RowVectorXf qEf = qEf_t.block(0, 0, 1, 6);
-    MatrixXf A(s1, 4);
+    int corners = 6;
+    RowVectorXf qEf = qEf_t.block(0, 0, 1, corners);
+    MatrixXf A(corners, 4);
     int minT=0;
     int maxT=1;
-    for (int i = 0; i < s1; i++){
+    for (int i = 0; i < corners; i++){
         Matrix4f M;
         M << 1, minT, pow(minT, 2), pow(minT, 3),
             0, 1, 2 * minT, 3 * pow(minT, 2),
@@ -94,19 +83,12 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, Matrix
     }
     int counter = 0;
     int ro = (maxT - minT) / deltaT + 1;
-    MatrixXf Th(ro, s1 + 1);
-    MatrixXf xE(ro, 4);
-    MatrixXf phiE(ro, 4);
+    MatrixXf Th(ro, corners + 1);
     float f = 0.00001;
     for (float i = minT; i <= maxT + f; i += deltaT){
-        VectorXf J(s1 + 1);
-        J(0) = (float)counter / ((maxT - minT) / deltaT);
-        for (int k = 0; k < s1; k++){
-            float q = A(k, 0) + A(k, 1) * i + A(k, 2) * i * i + A(k, 3) * i * i * i;
-            J(k + 1) = q;
-        }
-        for (int k = 0; k < s1 + 1; k++){
-            Th(counter, k) = J(k);
+        Th(counter,0)=(float)counter / ((maxT - minT) / deltaT);
+        for (int k = 0; k < corners; k++){
+            Th(counter,k+1)=A(k, 0) + A(k, 1) * i + A(k, 2) * i * i + A(k, 3) * i * i * i;
         }
         counter++;
     }
@@ -115,7 +97,7 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, Matrix
 
 /*int main(){
     ur5 u;
-    RowVectorXf v1(6);
+    VectorXf v1(6);
     v1 << 3.60739, -0.560554, 2.27689, 2.99605, 1.5708, -2.03659;
     Vector3f v2;
     v2 << 0.5, 0.5, 0.5;
@@ -126,6 +108,7 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, Matrix
     cout << "Th" << endl
          << Th << endl
          << endl;
-
     return 0;
 }*/
+
+//COMMENTARE MAIN E EIGEN LIB PER GITHUB

@@ -12,7 +12,7 @@ using namespace std;
 using namespace robot;
 
 //vector<control_msgs::JointControllerState::ConstPtr> initial_jnt_pos;
-RowVectorXf initial_jnt_pos(7);
+VectorXf initial_jnt_pos(7);
 ur5 u;
 
 void shoulder_pan_getter(const control_msgs::JointControllerState::ConstPtr& val){
@@ -78,7 +78,7 @@ int main(int argc,char ** argv){
     MatrixXf Th;
     MatrixXf xE;
     MatrixXf phiE;
-    RowVectorXf appo = initial_jnt_pos.block(0,0,1,6);
+    VectorXf appo = initial_jnt_pos.block(0,0,6,1);
 
     u.p2pMotionPlan(appo ,v1 , v2, 0.1 ,Th, xE, phiE);
 
