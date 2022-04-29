@@ -1,7 +1,7 @@
 #pragma once
-#include <iostream>
-#include <cmath>
-#include <Eigen/Dense>
+//#include <iostream>
+//#include <cmath>
+//#include <Eigen/Dense>
 
 using namespace std;
 using namespace Eigen;
@@ -32,7 +32,7 @@ namespace robot{
             void setT65f(float th6);
 
             Matrix3f eul2rotm(Vector3f& v);
-            Vector3f rotm2eul(Matrix3f& m);
+            //Vector3f rotm2eul(Matrix3f& m);
 
         public:
 
@@ -40,9 +40,9 @@ namespace robot{
             void ur5direct(float th[6], Vector3f &x, Matrix3f &r); 
 
             // Direct kinematics function:
-            MatrixXf ur5inverse(Vector3f eep, Matrix3f eer);      
+            MatrixXf ur5inverse(Vector3f eep, Matrix3f eer);
 
             void p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f& phiE0, float minT, float maxT, float deltaT);
-   
+            Vector3f rotm2eul(Matrix3f& m);
     };
-};
+}; 

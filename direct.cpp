@@ -1,6 +1,6 @@
-#include <iostream>
-#include <cmath>
-#include <Eigen/Dense>
+//#include <iostream>
+//#include <cmath>
+//#include <Eigen/Dense>
 #include "ur5.h" 
 
 using namespace std;
@@ -31,7 +31,7 @@ void robot::ur5::setT43f(float th4){
              0,0,0,1;
 };
 void robot::ur5::setT54f(float th5){
-    T54f<<   cos(th5),-(th5),0,0, 
+    T54f<<   cos(th5),-sin(th5),0,0, 
              0,0,-1,-d[4],
              sin(th5),cos(th5),0,0,
              0,0,0,1;
@@ -44,6 +44,7 @@ void robot::ur5::setT65f(float th6){
 };
 
 void robot::ur5::ur5direct(float th[6],Vector3f &x,Matrix3f &r){ // i parametri sono gli angoli dei joint e le matrici che deve ritornare 
+
     setT10f(th[0]);
     setT21f(th[1]);
     setT32f(th[2]);
@@ -51,14 +52,16 @@ void robot::ur5::ur5direct(float th[6],Vector3f &x,Matrix3f &r){ // i parametri 
     setT54f(th[4]);
     setT65f(th[5]);
 
+
     // calcolo matrice finale EE
-    MatrixXd T06 = T10f * T21f * T32f * T43f * T54f * T65f;
+    MatrixXf T06 = T10f * T21f * T32f * T43f * T54f * T65f;
     //MatrixXd T06 = T10f*T21f*T32f*T43f*T54f*T65f;
 
     x = T06.block(0,3,3,1); // Posizione del end effector 
-    r  = T06.block(0,0,3,3); // Matrice di Eulero 
+    r = T06.block(0,0,3,3); // Matrice di Eulero 
 
     // Debugging 
     //printf("Pozione xe del EE: %f \n",x);
     //printf("Angolazione del EE: %f \n",r);
 }
+

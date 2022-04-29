@@ -62,8 +62,8 @@ Vector3f ur5::rotm2eul(Matrix3f& m){
 void ur5::p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f& phiEf, float minT, float maxT, float deltaT){
     MatrixXf qEs_t = ur5inverse(xEs, eul2rotm(phiEs).inverse());
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
-    int s1 =sizeof(qEs_t)/sizeof(qEs_t(0));
-    int s2 =sizeof(qEf_t)/sizeof(qEf_t(0));
+    int s1 = qEs_t.cols();
+    int s2 = qEf_t.cols();
     RowVectorXf qEs = qEs_t.block(0,0,1,s1);
     RowVectorXf qEf = qEf_t.block(0,0,1,s2);
     MatrixXf A(s1,4);
@@ -74,22 +74,23 @@ void ur5::p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f&
             1, maxT, pow(maxT,2), pow(maxT,3),
             0, 1, 2*maxT, 3*pow(maxT,2);
         Vector4f b = {qEs(i),0,qEf(i),0};
-        Vector4f a = M.inverse()*b;
-        A(i,0) = a(0);
-        A(i,1) = a(1);
-        A(i,2) = a(2);
-        A(i,3) = a(3);
+        Vector4f c = M.inverse()*b;
+        A(i,0) = c(0);
+        A(i,1) = c(1);
+        A(i,2) = c(2);
+        A(i,3) = c(3);
     }
     int counter=0;
-    int ro = (maxT-minT)/deltaT;
+    int ro = (maxT-minT)/deltaT+1;
     MatrixXf Th(ro,s1+1);
     MatrixXf xE(ro,4);
     MatrixXf phiE(ro,4);
-    for(float i=minT; i<maxT; i+deltaT){
+    float f=0.00001;
+    for(float i=minT; i<=maxT+f; i+=deltaT){
         float j=i;
         VectorXf J(s1+1);
         J(0)=j;
-        for(int k=0; i<s1; i++){
+        for(int k=0; k<s1; k++){
             float q = A(k,0)+A(k,1)*i+A(k,2)*i*i+A(k,3)*i*i*i;
             J(k+1)=q;
         }
@@ -98,29 +99,31 @@ void ur5::p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f&
         }
         Vector3f x;
         Matrix3f r;
-        float t[6] = {J(0),J(1),J(2),J(3),J(4),J(5)};
+        float t[6] = {J(1),J(2),J(3),J(4),J(5),J(6)};
         ur5direct(t,x,r);
-        xE(counter,0)=i;
-        xE(counter,1)=x(0);
-        xE(counter,2)=x(1);
-        xE(counter,3)=x(2);
         Vector3f phi = rotm2eul(r);
+        xE(counter,0)=i;
         phiE(counter,0)=i;
-        phiE(counter,1)=phi(0);
-        phiE(counter,2)=phi(1);
-        phiE(counter,3)=phi(2);
+        for(int u=0;u<3;u++){
+            xE(counter,u+1)=x(u);
+            phiE(counter,u+1)=phi(u);
+        }
         counter++;
     }
+    cout << "Th" << endl << Th << endl << endl;
+    cout << "xE" << endl << xE << endl << endl;
+    cout << "phiE" << endl << phiE << endl << endl;
 }
 
 
 
 int main(){
     ur5 u;
-    Vector3f v; v<<0.3,0.3,0.3;
+    Vector3f v; v<<0.3,0.3,0.1;
     Vector3f v1; v1<<0,0,0;
     Vector3f v2; v2<<0.5,0.5,0.5;
-    Vector3f v3; v3<<M_PI,M_PI,M_PI;
-    u.p2pMotionPlan(v,v1,v2,v3,0,1,0.1);
+    Vector3f v3; v3<<M_PI/4,M_PI/4,M_PI/4;
+    u.p2pMotionPlan(v,v1,v2,v3,0,1,0.01);
+    
     return 0;
 }
