@@ -81,12 +81,14 @@ int main(int argc,char ** argv){
     RowVectorXf appo = initial_jnt_pos.block(0,0,1,6);
 
     u.p2pMotionPlan(appo ,v1 , v2, 0.1 ,Th, xE, phiE);
-    for(int i=0;i<Th.rows();i++)
-    for(int j=1; j<7;j++){
-        ur5_joint_array_pub[j-1]=Th(i,j);
+
+    std_msgs::Float64 temp;
+    for(int i=0;i<Th.rows();i++){
+        for(int j=1; j<7;j++){
+            temp.data = Th(i,j);
+            ur5_joint_array_pub[j-1].publish(temp);
+        }
     }     
-
-
 
     return 0;
 }
