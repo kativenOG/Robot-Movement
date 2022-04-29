@@ -60,7 +60,7 @@ Vector3f ur5::rotm2eul(Matrix3f& m){
     return v;
 }
 
-void ur5::p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f& phiEf, float minT, float maxT, float deltaT){
+void ur5::p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f& phiEf, float minT, float maxT, float deltaT, MatrixXf& Th_1, MatrixXf& xE_1, MatrixXf& phiE_1){
     MatrixXf qEs_t = ur5inverse(xEs, eul2rotm(phiEs).inverse());
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
     int s1 = qEs_t.cols();
@@ -110,10 +110,13 @@ void ur5::p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f&
         }
         counter++;
     }
+    Th_1=Th;
+    xE_1=xE;
+    phiE_1=phiE;
     //cout << "Th" << endl << fixed << setprecision(3) << Th << endl << endl;
-    cout << "Th" << endl << Th << endl << endl;
+    /*cout << "Th" << endl << Th << endl << endl;
     cout << "xE" << endl << xE << endl << endl;
-    cout << "phiE" << endl << phiE << endl << endl;
+    cout << "phiE" << endl << phiE << endl << endl;*/
 }
 
 
@@ -124,7 +127,13 @@ int main(){
     Vector3f v1; v1<<0,0,0;
     Vector3f v2; v2<<0.5,0.5,0.5;
     Vector3f v3; v3<<M_PI/4,M_PI/4,M_PI/4;
-    u.p2pMotionPlan(v,v1,v2,v3,0,1,0.01);
+    MatrixXf Th;
+    MatrixXf xE;
+    MatrixXf phiE;
+    u.p2pMotionPlan(v,v1,v2,v3,0,1,0.01,Th,xE,phiE);
+    cout << "Th" << endl << Th << endl << endl;
+    cout << "xE" << endl << xE << endl << endl;
+    cout << "phiE" << endl << phiE << endl << endl;
     
     return 0;
 }

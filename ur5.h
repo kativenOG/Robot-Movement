@@ -32,7 +32,7 @@ namespace robot{
             void setT65f(float th6);
 
             Matrix3f eul2rotm(Vector3f& v);
-            //Vector3f rotm2eul(Matrix3f& m);
+            Vector3f rotm2eul(Matrix3f& m);
 
         public:
 
@@ -42,7 +42,7 @@ namespace robot{
             // Direct kinematics function:
             MatrixXf ur5inverse(Vector3f eep, Matrix3f eer);
 
-            void p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f& phiE0, float minT, float maxT, float deltaT);
-            Vector3f rotm2eul(Matrix3f& m);
+            void p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f& phiE0, float minT, float maxT, float deltaT,MatrixXf& Th_1, MatrixXf& xE_1, MatrixXf& phiE_1);
+
     };
 }; 
