@@ -64,8 +64,7 @@ Vector3f ur5::rotm2eul(Matrix3f &m)
     return v;
 }
 
-void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, float minT, float maxT, float deltaT, MatrixXf &Th_1, MatrixXf &xE_1, MatrixXf &phiE_1)
-{
+void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, float deltaT, MatrixXf &Th_1, MatrixXf &xE_1, MatrixXf &phiE_1){
     // MatrixXf qEs_t = ur5inverse(xEs, eul2rotm(phiEs).inverse());
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
     int s1 = 6;
@@ -73,8 +72,9 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, float 
     // RowVectorXf qEs = qEs_t.block(0,0,1,s1);
     RowVectorXf qEf = qEf_t.block(0, 0, 1, s2);
     MatrixXf A(s1, 4);
-    for (int i = 0; i < s1; i++)
-    {
+    int minT=0;
+    int maxT=1;
+    for (int i = 0; i < s1; i++){
         Matrix4f M;
         M << 1, minT, pow(minT, 2), pow(minT, 3),
             0, 1, 2 * minT, 3 * pow(minT, 2),
@@ -93,17 +93,14 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, float 
     MatrixXf xE(ro, 4);
     MatrixXf phiE(ro, 4);
     float f = 0.00001;
-    for (float i = minT; i <= maxT + f; i += deltaT)
-    {
+    for (float i = minT; i <= maxT + f; i += deltaT){
         VectorXf J(s1 + 1);
         J(0) = (float)counter / ((maxT - minT) / deltaT);
-        for (int k = 0; k < s1; k++)
-        {
+        for (int k = 0; k < s1; k++){
             float q = A(k, 0) + A(k, 1) * i + A(k, 2) * i * i + A(k, 3) * i * i * i;
             J(k + 1) = q;
         }
-        for (int k = 0; k < s1 + 1; k++)
-        {
+        for (int k = 0; k < s1 + 1; k++){
             Th(counter, k) = J(k);
         }
         Vector3f x;
@@ -113,8 +110,7 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, float 
         Vector3f phi = rotm2eul(r);
         xE(counter, 0) = J(0);
         phiE(counter, 0) = J(0);
-        for (int u = 0; u < 3; u++)
-        {
+        for (int u = 0; u < 3; u++){
             xE(counter, u + 1) = x(u);
             phiE(counter, u + 1) = phi(u);
         }
@@ -125,8 +121,7 @@ void ur5::p2pMotionPlan(RowVectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, float 
     phiE_1 = phiE;
 }
 
-int main()
-{
+int main(){
     ur5 u;
     RowVectorXf v1(6);
     v1 << 3.60739, -0.560554, 2.27689, 2.99605, 1.5708, -2.03659;
@@ -137,7 +132,7 @@ int main()
     MatrixXf Th;
     MatrixXf xE;
     MatrixXf phiE;
-    u.p2pMotionPlan(v1, v2, v3, 0, 1, 0.01, Th, xE, phiE);
+    u.p2pMotionPlan(v1, v2, v3, 0.01, Th, xE, phiE);
     cout << "Th" << endl
          << Th << endl
          << endl;
