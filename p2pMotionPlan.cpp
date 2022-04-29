@@ -1,4 +1,5 @@
 #include <iostream>
+//#include <iomanip>
 #include <Eigen/Dense>
 #include <math.h>
 #include "ur5.h"
@@ -87,9 +88,8 @@ void ur5::p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f&
     MatrixXf phiE(ro,4);
     float f=0.00001;
     for(float i=minT; i<=maxT+f; i+=deltaT){
-        float j=i;
         VectorXf J(s1+1);
-        J(0)=j;
+        J(0)=(float)counter/((maxT-minT)/deltaT);
         for(int k=0; k<s1; k++){
             float q = A(k,0)+A(k,1)*i+A(k,2)*i*i+A(k,3)*i*i*i;
             J(k+1)=q;
@@ -102,14 +102,15 @@ void ur5::p2pMotionPlan(Vector3f& xEs, Vector3f& phiEs, Vector3f& xEf, Vector3f&
         float t[6] = {J(1),J(2),J(3),J(4),J(5),J(6)};
         ur5direct(t,x,r);
         Vector3f phi = rotm2eul(r);
-        xE(counter,0)=i;
-        phiE(counter,0)=i;
+        xE(counter,0)=J(0);
+        phiE(counter,0)=J(0);
         for(int u=0;u<3;u++){
             xE(counter,u+1)=x(u);
             phiE(counter,u+1)=phi(u);
         }
         counter++;
     }
+    //cout << "Th" << endl << fixed << setprecision(3) << Th << endl << endl;
     cout << "Th" << endl << Th << endl << endl;
     cout << "xE" << endl << xE << endl << endl;
     cout << "phiE" << endl << phiE << endl << endl;
