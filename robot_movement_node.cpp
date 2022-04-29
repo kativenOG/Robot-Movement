@@ -5,13 +5,15 @@
 #include "control_msgs/JointControllerState.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
+#include "ur5.h"
 
 using namespace Eigen;
 using namespace std;
-
+using namespace robot;
 
 //vector<control_msgs::JointControllerState::ConstPtr> initial_jnt_pos;
-int initial_jnt_pos[7];
+RowVectorXf initial_jnt_pos(7);
+ur5 u;
 
 void shoulder_pan_getter(const control_msgs::JointControllerState::ConstPtr& val){
     initial_jnt_pos[0]= val->process_value;
@@ -62,6 +64,31 @@ int main(int argc,char ** argv){
     ros::Subscriber wrist_2_joint_sub = n.subscribe("",1000,wrist_2_getter); 
     ros::Subscriber wrist_3_joint_sub = n.subscribe("",1000,wrist_3_getter); 
     ros::Subscriber left_knucle_joint_sub = n.subscribe("",1000,gripper_getter); 
+
+    ros::spinOnce();
+    
+    
+    Vector3f v1;
+    v1 << 0.5, 0.5, 0.5;
+    Vector3f v2;
+    v2 << M_PI / 4, M_PI / 4, M_PI / 4;
+
+
+    // Matrici dell'output del p2pMotionPlan
+    MatrixXf Th;
+    MatrixXf xE;
+    MatrixXf phiE;
+    RowVectorXf appo = initial_jnt_pos.block(0,0,1,6);
+
+    u.p2pMotionPlan(appo ,v1 , v2, 0.1 ,Th, xE, phiE);
+
+    std_msgs::Float64 temp;
+    for(int i=0;i<Th.rows();i++){
+        for(int j=1; j<7;j++){
+            temp.data = Th(i,j);
+            ur5_joint_array_pub[j-1].publish(temp);
+        }
+    }     
 
     return 0;
 }
