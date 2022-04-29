@@ -2,12 +2,15 @@ cmake_minimum_required(VERSION 3.0.2)
 project(robot_movement)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+roscpp
+std_msgs
+) 
 
 find_package(Eigen3 REQUIRED)
 ## System dependencies are found with CMake's conventions
@@ -147,6 +150,7 @@ add_executable(${PROJECT_NAME}_node robot_movement_node.cpp)
 target_link_libraries(${PROJECT_NAME}_node
     ${catkin_LIBRARIES}
     ${Eigen_LIBRARIES}
+
 )
 
 #############
@@ -165,9 +169,9 @@ target_link_libraries(${PROJECT_NAME}_node
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-# install(TARGETS ${PROJECT_NAME}_node
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS ${PROJECT_NAME}_node
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
