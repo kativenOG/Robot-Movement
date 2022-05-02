@@ -42,7 +42,7 @@ namespace robot{
             // Direct kinematics function:
             MatrixXf ur5inverse(Vector3f eep, Matrix3f eer);
 
-            void p2pMotionPlan(RowVectorXf& qEs, Vector3f& xEf, Vector3f& phiE0, float deltaT,MatrixXf& Th_1, MatrixXf& xE_1, MatrixXf& phiE_1);
+            void p2pMotionPlan(VectorXf& qEs, Vector3f& xEf, Vector3f& phiE0,MatrixXf& Th_1);
 
     };
 }; 
