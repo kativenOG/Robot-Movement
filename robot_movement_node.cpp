@@ -5,7 +5,7 @@
 #include "control_msgs/JointControllerState.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
-#include "ur5.h"
+#include "p2pMotionPlan.cpp"
 
 using namespace Eigen;
 using namespace std;
@@ -80,7 +80,7 @@ int main(int argc,char ** argv){
     MatrixXf phiE;
     VectorXf appo = initial_jnt_pos.block(0,0,6,1);
 
-    u.p2pMotionPlan(appo ,v1 , v2, 0.1 ,Th, xE, phiE);
+    u.p2pMotionPlan(appo ,v1 , v2,Th);
 
     std_msgs::Float64 temp;
     for(int i=0;i<Th.rows();i++){
