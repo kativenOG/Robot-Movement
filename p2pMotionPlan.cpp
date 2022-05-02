@@ -56,11 +56,7 @@ Vector3f ur5::rotm2eul(Matrix3f &m){
 void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1){
     Vector3f x;
     Matrix3f r;
-    float y[6];
-    for(int i=0; i<6; i++){
-        y[i]=qEs(i);
-    }
-    ur5direct(y, x, r);
+    ur5direct(qEs, x, r);
     float deltaT=sqrt( pow((x(0)-xEf(0)),2) + pow((x(1)-xEf(1)),2) + pow((x(2)-xEf(2)),2) )/50;
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
     int corners = 6;

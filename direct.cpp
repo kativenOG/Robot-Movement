@@ -43,14 +43,13 @@ void robot::ur5::setT65f(float th6){
              0,0,0,1;
 };
 
-void robot::ur5::ur5direct(float th[6],Vector3f &x,Matrix3f &r){ // i parametri sono gli angoli dei joint e le matrici che deve ritornare 
-
-    setT10f(th[0]);
-    setT21f(th[1]);
-    setT32f(th[2]);
-    setT43f(th[3]);
-    setT54f(th[4]);
-    setT65f(th[5]);
+void robot::ur5::ur5direct(VectorXf& th,Vector3f &x,Matrix3f &r){ // i parametri sono gli angoli dei joint e le matrici che deve ritornare 
+    setT10f(th(0));
+    setT21f(th(1));
+    setT32f(th(2));
+    setT43f(th(3));
+    setT54f(th(4));
+    setT65f(th(5));
 
 
     // calcolo matrice finale EE

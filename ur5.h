@@ -37,7 +37,7 @@ namespace robot{
         public:
 
             // Direct kinematics function:
-            void ur5direct(float th[6], Vector3f &x, Matrix3f &r); 
+            void ur5direct(VectorXf& th, Vector3f &x, Matrix3f &r); 
 
             // Direct kinematics function:
             MatrixXf ur5inverse(Vector3f eep, Matrix3f eer);
