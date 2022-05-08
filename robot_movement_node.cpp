@@ -6,6 +6,7 @@
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
 #include "p2pMotionPlan.cpp"
+#define RATE 100
 
 using namespace Eigen;
 using namespace std;
@@ -44,26 +45,29 @@ int main(int argc,char ** argv){
     ros::init(argc,argv,"gatto_node");
     // Creo un nodo interno al nodo principale
     ros::NodeHandle n;
+
+    // Ottengo la rate per il publishing
+    ros::Rate loop_rate(RATE);
     // Creo un array per il publishing, ha una casella per ogni joint
     ros::Publisher ur5_joint_array_pub[7];
 
     // lego l'array ai vari topic, in cui pubblicheranno i valori di posizione      
-    ur5_joint_array_pub[0] = n.advertise<std_msgs::Float64>("/shoulder_pan_joint_position_controller/command",1000);
-    ur5_joint_array_pub[1] = n.advertise<std_msgs::Float64>("/shoulder_lift_joint_position_controller/command",1000);
-    ur5_joint_array_pub[2] = n.advertise<std_msgs::Float64>("/elbow_joint_position_controller/command",1000);
-    ur5_joint_array_pub[3] = n.advertise<std_msgs::Float64>("/wrist_1_joint_position_controller/command",1000);
-    ur5_joint_array_pub[4] = n.advertise<std_msgs::Float64>("/wrist_2_joint_position_controller/command",1000);
-    ur5_joint_array_pub[5] = n.advertise<std_msgs::Float64>("/wrist_3_joint_position_controller/command",1000);
-    ur5_joint_array_pub[6] = n.advertise<std_msgs::Float64>("/gripper_controller/command",1000);
+    ur5_joint_array_pub[0] = n.advertise<std_msgs::Float64>("/shoulder_pan_joint_position_controller/command",RATE);
+    ur5_joint_array_pub[1] = n.advertise<std_msgs::Float64>("/shoulder_lift_joint_position_controller/command",RATE);
+    ur5_joint_array_pub[2] = n.advertise<std_msgs::Float64>("/elbow_joint_position_controller/command",RATE);
+    ur5_joint_array_pub[3] = n.advertise<std_msgs::Float64>("/wrist_1_joint_position_controller/command",RATE);
+    ur5_joint_array_pub[4] = n.advertise<std_msgs::Float64>("/wrist_2_joint_position_controller/command",RATE);
+    ur5_joint_array_pub[5] = n.advertise<std_msgs::Float64>("/wrist_3_joint_position_controller/command",RATE);
+    ur5_joint_array_pub[6] = n.advertise<std_msgs::Float64>("/gripper_controller/command",RATE);
 
     // creo subscriber che ascoltano nei topic di poszione dei joint, e si salvano la loro poszione nello spazio tramite dei wrapper :) 
-    ros::Subscriber shoulder_pan_joint_sub = n.subscribe("/shoulder_pan_joint_position_controller/state",1000,shoulder_pan_getter); 
-    ros::Subscriber shoulder_lift_joint_sub = n.subscribe("/shoulder_lift_joint_position_controller/state",1000,shoulder_lift_getter); 
-    ros::Subscriber elbow_joint_sub = n.subscribe("/elbow_joint_position_controller/state",1000,elbow_getter); 
-    ros::Subscriber wrist_1_joint_sub = n.subscribe("/wrist_1_joint_position_controller/state",1000,wrist_1_getter); 
-    ros::Subscriber wrist_2_joint_sub = n.subscribe("/wrist_2_joint_position_controller/state",1000,wrist_2_getter); 
-    ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state",1000,wrist_3_getter);     
-    ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state",1000,gripper_getter); // se è aperto o chiuso (non proprio un angolo )
+    ros::Subscriber shoulder_pan_joint_sub = n.subscribe("/shoulder_pan_joint_position_controller/state",RATE,shoulder_pan_getter); 
+    ros::Subscriber shoulder_lift_joint_sub = n.subscribe("/shoulder_lift_joint_position_controller/state",RATE,shoulder_lift_getter); 
+    ros::Subscriber elbow_joint_sub = n.subscribe("/elbow_joint_position_controller/state",RATE,elbow_getter); 
+    ros::Subscriber wrist_1_joint_sub = n.subscribe("/wrist_1_joint_position_controller/state",RATE,wrist_1_getter); 
+    ros::Subscriber wrist_2_joint_sub = n.subscribe("/wrist_2_joint_position_controller/state",RATE,wrist_2_getter); 
+    ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state",RATE,wrist_3_getter);     
+    ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state",RATE,gripper_getter); // se è aperto o chiuso (non proprio un angolo )
 
     ros::spinOnce();
     
