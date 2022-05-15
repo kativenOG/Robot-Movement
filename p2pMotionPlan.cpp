@@ -53,58 +53,53 @@ Vector3f ur5::rotm2eul(Matrix3f &m){
     return v;
 }
 
+
 void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1){
-    Vector3f x;
-    Matrix3f r;
-    ur5direct(qEs, x, r);
-    float deltaT=sqrt( pow((x(0)-xEf(0)),2) + pow((x(1)-xEf(1)),2) + pow((x(2)-xEf(2)),2) )/50;
+
+    //Version 2.0
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
     int corners = 6;
     RowVectorXf qEf = qEf_t.block(0, 0, 1, corners);
-    MatrixXf A(corners, 4);
     int minT=0;
     int maxT=1;
-    for (int i = 0; i < corners; i++){
-        Matrix4f M;
-        M << 1, minT, pow(minT, 2), pow(minT, 3),
-            0, 1, 2 * minT, 3 * pow(minT, 2),
-            1, maxT, pow(maxT, 2), pow(maxT, 3),
-            0, 1, 2 * maxT, 3 * pow(maxT, 2);
-        Vector4f b = {qEs(i), 0, qEf(i), 0};
-        Vector4f c = M.inverse() * b;
-        A(i, 0) = c(0);
-        A(i, 1) = c(1);
-        A(i, 2) = c(2);
-        A(i, 3) = c(3);
+    //distance control
+    for(int i=0; i<corners; i++){
+        while(qEs(i)>M_PI){
+            qEs(i)-=M_PI;
+        }
+        while(qEs(i)<-M_PI){
+            qEs(i)+=M_PI;
+        }
+        while(qEf(i)>M_PI){
+            qEf(i)-=M_PI;
+        }
+        while(qEf(i)<-M_PI){
+            qEf(i)+=M_PI;
+        }
     }
-    int counter = 0;
+    float deltaT=0;
+    for(int i=0; i<corners; i++){
+        float a=abs(qEf(i)-qEs(i));
+        if(a>deltaT){
+            deltaT=a;
+        }
+    }
+    //velocity control
+    float vel=abs(qEf(1)-qEs(1)+qEf(2)-qEs(2));
+    if(vel>deltaT){
+        deltaT=vel;
+    }
+    deltaT = 2 * M_PI / (360 * deltaT);
     int ro = (maxT - minT) / deltaT + 1;
+    float f2 = 0.00001;
     MatrixXf Th(ro, corners + 1);
-    float f = 0.00001;
-    for (float i = minT; i <= maxT + f; i += deltaT){
+    int counter = 0;
+    for (float i = minT; i <= maxT + f2; i += deltaT){
         Th(counter,0)=(float)counter / ((maxT - minT) / deltaT);
         for (int k = 0; k < corners; k++){
-            Th(counter,k+1)=A(k, 0) + A(k, 1) * i + A(k, 2) * i * i + A(k, 3) * i * i * i;
+            Th(counter,k+1)=qEs(k)+counter*(qEf(k)-qEs(k))/(ro-1);
         }
         counter++;
     }
     Th_1 = Th;
 }
-
-/*int main(){
-    ur5 u;
-    VectorXf v1(6);
-    v1 << 3.60739, -0.560554, 2.27689, 2.99605, 1.5708, -2.03659;
-    Vector3f v2;
-    v2 << 0.5, 0.5, 0.5;
-    Vector3f v3;
-    v3 << M_PI / 4, M_PI / 4, M_PI / 4;
-    MatrixXf Th;
-    u.p2pMotionPlan(v1, v2, v3, Th);
-    cout << "Th" << endl
-         << Th << endl
-         << endl;
-    return 0;
-}*/
-
-//COMMENTARE MAIN E EIGEN LIB PER GITHUB
