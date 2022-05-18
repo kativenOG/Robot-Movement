@@ -65,16 +65,16 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     //distance control
     for(int i=0; i<corners; i++){
         while(qEs(i)>M_PI){
-            qEs(i)-=M_PI;
+            qEs(i)-=(2*M_PI);
         }
         while(qEs(i)<-M_PI){
-            qEs(i)+=M_PI;
+            qEs(i)+=(2*M_PI);
         }
         while(qEf(i)>M_PI){
-            qEf(i)-=M_PI;
+            qEf(i)-=(2*M_PI);
         }
         while(qEf(i)<-M_PI){
-            qEf(i)+=M_PI;
+            qEf(i)+=(2*M_PI);
         }
     }
     float deltaT=0;
