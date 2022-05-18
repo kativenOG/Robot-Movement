@@ -6,7 +6,7 @@
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
 #include "p2pMotionPlan.cpp"
-#define RATE 100
+#define RATE 10
 
 using namespace Eigen;
 using namespace std;
@@ -18,24 +18,31 @@ ur5 u;
 
 void shoulder_pan_getter(const control_msgs::JointControllerState::ConstPtr& val){
     initial_jnt_pos[0]= val->set_point;
+    //initial_jnt_pos[0]=val->process_value; 
 }
 void shoulder_lift_getter(const control_msgs::JointControllerState::ConstPtr& val){
-    initial_jnt_pos[1]=val->set_point;
+   initial_jnt_pos[1]=val->set_point;
+   //initial_jnt_pos[1]=val->process_value;
 }
 void elbow_getter(const control_msgs::JointControllerState::ConstPtr& val){
     initial_jnt_pos[2]=val->set_point;
+    //initial_jnt_pos[2]=val->process_value;
 }
 void wrist_1_getter(const control_msgs::JointControllerState::ConstPtr& val){
     initial_jnt_pos[3]=val->set_point;
+    //initial_jnt_pos[3]=val->process_value;
 }
 void wrist_2_getter(const control_msgs::JointControllerState::ConstPtr& val){
     initial_jnt_pos[4]=val->set_point;
+    //initial_jnt_pos[4]=val->process_value;
 }
 void wrist_3_getter(const control_msgs::JointControllerState::ConstPtr& val){
     initial_jnt_pos[5]=val->set_point;
+    //initial_jnt_pos[5]=val->process_value;
 }
 void gripper_getter(const control_msgs::JointControllerState::ConstPtr& val){
     initial_jnt_pos[6]=val->set_point;
+    //initial_jnt_pos[6]=val->process_value;
 }
 
 
@@ -69,33 +76,31 @@ int main(int argc,char ** argv){
     ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state",RATE,wrist_3_getter);     
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state",RATE,gripper_getter); // se è aperto o chiuso (non proprio un angolo )
 
-    ros::spinOnce();
-    
+    sleep(1);
+    ros::spinOnce();     
     Vector3f v1;
     v1 << 0.5, 0.5, 0.5;
     Vector3f v2;
     v2 << M_PI / 4, M_PI / 4, M_PI / 4;
 
-
     // Matrici dell'output del p2pMotionPlan
     MatrixXf Th;
-    MatrixXf xE;
-    MatrixXf phiE;
     VectorXf appo = initial_jnt_pos.block(0,0,6,1);
     cout<<appo<<endl<<endl;
 
     u.p2pMotionPlan(appo,v1,v2,Th);
     cout<<Th<<endl;
-    //control_msgs::JointControllerState temp;
     std_msgs::Float64 temp;
     for(int i=0;i<Th.rows();i++){
         for(int j=1; j<7;j++){
             temp.data= Th(i,j);
-            cout<<temp.data<<endl;
             ur5_joint_array_pub[j-1].publish(temp);
+            //loop_rate.sleep();
         }
+        loop_rate.sleep();
         cout<<endl;
     }     
+
 
     return 0;
 }
