@@ -16,13 +16,26 @@ MatrixXf ur5::ur5inverse(Vector3f eep, Matrix3f eer){ // eep: end effector posit
     Vector4f appo;
     appo <<0,0,-d[5],1;
     p50 = T60 * appo;
-    float th1_1 =atan2(p50(1),p50(0)) + acos(d[3]/hypot(p50(1),p50(0))) +  (M_PI/2);
-    float th1_2 =atan2(p50(1),p50(0)) - acos(d[3]/hypot(p50(1),p50(0))) +  (M_PI/2);
-
+    float ac=d[3]/hypot(p50(1),p50(0));
+    float th1_1 =atan2(p50(1),p50(0))  +  (M_PI/2);
+    float th1_2 =atan2(p50(1),p50(0))  +  (M_PI/2);
+    if(ac<=1&&ac>=-1){
+        th1_1 =atan2(p50(1),p50(0)) + acos(d[3]/hypot(p50(1),p50(0))) +  (M_PI/2);
+        th1_2 =atan2(p50(1),p50(0)) - acos(d[3]/hypot(p50(1),p50(0))) +  (M_PI/2);
+    }
     // lets find the 4 possibile values for th5:
-    float th5_1 = (acos(( (eep(0) * sin(th1_1)) - (eep(1) * cos(th1_1)) -d[3])/d[5]));
+    ac=(( (eep(0) * sin(th1_1)) - (eep(1) * cos(th1_1)) -d[3])/d[5]);
+    float th5_1=0;
+    if(ac<=1&&ac>=-1){
+        th5_1 = (acos(( (eep(0) * sin(th1_1)) - (eep(1) * cos(th1_1)) -d[3])/d[5]));
+    }
     float th5_2 = -th5_1;
-    float th5_3 = (acos(( (eep(0) * sin(th1_2)) - (eep(1) * cos(th1_2)) -d[3])/d[5]));
+
+    ac=(( (eep(0) * sin(th1_2)) - (eep(1) * cos(th1_2)) -d[3])/d[5]);
+    float th5_3=0;
+    if(ac<=1&&ac>=-1){
+        th5_3 = (acos(( (eep(0) * sin(th1_2)) - (eep(1) * cos(th1_2)) -d[3])/d[5]));
+    }
     float th5_4 = -th5_3; 
 
 
@@ -69,10 +82,30 @@ MatrixXf ur5::ur5inverse(Vector3f eep, Matrix3f eer){ // eep: end effector posit
 
     // lets find the 8 possibile values for th3:
 
-    float th3_1 =(acos( (pow(p41xz_1,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) ));
-    float th3_2 =(acos( (pow(p41xz_2,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) ));
-    float th3_3 =(acos( (pow(p41xz_3,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) ));
-    float th3_4 =(acos( (pow(p41xz_4,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) ));
+    ac=(pow(p41xz_1,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]);
+    float th3_1=0;
+    if(ac<=1&&ac>=-1){
+        th3_1 =(acos( (pow(p41xz_1,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) ));
+    }
+
+    ac=( (pow(p41xz_2,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) );
+    float th3_2=0;
+    if(ac<=1&&ac>=-1){
+        th3_2 =(acos( (pow(p41xz_2,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) ));
+    }
+
+    ac=( (pow(p41xz_3,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) );
+    float th3_3=0;
+    if(ac<=1&&ac>=-1){
+        th3_3 =(acos( (pow(p41xz_3,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) ));
+    }
+    
+    ac=( (pow(p41xz_4,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) );
+    float th3_4=0;
+    if(ac<=1&&ac>=-1){
+        th3_4 =(acos( (pow(p41xz_4,2) - pow(a[1],2) - pow(a[2],2)) / (2 * a[1] * a[2]) ));;
+    }
+    
 
     float th3_5 = -th3_1; 
     float th3_6 = -th3_2; 
@@ -81,16 +114,54 @@ MatrixXf ur5::ur5inverse(Vector3f eep, Matrix3f eer){ // eep: end effector posit
 
 
     // lets find the 8 possibile values for th2:
+    float as =(((-a[2])*sin(th3_1))/p41xz_1);
+    float th2_1 =( atan2(-p41_1(2) , -p41_1(0)) ); 
+    if(as<=1&&-as>=-1){
+        th2_1 =( atan2(-p41_1(2) , -p41_1(0)) - asin(((-a[2])*sin(th3_1))/p41xz_1) );
+    }
 
-    float th2_1 =( atan2(-p41_1(2) , -p41_1(0)) - asin(((-a[2])*sin(th3_1))/p41xz_1) ); 
-    float th2_2 =( atan2(-p41_2(2) , -p41_2(0)) - asin(((-a[2])*sin(th3_2))/p41xz_2) ); 
-    float th2_3 =( atan2(-p41_3(2) , -p41_3(0)) - asin(((-a[2])*sin(th3_3))/p41xz_3) ); 
-    float th2_4 =( atan2(-p41_4(2) , -p41_4(0)) - asin(((-a[2])*sin(th3_4))/p41xz_4) ); 
+    as =(((-a[2])*sin(th3_2))/p41xz_1);
+    float th2_2 =( atan2(-p41_2(2) , -p41_2(0)) ); 
+    if(as<=1&&-as>=-1){
+        th2_2 =( atan2(-p41_2(2) , -p41_2(0)) - asin(((-a[2])*sin(th3_2))/p41xz_2) );
+    }
 
-    float th2_5 =( atan2(-p41_1(2) , -p41_1(0)) - asin((a[2]*sin(th3_1))/p41xz_1) ); 
-    float th2_6 =( atan2(-p41_2(2) , -p41_2(0)) - asin((a[2]*sin(th3_2))/p41xz_2) ); 
-    float th2_7 =( atan2(-p41_3(2) , -p41_3(0)) - asin((a[2]*sin(th3_3))/p41xz_3) ); 
-    float th2_8 =( atan2(-p41_4(2) , -p41_4(0)) - asin((a[2]*sin(th3_4))/p41xz_4) ); 
+    as =(((-a[2])*sin(th3_3))/p41xz_3);
+    float th2_3 =( atan2(-p41_3(2) , -p41_3(0)) ); 
+    if(as<=1&&-as>=-1){
+        th2_3 =( atan2(-p41_3(2) , -p41_3(0)) - asin(((-a[2])*sin(th3_3))/p41xz_3) );
+    }
+
+    as =(((-a[2])*sin(th3_4))/p41xz_4);
+    float th2_4 =( atan2(-p41_4(2) , -p41_4(0)) ); 
+    if(as<=1&&-as>=-1){
+        th2_4 =( atan2(-p41_4(2) , -p41_4(0)) - asin(((-a[2])*sin(th3_4))/p41xz_4) );
+    }
+
+    as =((a[2]*sin(th3_1))/p41xz_1);
+    float th2_5 = ( atan2(-p41_1(2) , -p41_1(0)) );
+    if(as<=1&&-as>=-1){
+        th2_5 =( atan2(-p41_1(2) , -p41_1(0)) - asin((a[2]*sin(th3_1))/p41xz_1) );
+    }
+
+    as =((a[2]*sin(th3_2))/p41xz_2);
+    float th2_6 =( atan2(-p41_2(2) , -p41_2(0)) );
+    if(as<=1&&-as>=-1){
+        th2_6 =( atan2(-p41_2(2) , -p41_2(0)) - asin((a[2]*sin(th3_2))/p41xz_2) ); 
+    }
+
+    as =((a[2]*sin(th3_3))/p41xz_3);
+    float th2_7 =( atan2(-p41_3(2) , -p41_3(0)) );
+    if(as<=1&&-as>=-1){
+        th2_7 =( atan2(-p41_3(2) , -p41_3(0)) - asin((a[2]*sin(th3_3))/p41xz_3) );
+    }
+
+    as =((a[2]*sin(th3_4))/p41xz_4);
+    float th2_8 =( atan2(-p41_4(2) , -p41_4(0)) );
+    if(as<=1&&-as>=-1){
+        th2_8 =( atan2(-p41_4(2) , -p41_4(0)) - asin((a[2]*sin(th3_4))/p41xz_4) );
+    }
+
 
 
     // lets find the 8 possibile values for th4:
@@ -177,6 +248,8 @@ MatrixXf ur5::ur5inverse(Vector3f eep, Matrix3f eer){ // eep: end effector posit
           th1_1 , th2_6, th3_6 , th4_6, th5_2 , th6_2,  
           th1_2 , th2_7, th3_7 , th4_7, th5_3 , th6_3,  
           th1_2 , th2_8, th3_8 , th4_8, th5_4 , th6_4;
+
+    cout  << acos(6)<< endl;
 
     return Th;
 }
