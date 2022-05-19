@@ -32,10 +32,10 @@ namespace robot{
             void setT65f(float th6);
 
             Matrix3f eul2rotm(Vector3f& v);
-            Vector3f rotm2eul(Matrix3f& m);
 
         public:
 
+            Vector3f rotm2eul(Matrix3f& m);
             // Direct kinematics function:
             void ur5direct(VectorXf& th, Vector3f &x, Matrix3f &r); 
 
