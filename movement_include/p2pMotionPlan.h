@@ -2,7 +2,7 @@
 // #include <iostream>
 // #include <Eigen/Dense>
 // #include <math.h>
-// #include "ur5.h"
+#include "ur5.h"
 // #include "inverse.h"
 
 using namespace Eigen;
