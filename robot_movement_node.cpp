@@ -18,8 +18,6 @@ using namespace Eigen;
 using namespace std;
 using namespace robot;
 
-Vector3f STND_POS;
-Vector3f STND_ANGLE;
 
 // vector<control_msgs::JointControllerState::ConstPtr> initial_jnt_pos;
 VectorXf initial_jnt_pos(7);
@@ -63,9 +61,7 @@ void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
 
 int main(int argc, char **argv)
 {
-    STND_POS<<-0.4064,-0.1403,0.5147;
-    //STND_ANGLE<<-0.4280,-0.0028,3.0650;
-    STND_ANGLE<<-0,0,3.14;
+
     // Creo il nodo
     ros::init(argc, argv, "gatto_node");
     // Creo un nodo interno al nodo principale
@@ -106,33 +102,23 @@ int main(int argc, char **argv)
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
 
-    // float x,y,z;
-    // float ex,ey,ez;
-    // cout<<"inserisci orientamento dell'ee:"<<endl;
-    // cin>>ex;
-    // cin>>ey;
-    // cin>>ez;
-    // cout<<"inserisci valori posizione:"<<endl;
-    // cin>>x;
-    // cin>>y;
-    // cin>>z;
-    // Vector3f vf;
-    // vf<<x,y,z;
-    // //vf << 0.5, 0.5, 0.5;
-    // Vector3f phiF;
-    // //phiF << M_PI / 2, M_PI / 2, M_PI / 2;
-    // phiF << ex, ey, ez;
-    MatrixXf Th;
-    //move(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
-    move(ur5_joint_array_pub, STND_POS, STND_ANGLE, Th, initial_jnt_pos, u, loop_rate);
+    float x,y,z;
+    float ex,ey,ez;
+    cout<<"inserisci orientamento dell'ee:"<<endl;
+    cin>>ex;
+    cin>>ey;
+    cin>>ez;
+    cout<<"inserisci valori posizione:"<<endl;
+    cin>>x;
+    cin>>y;
+    cin>>z;
 
-    // VectorXf th(6);
-    // th<<0,-1.3,1.2,-1.5,-1.5,2;
-    // Vector3f x;
-    // Matrix3f o;
-    // u.ur5direct(th,x,o);
-    // cout<<u.rotm2eul(o)<<endl;
-    // cout<<x<<endl;
+    Vector3f vf;
+    vf<<x,y,z;
+    Vector3f phiF;
+    phiF << ex, ey, ez;
+    MatrixXf Th;
+    move(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
 
     return 0;
 }
