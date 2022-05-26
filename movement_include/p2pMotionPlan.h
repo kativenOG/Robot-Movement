@@ -1,8 +1,9 @@
-#include <iostream>
-//#include <Eigen/Dense>
-#include <math.h>
-#include "ur5.h"
-#include "inverse.cpp"
+#pragma once
+// #include <iostream>
+// #include <Eigen/Dense>
+// #include <math.h>
+// #include "ur5.h"
+// #include "inverse.h"
 
 using namespace Eigen;
 using namespace std;

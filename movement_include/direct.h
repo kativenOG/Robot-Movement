@@ -1,6 +1,4 @@
-//#include <iostream>
-//#include <cmath>
-//#include <Eigen/Dense>
+#pragma once 
 #include "ur5.h" 
 
 using namespace std;

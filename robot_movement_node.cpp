@@ -1,15 +1,21 @@
 #include <iostream>
+#include <math.h>
 #include "ros/ros.h"
 #include <ros/package.h>
 #include "std_msgs/Float64.h"
 #include "control_msgs/JointControllerState.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
-#include "p2pMotionPlan.cpp"
 
+// Movement Kinematics 
+#include "p2pMotionPlan.h"
+#include "ur5.h"
+#include "direct.h"
+#include "inverse.h"
 // Link attacher and movement
 #include "gazebo_ros_link_attacher/Attach.h"
 #include "move.h"
+
 //#include "pick&place.h"
 
 #define RATE 10
