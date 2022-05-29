@@ -52,13 +52,9 @@ void robot::ur5::ur5direct(VectorXf& th,Vector3f &x,Matrix3f &r){ // i parametri
 
     // calcolo matrice finale EE
     MatrixXf T06 = T10f * T21f * T32f * T43f * T54f * T65f;
-    //MatrixXd T06 = T10f*T21f*T32f*T43f*T54f*T65f;
 
     x = T06.block(0,3,3,1); // Posizione del end effector 
     r = T06.block(0,0,3,3); // Matrice di Eulero 
 
-    // Debugging 
-    //printf("Pozione xe del EE: %f \n",x);
-    //printf("Angolazione del EE: %f \n",r);
 }
 

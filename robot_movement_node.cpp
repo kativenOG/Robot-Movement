@@ -76,7 +76,9 @@ int main(int argc, char **argv)
     // Ottengo la rate per il publishing
     ros::Rate loop_rate(RATE);
     // Creo un array per il publishing, ha una casella per ogni joint
-    ros::Publisher ur5_joint_array_pub[7];
+    ros::Publisher ur5_joint_array_pub[6];
+
+    ros::Publisher ur5_gripper_pub;
 
     // lego l'array ai vari topic, in cui pubblicheranno i valori di posizione
     ur5_joint_array_pub[0] = n.advertise<std_msgs::Float64>("/shoulder_pan_joint_position_controller/command", RATE);
@@ -85,7 +87,9 @@ int main(int argc, char **argv)
     ur5_joint_array_pub[3] = n.advertise<std_msgs::Float64>("/wrist_1_joint_position_controller/command", RATE);
     ur5_joint_array_pub[4] = n.advertise<std_msgs::Float64>("/wrist_2_joint_position_controller/command", RATE);
     ur5_joint_array_pub[5] = n.advertise<std_msgs::Float64>("/wrist_3_joint_position_controller/command", RATE);
-    ur5_joint_array_pub[6] = n.advertise<std_msgs::Float64>("/gripper_controller/command", RATE);
+    
+    // Publihser per il gripper, range -0.5 - +0.5
+    ur5_gripper_pub = n.advertise<std_msgs::Float64>("/gripper_controller/command", RATE);
 
     // creo subscriber che ascoltano nei topic di poszione dei joint, e si salvano la loro poszione nello spazio tramite dei wrapper :)
     ros::Subscriber shoulder_pan_joint_sub = n.subscribe("/shoulder_pan_joint_position_controller/state", RATE, shoulder_pan_getter);
@@ -96,6 +100,8 @@ int main(int argc, char **argv)
     ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state", RATE, wrist_3_getter);
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", RATE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
     sleep(1);
+
+    // Indispensabili 
     ros::spinOnce();
     loop_rate.sleep();
     ros::spinOnce();
@@ -124,7 +130,7 @@ int main(int argc, char **argv)
     Vector3f phiF;
     phiF << ex, ey, ez;
     MatrixXf Th;
-    move(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
+    movement(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
 
     return 0;
 }
