@@ -12,6 +12,7 @@
 #include "ur5.h"
 #include "direct.h"
 #include "inverse.h"
+#include "pick&place.h"
 // Link attacher and movement
 #include "gazebo_ros_link_attacher/Attach.h"
 #include "move.h"
@@ -130,7 +131,10 @@ int main(int argc, char **argv)
     Vector3f phiF;
     phiF << ex, ey, ez;
     MatrixXf Th;
-    movement(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
+    // movement(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
+    
+    take(dynLinkAtt,ur5_joint_array_pub,vf, phiF, Th, initial_jnt_pos,  "X2-Y2-Z2" ,  u, loop_rate);
+
 
     return 0;
 }
