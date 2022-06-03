@@ -20,9 +20,11 @@ ${gazebo_ros_link_attacher_INCLUDE_DIRS}
 include_directories(movement_include)
 
 add_executable(${PROJECT_NAME}_node1 robot_movement_node.cpp)
+add_executable(point_1_node punto1.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node1
+    point_1_node
     ${catkin_LIBRARIES}
     ${Eigen_LIBRARIES}
 )
