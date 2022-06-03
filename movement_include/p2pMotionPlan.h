@@ -91,12 +91,16 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     float f2 = 0.00001;
     MatrixXf Th(ro, corners + 1);
     int counter = 0;
-    for (float i = minT; i <= maxT + f2; i += deltaT){
+    // for (float i = minT; i <= maxT + f2; i += deltaT){
+    for (float i = minT; (i <= maxT + f2)&&(counter<Th.rows()); i += deltaT){
         Th(counter,0)=(float)counter / ((maxT - minT) / deltaT);
         for (int k = 0; k < corners; k++){
             Th(counter,k+1)=qEs(k)+counter*(qEf(k)-qEs(k))/(ro-1);
         }
         counter++;
+    }
+    for (int k = 0; k < corners; k++){
+        Th(Th.rows()-1,k+1)=qEf(k);
     }
     Th_1 = Th;
 }
