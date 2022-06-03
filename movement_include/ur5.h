@@ -8,6 +8,7 @@ namespace robot
     class ur5
     {
     private:
+        
         // DH parameters
         const float a[6] = {
              0,
@@ -47,6 +48,10 @@ namespace robot
         Vector3f rotm2eul(Matrix3f &m);
 
     public:
+
+        // lego names 
+        char legos [11][30] = ["X1-Y1-Z2", "X1-Y2-Z1", "X1-Y2-Z2", "X1-Y2-Z2-CHAMFER", "X1-Y2-Z2-TWINFILLET", "X1-Y3-Z2", "X1-Y3-Z2-FILLET", "X1-Y4-Z1", "X1-Y4-Z2", "X2-Y2-Z2", "X2-Y2-Z2-FILLET"];
+
         // Direct kinematics function:
         void ur5direct(VectorXf &th, Vector3f &x, Matrix3f &r);
 
