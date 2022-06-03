@@ -92,7 +92,7 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     deltaT = 4* M_PI / (360 * deltaT);
     int ro = (maxT - minT) / deltaT + 1;
     float f2 = 0.00001;
-    MatrixXf Th(ro, corners + 1);
+    MatrixXf Th(ro+1, corners + 1);
     int counter = 0;
     for (float i = minT; i <= maxT + f2; i += deltaT){
         Th(counter,0)=(float)counter / ((maxT - minT) / deltaT);
