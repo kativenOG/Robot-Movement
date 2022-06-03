@@ -101,5 +101,8 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
         }
         counter++;
     }
+    for (int k = 0; k < corners; k++){
+        Th(Th.rows()-1,k+1)=qEf(k);
+    }
     Th_1 = Th;
 }
