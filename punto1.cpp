@@ -80,8 +80,7 @@ int main(int argc, char **argv)
     // Creo un array per il publishing, ha una casella per ogni joint
     ros::Publisher ur5_joint_array_pub[6];
 
-    ros::Publisher ur5_gripper_pub;
-
+    ros::Publisher ur5_gripper_pub; 
     // lego l'array ai vari topic, in cui pubblicheranno i valori di posizione
     ur5_joint_array_pub[0] = n.advertise<std_msgs::Float64>("/shoulder_pan_joint_position_controller/command", RATE);
     ur5_joint_array_pub[1] = n.advertise<std_msgs::Float64>("/shoulder_lift_joint_position_controller/command", RATE);
@@ -117,11 +116,14 @@ int main(int argc, char **argv)
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
 
     float x,y,z;
-    float ex,ey,ez;
-    cout<<"inserisci orientamento dell'ee:"<<endl;
-    cin>>ex;
-    cin>>ey;
-    cin>>ez;
+    char  blockName[12];
+    cout<<"Nome del blocco: "<<std::endl;
+    cin>>blockName;
+    // float ex,ey,ez;
+    // cout<<"inserisci orientamento dell'ee:"<<endl;
+    // cin>>ex;
+    // cin>>ey;
+    // cin>>ez;
     cout<<"inserisci valori posizione:"<<endl;
     cin>>x;
     cin>>y;
@@ -130,10 +132,10 @@ int main(int argc, char **argv)
     Vector3f vf;
     vf<<x,y,z;
     Vector3f phiF;
-    phiF << ex, ey, ez;
+    phiF << 0, 0, M_PI;
     MatrixXf Th;
     // movement(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
-    // take();
+    take(dynLinkAtt,ur5_joint_array_pub, vf,phiF,Th,initial_jnt_pos,blockName,u,loop_rate);
 
     return 0;
 }

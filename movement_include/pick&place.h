@@ -20,8 +20,8 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     srv.request.model_name_2 = blockName; //"lego" + to_string(type+1);
     srv.request.link_name_2 = "link";
     attach.call(srv);
-    sleep(1);
-    movement(ur5_pub, STND_POS, STND_ANGLE, Th, initial_pos, u, loop_rate);
+    // sleep(1);
+    // movement(ur5_pub, STND_POS, STND_ANGLE, Th, initial_pos, u, loop_rate);
 };
 
 void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate)
@@ -42,8 +42,8 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
     srv.request.model_name_2 = blockName; //"lego" + to_string(type+1);
     srv.request.link_name_2 = "link";
     detach.call(srv);
-    sleep(1);
-    movement(ur5_pub, STND_POS, STND_ANGLE, Th, initial_pos, u, loop_rate);
+    // sleep(1);
+    // movement(ur5_pub, STND_POS, STND_ANGLE, Th, initial_pos, u, loop_rate);
 };
 
 void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate)
