@@ -21,6 +21,9 @@ include_directories(movement_include)
 
 # add_executable(${PROJECT_NAME}_node1 robot_movement_node.cpp)
 add_executable(point_1_node punto1.cpp)
+# add_executable(point_1_node punto1.cpp)
+# add_executable(point_2_node punto2.cpp)
+# add_executable(point_3_node punto3.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries( #${PROJECT_NAME}_node1

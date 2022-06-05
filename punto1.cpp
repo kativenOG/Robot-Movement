@@ -124,18 +124,26 @@ int main(int argc, char **argv)
     // cin>>ex;
     // cin>>ey;
     // cin>>ez;
-    cout<<"inserisci valori posizione:"<<endl;
+    cout<<"inserisci valori posizione iniziale blocco:"<<endl;
+    cin>>x;
+    cin>>y;
+    cin>>z;
+
+    Vector3f vff;
+    
+    cout<<"inserisci valori posizione finale blocco:"<<endl;
     cin>>x;
     cin>>y;
     cin>>z;
 
     Vector3f vf;
     vf<<x,y,z;
+    vf<<x,y,z;
     Vector3f phiF;
     phiF << 0, 0, M_PI;
     MatrixXf Th;
     // movement(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
     take(dynLinkAtt,ur5_joint_array_pub, vf,phiF,Th,initial_jnt_pos,blockName,u,loop_rate);
-
+    take_and_place(dynLinkAtt,dynLinkDet ,ur5_joint_array_pub , Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate)
     return 0;
 }
