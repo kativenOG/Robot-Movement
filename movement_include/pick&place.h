@@ -20,7 +20,6 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     srv.request.model_name_2 = blockName; //"lego" + to_string(type+1);
     srv.request.link_name_2 = "link";
     attach.call(srv);
-    sleep(3);
     movement(ur5_pub, STND_POS, STND_ANGLE, Th, initial_pos, u, loop_rate);
 };
 
@@ -42,7 +41,6 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
     srv.request.model_name_2 = blockName; //"lego" + to_string(type+1);
     srv.request.link_name_2 = "link";
     detach.call(srv);
-    sleep(3);
     movement(ur5_pub, STND_POS, STND_ANGLE, Th, initial_pos, u, loop_rate);
 };
 
@@ -50,6 +48,10 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
 {
 
     take(attach, ur5_pub, vf1, phiF, Th, initial_pos, blockName, u, loop_rate);
-    sleep(1);
-    place(detach, ur5_pub, vf2, phiF, Th, initial_pos, blockName, u, loop_rate);
+    ros::spinOnce();
+    loop_rate.sleep();
+    MatrixXf Th2; // da ottimizare 
+    sleep(5);
+    place(detach, ur5_pub, vf2, phiF, Th2, initial_pos, blockName, u, loop_rate);
+    std::cout<<"Point 1 done !"<<endl;
 };

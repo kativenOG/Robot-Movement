@@ -6,9 +6,11 @@ find_package(catkin REQUIRED COMPONENTS
 roscpp
 std_msgs
 ) 
+
 catkin_package( 
     CATKIN_DEPENDS urdf 
 )
+
 find_package(Eigen3 REQUIRED)
 find_package(gazebo_ros_link_attacher REQUIRED)
 

@@ -3,6 +3,7 @@
 #include "ros/ros.h"
 #include <ros/package.h>
 #include "std_msgs/Float64.h"
+#include "std_msgs/String.h"
 #include "control_msgs/JointControllerState.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
@@ -26,11 +27,10 @@ using namespace Eigen;
 using namespace std;
 using namespace robot;
 
-
-// vector<control_msgs::JointControllerState::ConstPtr> initial_jnt_pos;
-VectorXf initial_jnt_pos(7);
 ur5 u;
 
+// ### Ros Control ###
+VectorXf initial_jnt_pos(7);
 void shoulder_pan_getter(const control_msgs::JointControllerState::ConstPtr &val)
 {
     initial_jnt_pos[0] = val->set_point;
@@ -67,6 +67,30 @@ void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
     // initial_jnt_pos[6]=val->process_value;
 }
 
+// ### VISIONE ###
+VectorXf block_position(3);
+float blockNumber;
+// Nome blocco rilevato
+void name_getter(const  std_msgs::Float64::ConstPtr &val)
+{
+    blockNumber = val->data;
+}
+// X del blocco 
+void x_getter(const std_msgs::Float64::ConstPtr &val)
+{
+    block_position[0] = -val->data;
+}
+// Y del blocco vf1
+void y_getter(const std_msgs::Float64::ConstPtr &val)
+{
+    block_position[1] = -val->data;
+}
+// Z del blocco 
+void z_getter(const std_msgs::Float64::ConstPtr &val)
+{
+    block_position[2] = (val->data) - 0.6; 
+}
+
 int main(int argc, char **argv)
 {
 
@@ -100,6 +124,10 @@ int main(int argc, char **argv)
     ros::Subscriber wrist_2_joint_sub = n.subscribe("/wrist_2_joint_position_controller/state", RATE, wrist_2_getter);
     ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state", RATE, wrist_3_getter);
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", RATE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
+    ros::Subscriber kinect_name= n.subscribe("/kinects/Name", RATE, name_getter );
+    ros::Subscriber kinect_coordinatex= n.subscribe("/kinects/coordinateX", RATE,x_getter  );
+    ros::Subscriber kinect_coordinatey= n.subscribe("/kinects/coordinateY", RATE, y_getter );
+    ros::Subscriber kinect_coordinatez= n.subscribe("/kinects/coordinateZ", RATE, z_getter );
     sleep(1);
 
     // Indispensabili 
@@ -110,40 +138,24 @@ int main(int argc, char **argv)
     ros::spinOnce();
     loop_rate.sleep();
 
+    // trova vf2 in base al blocco rilevato da yolo ! 
+    // int c;
+    // for(c=0; c<11;c++){
+    //     if(strcmp(u.legos[c],blockName)) break;
+    // } 
 
     // i client per comunicare il link dinamico con il modulo di gazebo 
+
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
 
-    float x,y,z;
-    char  blockName[12];
-    cout<<"Nome del blocco: "<<std::endl;
-    cin>>blockName;
-    // float ex,ey,ez;
-    // cout<<"inserisci orientamento dell'ee:"<<endl;
-    // cin>>ex;
-    // cin>>ey;
-    // cin>>ez;
-    cout<<"inserisci valori posizione iniziale blocco:"<<endl;
-    cin>>x;
-    cin>>y;
-    cin>>z;
-
-    Vector3f vff;
-    
-    cout<<"inserisci valori posizione finale blocco:"<<endl;
-    cin>>x;
-    cin>>y;
-    cin>>z;
-
-    Vector3f vf;
-    vf<<x,y,z;
-    vf<<x,y,z;
     Vector3f phiF;
-    phiF << 0, 0, M_PI;
+    phiF <<M_PI,0,0;
     MatrixXf Th;
-    // movement(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
-    take(dynLinkAtt,ur5_joint_array_pub, vf,phiF,Th,initial_jnt_pos,blockName,u,loop_rate);
-    take_and_place(dynLinkAtt,dynLinkDet ,ur5_joint_array_pub , Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate)
+    Vector3f vff;
+    vff<<u.legoPos[(int)(blockNumber)][0],u.legoPos[(int)(blockNumber)][1],0.4;
+    cout<<block_position<<vff<<endl;
+
+    take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , block_position , vff, phiF, Th, initial_jnt_pos, u.legos[(int)(blockNumber)], u, loop_rate);
     return 0;
 }
