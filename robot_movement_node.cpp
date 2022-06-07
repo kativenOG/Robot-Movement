@@ -131,10 +131,9 @@ int main(int argc, char **argv)
     Vector3f phiF;
     phiF << ex, ey, ez;
     MatrixXf Th;
-    // movement(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
+    movement(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
     
-    take(dynLinkAtt,ur5_joint_array_pub,vf, phiF, Th, initial_jnt_pos,  "X2-Y2-Z2" ,  u, loop_rate);
-
+    // take(dynLinkAtt,ur5_joint_array_pub,vf, phiF, Th, initial_jnt_pos,  "X2-Y2-Z2" ,  u, loop_rate);
 
     return 0;
 }

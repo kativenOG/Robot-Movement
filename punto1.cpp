@@ -150,11 +150,18 @@ int main(int argc, char **argv)
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
 
     Vector3f phiF;
-    phiF <<M_PI,0,0;
+    phiF <<0,M_PI,0;
     MatrixXf Th;
     Vector3f vff;
     vff<<u.legoPos[(int)(blockNumber)][0],u.legoPos[(int)(blockNumber)][1],0.4;
-    cout<<block_position<<vff<<endl;
+
+    cout<<std::endl<<block_position<<std::endl<<vff<<endl;
+
+    int x,y;
+    cin>>x;
+    cin>>y;
+    block_position<<x,y,0.4;
+    
 
     take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , block_position , vff, phiF, Th, initial_jnt_pos, u.legos[(int)(blockNumber)], u, loop_rate);
     return 0;

@@ -25,7 +25,8 @@ namespace robot
                  0,
                  0.1333,
                  0.0997,
-                0.0996
+                //  0.2996
+                0.1996
         };
 
         // Matrici per direct kinematics
