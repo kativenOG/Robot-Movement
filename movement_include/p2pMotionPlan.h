@@ -160,6 +160,6 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     {
         Th(Th.rows() - 1, k + 1) = qEf(k);
     }
-    std::cout << Th;
+    // std::cout << Th;
     Th_1 = Th;
 }

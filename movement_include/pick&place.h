@@ -4,8 +4,9 @@
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
 
-void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate)
+void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf& Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate)
 {
+    cout<<"take: "<<(blockName)<<std::endl;
     Vector3f STND_POS;
     STND_POS << -0.4064, -0.1403, 0.5147;
     Vector3f STND_ANGLE;
@@ -20,11 +21,13 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     srv.request.model_name_2 = blockName; //"lego" + to_string(type+1);
     srv.request.link_name_2 = "link";
     attach.call(srv);
-    // movement(ur5_pub, STND_POS, STND_ANGLE, Th, initial_pos, u, loop_rate);
+    //sleep(2);
+    //movement(ur5_pub, STND_POS, STND_ANaLE, Th, initial_pos, u, loop_rate);
 };
 
-void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate)
+void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf& Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate)
 {
+    cout<<"place: "<<blockName<<std::endl;
     Vector3f STND_POS;
     STND_POS << -0.4064, -0.1403, 0.5147;
     Vector3f STND_ANGLE;
@@ -41,20 +44,26 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
     srv.request.model_name_2 = blockName; //"lego" + to_string(type+1);
     srv.request.link_name_2 = "link";
     detach.call(srv);
-    // movement(ur5_pub, STND_POS, STND_ANGLE, Th, initial_pos, u, loop_rate);
+    //sleep(2);
+    //movement(ur5_pub, STND_POS, STND_ANGLE, Th, initial_pos, u, loop_rate);
 };
 
 void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate)
-{
-
+{    
     take(attach, ur5_pub, vf1, phiF, Th, initial_pos, blockName, u, loop_rate);
-    ros::spinOnce();
-    loop_rate.sleep();
+    // ros::spinOnce();
+    // loop_rate.sleep();
+    //std::cout<<"th =    "<<Th<<std::endl;
+
     int aspetta;
+    std::cout << "terminare??? \n";
     std::cin>>aspetta;
     if(aspetta==1 ) return;
-    // MatrixXf Th2; // da ottimizare 
-    sleep(5);
-    place(detach, ur5_pub, vf2, phiF, Th, initial_pos, blockName, u, loop_rate);
-    std::cout<<"Point 1 done !"<<endl;
+    int rows = Th.rows()-1;
+    VectorXf v(6);
+    for(int i=0; i<6; i++){
+        v[i]=Th(rows,i+1);
+    }
+    place(detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate);
+    std::cout<<"Point 1 done !\n";
 };

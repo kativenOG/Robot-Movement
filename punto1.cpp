@@ -79,16 +79,19 @@ void name_getter(const  std_msgs::Float64::ConstPtr &val)
 void x_getter(const std_msgs::Float64::ConstPtr &val)
 {
     block_position[0] = -val->data;
+    // cout<< "x:"<< block_position[0]<<std::endl;
 }
 // Y del blocco vf1
 void y_getter(const std_msgs::Float64::ConstPtr &val)
 {
     block_position[1] = -val->data;
+    // cout<< "y:"<< block_position[1]<<std::endl;
 }
 // Z del blocco 
 void z_getter(const std_msgs::Float64::ConstPtr &val)
 {
-    block_position[2] = (val->data) - 0.6; 
+    block_position[2] = (val->data) - 0.77; 
+    // cout<< "z:"<< block_position[2]<<std::endl;
 }
 
 int main(int argc, char **argv)
@@ -153,16 +156,19 @@ int main(int argc, char **argv)
     phiF <<0,M_PI,0;
     MatrixXf Th;
     Vector3f vff;
-    vff<<u.legoPos[(int)(blockNumber)][0],u.legoPos[(int)(blockNumber)][1],0.4;
+    vff<<u.legoPos[(int)(blockNumber)][0],u.legoPos[(int)(blockNumber)][1],0.15;
 
-    cout<<std::endl<<block_position<<std::endl<<vff<<endl;
+    cout<<block_position<<endl;
 
-    int x,y;
-    cin>>x;
-    cin>>y;
-    block_position<<x,y,0.4;
+    // int x,y;
+    // cout << "inserire x" << endl;
+    // cin>>x;
+    // cout << "inserire y" << endl;
+    // cin>>y;
+    // block_position<<x,y,0.1;
     
-
+    // movement(ur5_joint_array_pub, block_position, phiF, Th, initial_jnt_pos, u, loop_rate);
+    cout<<u.legos[(int)(blockNumber)]<<endl;
     take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , block_position , vff, phiF, Th, initial_jnt_pos, u.legos[(int)(blockNumber)], u, loop_rate);
     return 0;
 }

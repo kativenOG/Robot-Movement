@@ -127,13 +127,17 @@ int main(int argc, char **argv)
     cin>>z;
 
     Vector3f vf;
+    Vector3f vff;
     vf<<x,y,z;
     Vector3f phiF;
     phiF << ex, ey, ez;
     MatrixXf Th;
-    movement(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
+    vff<<1,1,1;
+    // movement(ur5_joint_array_pub, vf, phiF, Th, initial_jnt_pos, u, loop_rate);
     
     // take(dynLinkAtt,ur5_joint_array_pub,vf, phiF, Th, initial_jnt_pos,  "X2-Y2-Z2" ,  u, loop_rate);
+    // take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , vf, vff, phiF, Th, initial_jnt_pos, "ciao", u, loop_rate);
 
     return 0;
 }
+ 
