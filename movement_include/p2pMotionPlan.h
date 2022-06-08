@@ -91,9 +91,11 @@ Vector3f ur5::rotm2eul(Matrix3f &m)
         v(1) = -M_PI / 2;
         v(2) = 0;
     }
-    std::cout<<"Primo:"<<std::endl<<v<<std::endl;
-    Vector3f ea = m.eulerAngles(0, 1, 2); 
-    cout<<"Secondo:"<<std::endl<<ea<<std::endl;
+    std::cout << "Primo:" << std::endl
+              << v << std::endl;
+    Vector3f ea = m.eulerAngles(0, 1, 2);
+    cout << "Secondo:" << std::endl
+         << ea << std::endl;
     return v;
 }
 
@@ -104,11 +106,29 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     // int corners = 6;
     // RowVectorXf qEf = qEf_t.block(0, 0, 1, corners);
     RowVectorXf qEf(6);
-    for(int i=0;i<8;i++){
-        cout<<"Val: "<<i<<endl;
-        for(j=0; j<7;j++) cout<<qEf_t(i,j)<<" ";
-        // if(qEf_t(i,4))    
+    bool check = false;
+    bool found = false;
+    for (int i = 0; i < 8; i++)
+    {
+        // cout<<"Val: "<<i<<endl;
+        // for(int j=0; j<7;j++) cout<<qEf_t(i,j)<<" ";
+
+    // Ciclo sulle soluzioni per trovarne una senza valori nan con un wrist 1 abbstanza aperto
+        for (int k = 0; k < 7; j++)
+            if (isnan(qEf_t(i, k)))
+                check = true;
+        if (!check && qEf_t(i, 4) > 0)
+        {
+            qEf = qEf_t.block(i, i, 1, 6);
+            found = true;
+        }
+        check = false;
     }
+    // Se non ho trovato nessuna soluzione alternativa prendo la prima a prescindere
+    if (found == false){
+        qEf = qEf_t.block(0, 0, 1, 6);
+    }
+
     int minT = 0;
     int maxT = 1;
     // distance control
