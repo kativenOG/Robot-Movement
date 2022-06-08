@@ -9,7 +9,7 @@
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
 
-// Movement Kinematics 
+// Movement Kinematics
 #include "p2pMotionPlan.h"
 #include "ur5.h"
 #include "direct.h"
@@ -69,30 +69,65 @@ void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
 }
 
 // ### VISIONE ###
-VectorXf block_position(3);
-float blockNumber;
+MatrixXf block_position(11, 3);
+VectorXf blockNumber(11);
+MatrixXf block_angle(11, 3);
+VectorXf gripperWidth(11);
+
 // Nome blocco rilevato
 void name_getter(const robot_movement::customMsg::ConstPtr &val)
 {
-    blockNumber = val->data;
+    for (int i = 0; i < 11; i++)
+        blockNumber(i) = -(val[i]->content);
+    // blockNumber = val->data;
 }
-// X del blocco 
+// X del blocco
 void x_getter(const robot_movement::customMsg::ConstPtr &val)
 {
-    block_position[0] = -val->data;
+    for (int i = 0; i < 11; i++)
+        block_position(i, 0) = -(val[i]->content);
+    // block_position[0] = -val->data;
     // cout<< "x:"<< block_position[0]<<std::endl;
 }
 // Y del blocco vf1
 void y_getter(const robot_movement::customMsg::ConstPtr &val)
 {
-    block_position[1] = -val->data;
+    for (int i = 0; i < 11; i++)
+        block_position(i, 1) = -(val[i]->content);
+    // block_position[1] = -val->data;
     // cout<< "y:"<< block_position[1]<<std::endl;
 }
-// Z del blocco 
+// Z del blocco
 void z_getter(const robot_movement::customMsg::ConstPtr &val)
 {
-    block_position[2] = (val->data) - 0.77; 
+    for (int i = 0; i < 11; i++)
+        block_position(i, 2) = (val[i]->content) - 0.77;
+    // block_position[2] = (val->data) - 0.77;
     // cout<< "z:"<< block_position[2]<<std::endl;
+}
+// Alpha
+void alpha_getter(const robot_movement::customMsg::ConstPtr &val)
+{
+    for (int i = 0; i < 11; i++)
+        block_angle(i, 0) = (val[i]->content);
+}
+// Theta
+void theta_getter(const robot_movement::customMsg::ConstPtr &val)
+{
+    for (int i = 0; i < 11; i++)
+        block_angle(i, 1) = (val[i]->content);
+}
+// Phi
+void phi_getter(const robot_movement::customMsg::ConstPtr &val)
+{
+    for (int i = 0; i < 11; i++)
+        block_angle(i, 2) = (val[i]->content);
+}
+// Gripper width
+void gripper_getter(const robot_movement::customMsg::ConstPtr &val)
+{
+    for (int i = 0; i < 11; i++)
+        gripperWidth(i) = (val[i]->content);
 }
 
 int main(int argc, char **argv)
@@ -108,7 +143,7 @@ int main(int argc, char **argv)
     // Creo un array per il publishing, ha una casella per ogni joint
     ros::Publisher ur5_joint_array_pub[6];
 
-    ros::Publisher ur5_gripper_pub; 
+    ros::Publisher ur5_gripper_pub;
     // lego l'array ai vari topic, in cui pubblicheranno i valori di posizione
     ur5_joint_array_pub[0] = n.advertise<std_msgs::Float64>("/shoulder_pan_joint_position_controller/command", RATE);
     ur5_joint_array_pub[1] = n.advertise<std_msgs::Float64>("/shoulder_lift_joint_position_controller/command", RATE);
@@ -116,7 +151,7 @@ int main(int argc, char **argv)
     ur5_joint_array_pub[3] = n.advertise<std_msgs::Float64>("/wrist_1_joint_position_controller/command", RATE);
     ur5_joint_array_pub[4] = n.advertise<std_msgs::Float64>("/wrist_2_joint_position_controller/command", RATE);
     ur5_joint_array_pub[5] = n.advertise<std_msgs::Float64>("/wrist_3_joint_position_controller/command", RATE);
-    
+
     // Publihser per il gripper, range -0.5 - +0.5
     ur5_gripper_pub = n.advertise<std_msgs::Float64>("/gripper_controller/command", RATE);
 
@@ -128,48 +163,39 @@ int main(int argc, char **argv)
     ros::Subscriber wrist_2_joint_sub = n.subscribe("/wrist_2_joint_position_controller/state", RATE, wrist_2_getter);
     ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state", RATE, wrist_3_getter);
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", RATE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
-    ros::Subscriber kinect_name= n.subscribe("/kinects/Name", RATE, name_getter );
-    ros::Subscriber kinect_coordinatex= n.subscribe("/kinects/coordinateX", RATE,x_getter  );
-    ros::Subscriber kinect_coordinatey= n.subscribe("/kinects/coordinateY", RATE, y_getter );
-    ros::Subscriber kinect_coordinatez= n.subscribe("/kinects/coordinateZ", RATE, z_getter );
-    sleep(1);
+    ros::Subscriber kinect_name = n.subscribe("/kinects/Name", RATE, name_getter);
+    ros::Subscriber kinect_coordinatex = n.subscribe("/kinects/coordinateX", RATE, x_getter);
+    ros::Subscriber kinect_coordinatey = n.subscribe("/kinects/coordinateY", RATE, y_getter);
+    ros::Subscriber kinect_coordinatez = n.subscribe("/kinects/coordinateZ", RATE, z_getter);
+    ros::Subscriber kinect_angle3 = n.subscribe("/kinects/angleZ", RATE, alpha_getter);
+    ros::Subscriber kinect_angle1 = n.subscribe("/kinects/angleX", RATE, theta_getter);
+    ros::Subscriber kinect_angle2 = n.subscribe("/kinects/angleY", RATE, phi_getter);
+    ros::Subscriber gripper_width = n.subscribe("/kinects/gWidth", RATE, gripper_getter);
 
-    // Indispensabili 
+    sleep(2);
+
+    // Indispensabili
+    // ros::spinOnce();
+    // loop_rate.sleep();
+    // ros::spinOnce();
+    // loop_rate.sleep();
     ros::spinOnce();
     loop_rate.sleep();
-    ros::spinOnce();
-    loop_rate.sleep();
-    ros::spinOnce();
-    loop_rate.sleep();
-
-    // trova vf2 in base al blocco rilevato da yolo ! 
-    // int c;
-    // for(c=0; c<11;c++){
-    //     if(strcmp(u.legos[c],blockName)) break;
-    // } 
-
-    // i client per comunicare il link dinamico con il modulo di gazebo 
 
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
 
-    Vector3f phiF;
-    phiF <<0,M_PI,0;
-    MatrixXf Th;
-    Vector3f vff;
-    vff<<u.legoPos[(int)(blockNumber)][0],u.legoPos[(int)(blockNumber)][1],0.15;
-
-    cout<<block_position<<endl;
-
-    // int x,y;
-    // cout << "inserire x" << endl;
-    // cin>>x;
-    // cout << "inserire y" << endl;
-    // cin>>y;
-    // block_position<<x,y,0.1;
-    
-    // movement(ur5_joint_array_pub, block_position, phiF, Th, initial_jnt_pos, u, loop_rate);
-    cout<<u.legos[(int)(blockNumber)]<<endl;
-    take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , block_position , vff, phiF, Th, initial_jnt_pos, u.legos[(int)(blockNumber)], u, loop_rate);
+    for (int i = 0; i < 11; i++)
+    {
+        Vector3f block_pos = block_position.block(i, 0, 1, 3);
+        Vector3f phiF;
+        phiF = block_angle.block(i, 0, 1, 3);
+        MatrixXf Th;
+        Vector3f vff;
+        vff << u.legoPos[(int)(blockNumber[i])][0], u.legoPos[(int)(blockNumber[i])][1], 0.15;
+        // cout<<block_position<<endl;
+        // cout<<u.legos[(int)(blockNumber)]<<endl;
+        take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, block_pos, vff, phiF, Th, initial_jnt_pos, u.legos[(int)(blockNumber)], u, loop_rate);
+    }
     return 0;
 }
