@@ -106,28 +106,26 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     int corners = 6;
     // RowVectorXf qEf = qEf_t.block(0, 0, 1, corners);
     RowVectorXf qEf(6);
+    qEf<<0,0,0,0,0,0;
     bool check = false;
     bool found = false;
     for (int i = 0; i < 8; i++)
     {
     // cout<<"Val: "<<i<<endl;
     // for(int j=0; j<7;j++) cout<<qEf_t(i,j)<<" ";
-
     // Ciclo sulle soluzioni per trovarne una senza valori nan con un wrist 1 abbstanza aperto
-    for (int k = 0; k < 7; k++)
-        if (isnan(qEf_t(i, k))) check = true;
+    // for (int k = 0; k < 7; k++) if ((qEf_t(i, k)-qEf_t(i, k)) == (qEf_t(i, k)-qEf_t(i, k))) check = true;
         if (!check && qEf_t(i, 4) > 0)
-        {
-            qEf = qEf_t.block(i, 0, 1, 6);
-            found = true;
+            {
+                qEf = qEf_t.block(i, 0, 1, 6);
+                found = true;
+            }
+            check = false;
         }
-        check = false;
-    }
-    // Se non ho trovato nessuna soluzione alternativa prendo la prima a prescindere
+        // Se non ho trovato nessuna soluzione alternativa prendo la prima a prescindere
     if (found == false){
         qEf = qEf_t.block(0, 0, 1, 6);
     }
-
     int minT = 0;
     int maxT = 1;
     // distance control

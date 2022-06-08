@@ -69,23 +69,23 @@ void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
 }
 
 // ### VISIONE ###
-MatrixXf block_position(11, 3);
+MatrixXf block_position(11,3);
 VectorXf blockNumber(11);
-MatrixXf block_angle(11, 3);
+MatrixXf block_angle(11,3);
 VectorXf gripperWidth(11);
 
 // Nome blocco rilevato
 void name_getter(const robot_movement::customMsg::ConstPtr &val)
 {
     for (int i = 0; i < 11; i++)
-        blockNumber(i) = -(val->content[i]);
+        blockNumber(i) = (val->content[i]);
     // blockNumber = val->data;
 }
 // X del blocco
 void x_getter(const robot_movement::customMsg::ConstPtr &val)
 {
     for (int i = 0; i < 11; i++)
-        block_position(i, 0) = -(val->content[i]);
+        block_position(i, 0) = (val->content[i]);
     // block_position[0] = -val->data;
     // cout<< "x:"<< block_position[0]<<std::endl;
 }
@@ -93,7 +93,7 @@ void x_getter(const robot_movement::customMsg::ConstPtr &val)
 void y_getter(const robot_movement::customMsg::ConstPtr &val)
 {
     for (int i = 0; i < 11; i++)
-        block_position(i, 1) = -(val->content[i]);
+        block_position(i, 1) = (val->content[i]);
     // block_position[1] = -val->data;
     // cout<< "y:"<< block_position[1]<<std::endl;
 }
@@ -101,7 +101,7 @@ void y_getter(const robot_movement::customMsg::ConstPtr &val)
 void z_getter(const robot_movement::customMsg::ConstPtr &val)
 {
     for (int i = 0; i < 11; i++)
-        block_position(i, 2) = (val->content[i]) - 0.77;
+        block_position(i, 2) = (val->content[i]);
     // block_position[2] = (val->data) - 0.77;
     // cout<< "z:"<< block_position[2]<<std::endl;
 }
@@ -132,7 +132,6 @@ void gripper_width(const robot_movement::customMsg::ConstPtr &val)
 
 int main(int argc, char **argv)
 {
-
     // Creo il nodo
     ros::init(argc, argv, "gatto_node");
     // Creo un nodo interno al nodo principale
@@ -187,20 +186,16 @@ int main(int argc, char **argv)
 
     for (int i = 0; i < 11; i++)
     {
-        cout<<"1"<<endl;
         Vector3f block_pos; //= block_position.block(i, 0, 1, 3);
         block_pos<<block_position(i,0),block_position(i,1),block_position(i,2);
-        cout<<"2"<<endl;
 
         Vector3f phiF;
         phiF<<block_angle(i,0),block_angle(i,1),block_angle(i,2);//= block_angle.block(i, 0, 1, 3);
         MatrixXf Th;
         Vector3f vff;
-        cout<<"3"<<endl;
 
         int n = blockNumber[i];
         vff << u.legoPos[n][0], u.legoPos[n][1], 0.15;
-        cout<<"4"<<endl;
 
         // cout<<block_position<<endl;
         // cout<<u.legos[(int)(blockNumber)]<<endl;

@@ -13,7 +13,9 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     STND_ANGLE << -0.4280, -0.0028, 3.0650;
     
     gazebo_ros_link_attacher::Attach srv;
+    cout<<"ciao 1"<<endl;
     movement(ur5_pub, vf, phiF, Th, initial_pos, u, loop_rate);
+    cout<<"ciao 2"<<endl;
 
     sleep(2);
     srv.request.model_name_1 = "ur5";
@@ -61,6 +63,7 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
     if(aspetta==1 ) return;
     int rows = Th.rows()-1;
     VectorXf v(6);
+    v<<0,0,0,0,0,0;
     for(int i=0; i<6; i++){
         v[i]=Th(rows,i+1);
     }
