@@ -99,11 +99,16 @@ Vector3f ur5::rotm2eul(Matrix3f &m)
 
 void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1)
 {
-
     // Version 2.0
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
-    int corners = 6;
-    RowVectorXf qEf = qEf_t.block(0, 0, 1, corners);
+    // int corners = 6;
+    // RowVectorXf qEf = qEf_t.block(0, 0, 1, corners);
+    RowVectorXf qEf(6);
+    for(int i=0;i<8;i++){
+        cout<<"Val: "<<i<<endl;
+        for(j=0; j<7;j++) cout<<qEf_t(i,j)<<" ";
+        // if(qEf_t(i,4))    
+    }
     int minT = 0;
     int maxT = 1;
     // distance control
