@@ -4,6 +4,7 @@
 #include <ros/package.h>
 #include "std_msgs/Float64.h"
 #include "std_msgs/String.h"
+#include "movement_include/customMsg.h"
 #include "control_msgs/JointControllerState.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>

@@ -11,9 +11,19 @@ catkin_package(
     CATKIN_DEPENDS urdf 
 )
 
+
 find_package(Eigen3 REQUIRED)
 find_package(gazebo_ros_link_attacher REQUIRED)
 
+add_message_files(
+    FILES
+    customMsg.msg
+  )
+
+generate_messages(
+ DEPENDENCIES
+   std_msgs
+)
 include_directories(
 ${catkin_INCLUDE_DIRS}
 ${Eigen_INCLUDE_DIRS}
