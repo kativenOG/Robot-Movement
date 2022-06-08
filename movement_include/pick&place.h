@@ -13,9 +13,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     STND_ANGLE << -0.4280, -0.0028, 3.0650;
     
     gazebo_ros_link_attacher::Attach srv;
-    cout<<"ciao 1"<<endl;
     movement(ur5_pub, vf, phiF, Th, initial_pos, u, loop_rate);
-    cout<<"ciao 2"<<endl;
 
     sleep(2);
     srv.request.model_name_1 = "ur5";

@@ -26,7 +26,7 @@ namespace robot
                  0.1333,
                  0.0997,
                 //  0.2996
-                0.1996
+                0.1796 //Era 0,1997
         };
 
         // Matrici per direct kinematics
@@ -50,15 +50,14 @@ namespace robot
 
     public:
 
-        // lego names 
-        float legoPos [11][2] = {{0.21,0.54},{0.08,0.54},{-0.37,0.54},{-0.08,0.54},{-0.22,0.54},{0.21,0.7},{-0.54,0.54},{0.08,0.7},{-0.08,0.7},{0.23,0.7},{-0.37,0.65}};        
+        // lego pos
+        float legoPos [11][2] = {{-0.07,-0.54},{0.24,-0.67},{-0.22,-0.68},{0.38,-0.54},{0.08,-0.54},{0.08,-0.7},{-0.22,-0.55},{0.23,-0.54},{0.54,-0.54},{-0.07,-0.7},{0.40,-0.65}}; 
+
+        //lego angles   
+        float legoAngle [11][3] = {{1,M_PI,0},{1,M_PI,0},{0,M_PI,0},{0,M_PI,0},{1,M_PI,0},{1,M_PI,0},{1,M_PI,0},{1,M_PI,0},{1,M_PI,0},{1,M_PI,0},{1,M_PI,0}};         
 
         // lego names 
-        // float legoAngle [11][3] = {{1,1,1},{2,2,2},{3,3,3},{4,4,4},{5,5,5},{6,6,6},{7,7,7},{8,8,8},{9,9,9},{10,10,10},{11,11,11}};         
-
-        // lego names 
-        char legos [11][30] = {"X1-Y2-Z1", "X2-Y2-Z2", "X1-Y3-Z2", "X1-Y2-Z2", "X1-Y2-Z2-CHAMFER", "X1-Y4-Z2", "X1-Y1-Z2", "X1-Y2-Z2-TWINFILLET", "X1-Y3-Z2-FILLET", "X1-Y4-Z1", "X2-Y2-Z2-FILLET"};
-        // char legos [11][30] = {"X1-Y1-Z2", "X1-Y2-Z1", "X1-Y2-Z2", "X1-Y2-Z2-CHAMFER", "X1-Y2-Z2-TWINFILLET", "X1-Y3-Z2", "X1-Y3-Z2-FILLET", "X1-Y4-Z1", "X1-Y4-Z2", "X2-Y2-Z2", "X2-Y2-Z2-FILLET"};
+        char legos [11][30]  = {"X1-Y2-Z1", "X2-Y2-Z2", "X1-Y3-Z2", "X1-Y2-Z2", "X1-Y2-Z2-CHAMFER", "X1-Y4-Z2", "X1-Y1-Z2", "X1-Y2-Z2-TWINFILLET", "X1-Y3-Z2-FILLET", "X1-Y4-Z1", "X2-Y2-Z2-FILLET"};
         
         // Direct kinematics function:
         void ur5direct(VectorXf &th, Vector3f &x, Matrix3f &r);

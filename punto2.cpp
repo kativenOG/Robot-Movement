@@ -85,7 +85,7 @@ void name_getter(const robot_movement::customMsg::ConstPtr &val)
 void x_getter(const robot_movement::customMsg::ConstPtr &val)
 {
     for (int i = 0; i < 11; i++)
-        block_position(i, 0) = (val->content[i]);
+        block_position(i, 0) = -(val->content[i]);
     // block_position[0] = -val->data;
     // cout<< "x:"<< block_position[0]<<std::endl;
 }
@@ -93,7 +93,7 @@ void x_getter(const robot_movement::customMsg::ConstPtr &val)
 void y_getter(const robot_movement::customMsg::ConstPtr &val)
 {
     for (int i = 0; i < 11; i++)
-        block_position(i, 1) = (val->content[i]);
+        block_position(i, 1) = -(val->content[i]);
     // block_position[1] = -val->data;
     // cout<< "y:"<< block_position[1]<<std::endl;
 }
@@ -184,8 +184,19 @@ int main(int argc, char **argv)
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
 
+    int x;
     for (int i = 0; i < 11; i++)
     {
+        cout<<"Prossimo blocco!";
+        cin>>x;
+
+        ros::spinOnce();
+        loop_rate.sleep();
+        ros::spinOnce();
+        loop_rate.sleep();    
+        ros::spinOnce();
+        loop_rate.sleep();
+        
         Vector3f block_pos; //= block_position.block(i, 0, 1, 3);
         block_pos<<block_position(i,0),block_position(i,1),block_position(i,2);
 
@@ -197,7 +208,7 @@ int main(int argc, char **argv)
         int n = blockNumber[i];
         vff << u.legoPos[n][0], u.legoPos[n][1], 0.15;
 
-        // cout<<block_position<<endl;
+        //cout<<block_position(i,0)<<"  "<<block_position(i,1)<<" "<<block_position(i,2)<<endl;
         // cout<<u.legos[(int)(blockNumber)]<<endl;
         take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, block_pos, vff, phiF, Th, initial_jnt_pos, u.legos[n], u, loop_rate);
     }
