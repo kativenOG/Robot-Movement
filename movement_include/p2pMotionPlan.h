@@ -103,7 +103,7 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
 {
     // Version 2.0
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
-    // int corners = 6;
+    int corners = 6;
     // RowVectorXf qEf = qEf_t.block(0, 0, 1, corners);
     RowVectorXf qEf(6);
     bool check = false;
@@ -114,7 +114,7 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     // for(int j=0; j<7;j++) cout<<qEf_t(i,j)<<" ";
 
     // Ciclo sulle soluzioni per trovarne una senza valori nan con un wrist 1 abbstanza aperto
-    for (int k = 0; k < 7; j++)
+    for (int k = 0; k < 7; k++)
         if (isnan(qEf_t(i, k))) check = true;
         if (!check && qEf_t(i, 4) > 0)
         {
