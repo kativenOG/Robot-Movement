@@ -18,7 +18,6 @@ int main(int argc, char **argv)
     int count = 0,x;
     while (count<6)
     {
-<<<<<<< HEAD
 	    std::cout<<"count= "<<count<< std::endl;
 	    if(count%10==0) std::cin>>x; 
         robot_movement::customMsg msg;
@@ -30,19 +29,6 @@ int main(int argc, char **argv)
         msg.rpy[2]= 0;
         msg.gWidth = 0.3;
         msg.type =count;
-=======
-        std::cout<<"inserisci 0:  "
-        std::cin>>x; 
-        robot_movement::customMsg msg;
-        msg->position[0]= 1 ;
-        msg->position[1]= 2 ;
-        msg->position[2]= 3 ;
-        msg->rpy[0]= 1 ;
-        msg->rpy[1]= 3 ;
-        msg->rpy[2]= 3 ;
-        msg->gWidth = 0.3;
-        msg->type = 5;
->>>>>>> a88acda2b9080fc72c3d096cb0bb50e540e889e6
         pub.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();
