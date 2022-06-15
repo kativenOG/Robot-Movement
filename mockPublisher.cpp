@@ -18,17 +18,17 @@ int main(int argc, char **argv)
     int count = 0,x;
     while (ros::ok())
     {
-        cout<<"inserisci 0"
-        cin>>x; 
+        std::cout<<"inserisci 0:  "
+        std::cin>>x; 
         robot_movement::customMsg msg;
-        msg.position[0]= 1 ;
-        msg.position[1]= 2 ;
-        msg.position[0]= 1 ;
-        msg.rpy[1]= 2 ;
-        msg.rpy[2]= 3 ;
-        msg.rpy[2]= 3 ;
-        msg.gWidth = 0.3;
-        msg.type = 5
+        msg->position[0]= 1 ;
+        msg->position[1]= 2 ;
+        msg->position[2]= 3 ;
+        msg->rpy[0]= 1 ;
+        msg->rpy[1]= 3 ;
+        msg->rpy[2]= 3 ;
+        msg->gWidth = 0.3;
+        msg->type = 5;
         pub.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();
