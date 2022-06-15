@@ -10,10 +10,6 @@ std_msgs
 
 add_message_files(
    FILES
-   customMsg.msg  
-)
-add_message_files(
-   FILES
 #   Message1.msg
 #   Message2.msg
    customMsg.msg
