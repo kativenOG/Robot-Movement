@@ -1,7 +1,7 @@
 #include "ros/ros.h"
-// #include "std_msgs/String.h"
+//#include "std_msgs/String.h"
 #include "robot_movement/customMsg.h"
-#include <sstream>
+#include <iostream>
 
 int main(int argc, char **argv)
 {
@@ -16,24 +16,25 @@ int main(int argc, char **argv)
     ros::Publisher pub = n.advertise<robot_movement::customMsg>("brick", 10);
     ros::Rate loop_rate(10);
     int count = 0,x;
-    while (ros::ok())
+    while (count<6)
     {
-        std::cout<<"inserisci 0:"; 
-        std::cin>>x; 
+	    std::cout<<"count= "<<count<< std::endl;
+	    if(count%10==0) std::cin>>x; 
         robot_movement::customMsg msg;
-        msg->position[0]= 1 ;
-        msg->position[1]= 2 ;
-        msg->position[2]= 3 ;
-        msg->rpy[0]= 1 ;
-        msg->rpy[1]= 3 ;
-        msg->rpy[2]= 3 ;
-        msg->gWidth = 0.3;
-        msg->type = 5;
+        msg.position[0]= count%2 ;
+        msg.position[1]= count%2 ;
+        msg.position[2]= count&2 ;
+        msg.rpy[0]= 0;
+        msg.rpy[1]= 3.14 ;
+        msg.rpy[2]= 0;
+        msg.gWidth = 0.3;
+        msg.type =count;
         pub.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();
-        ++count;
+        count++;
     }
+    while (ros::ok())
     return 0;
 }
 // %EndTag(FULLTEXT)%

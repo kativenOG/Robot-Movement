@@ -69,66 +69,25 @@ void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
 }
 
 // ### VISIONE ###
-MatrixXf block_position(11,3);
-VectorXf blockNumber(11);
-MatrixXf block_angle(11,3);
-VectorXf gripperWidth(11);
+VectorXf block_position(3);
+float blockNumber;
+VectorXf block_angle(3);
+float gripperWidth;
 
-// Nome blocco rilevato
-void name_getter(const robot_movement::customMsg::ConstPtr &val)
+void brick_getter(const robot_movement::customMsg::ConstPtr &val)
 {
-    for (int i = 0; i < 11; i++)
-        blockNumber(i) = (val->content[i]);
-    // blockNumber = val->data;
+    blockNumber = (val->type);
+    gripperWidth = (val->gWidth);
+    
+    block_position[0] = (val->position[0]);
+    block_position[1] = (val->position[1]);
+    block_position[2] = (val->position[2]);
+
+    block_angle[0] = (val->rpy[0]);
+    block_angle[1] = (val->rpy[1]);
+    block_angle[2] = (val->rpy[2]);
 }
-// X del blocco
-void x_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_position(i, 0) = -(val->content[i]);
-    // block_position[0] = -val->data;
-    // cout<< "x:"<< block_position[0]<<std::endl;
-}
-// Y del blocco vf1
-void y_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_position(i, 1) = -(val->content[i]);
-    // block_position[1] = -val->data;
-    // cout<< "y:"<< block_position[1]<<std::endl;
-}
-// Z del blocco
-void z_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_position(i, 2) = (val->content[i]);
-    // block_position[2] = (val->data) - 0.77;
-    // cout<< "z:"<< block_position[2]<<std::endl;
-}
-// Alpha
-void alpha_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_angle(i, 0) = (val->content[i]);
-}
-// Theta
-void theta_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_angle(i, 1) = (val->content[i]);
-}
-// Phi
-void phi_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_angle(i, 2) = (val->content[i]);
-}
-// Gripper width
-void gripper_width(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        gripperWidth(i) = (val->content[i]);
-}
+
 
 int main(int argc, char **argv)
 {
@@ -162,22 +121,12 @@ int main(int argc, char **argv)
     ros::Subscriber wrist_2_joint_sub = n.subscribe("/wrist_2_joint_position_controller/state", RATE, wrist_2_getter);
     ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state", RATE, wrist_3_getter);
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", RATE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
-    ros::Subscriber kinect_name = n.subscribe("/kinects/name", RATE, name_getter);
-    ros::Subscriber kinect_coordinatex = n.subscribe("/kinects/coordinateX", RATE, x_getter);
-    ros::Subscriber kinect_coordinatey = n.subscribe("/kinects/coordinateY", RATE, y_getter);
-    ros::Subscriber kinect_coordinatez = n.subscribe("/kinects/coordinateZ", RATE, z_getter);
-    ros::Subscriber kinect_angle3 = n.subscribe("/kinects/coordinateAplpha", RATE, alpha_getter);
-    ros::Subscriber kinect_angle1 = n.subscribe("/kinects/coordinateTheta", RATE, theta_getter);
-    ros::Subscriber kinect_angle2 = n.subscribe("/kinects/coordinatePhi", RATE, phi_getter);
-    ros::Subscriber gripper_w = n.subscribe("/kinects/gripper", RATE, gripper_width);
+    ros::Subscriber kinect_name = n.subscribe("/brick", RATE, brick_getter);
+    
 
     sleep(2);
 
     // Indispensabili
-    ros::spinOnce();
-    loop_rate.sleep();
-    ros::spinOnce();
-    loop_rate.sleep();
     ros::spinOnce();
     loop_rate.sleep();
 
@@ -190,27 +139,25 @@ int main(int argc, char **argv)
         cout<<"Prossimo blocco!";
         cin>>x;
 
-        ros::spinOnce();
-        loop_rate.sleep();
-        ros::spinOnce();
-        loop_rate.sleep();    
-        ros::spinOnce();
-        loop_rate.sleep();
-        
         Vector3f block_pos; //= block_position.block(i, 0, 1, 3);
-        block_pos<<block_position(i,0),block_position(i,1),block_position(i,2);
+        //block_pos<<block_position(i,0),block_position(i,1),block_position(i,2);
+        block_pos << n.position[0],n.position[1],n.position[2];
 
         Vector3f phiF;
-        phiF<<block_angle(i,0),block_angle(i,1),block_angle(i,2);//= block_angle.block(i, 0, 1, 3);
+        //phiF<<block_angle(i,0),block_angle(i,1),block_angle(i,2);//= block_angle.block(i, 0, 1, 3);
+        phiF << n.rpy[0],n.rpy[1],n.rpy[2];
         MatrixXf Th;
         Vector3f vff;
 
-        int n = blockNumber[i];
+        int n = n.type;
         vff << u.legoPos[n][0], u.legoPos[n][1], 0.15;
 
         //cout<<block_position(i,0)<<"  "<<block_position(i,1)<<" "<<block_position(i,2)<<endl;
         // cout<<u.legos[(int)(blockNumber)]<<endl;
         take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, block_pos, vff, phiF, Th, initial_jnt_pos, u.legos[n], u, loop_rate);
+        sleep(0.5);
+        ros::spinOnce();
+        loop_rate.sleep();
     }
     return 0;
 }
