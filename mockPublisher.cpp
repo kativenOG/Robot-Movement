@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     int count = 0,x;
     while (ros::ok())
     {
-        std::cout<<"inserisci 0:  "
+        std::cout<<"inserisci 0:"; 
         std::cin>>x; 
         robot_movement::customMsg msg;
         msg->position[0]= 1 ;
