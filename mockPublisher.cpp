@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "mockVision");
     ros::NodeHandle n;
-    /** 
+    /**
      * The second parameter to advertise() is the size of the message queue
      * used for publishing messages.  If messages are published more quickly
      * than we can send them, the number here specifies how many messages to
@@ -15,26 +15,32 @@ int main(int argc, char **argv)
      */
     ros::Publisher pub = n.advertise<robot_movement::customMsg>("brick", 10);
     ros::Rate loop_rate(10);
-    int count = 0,x;
-    while (count<6)
+    int count = 0;
+    float x, y, z;
+    while (count < 5)
     {
-	    std::cout<<"count= "<<count<< std::endl;
-	    if(count%10==0) std::cin>>x; 
+        std::cout << "count= " << count << std::endl;
+        std::cout << "insert x: ";
+        std::cin >> x;
+        std::cout << "insert y: ";
+        std::cin >> y;
+        std::cout << "insert z: ";
+        std::cin >> z;
         robot_movement::customMsg msg;
-        msg.position[0]= count%2 ;
-        msg.position[1]= count%2 ;
-        msg.position[2]= count&2 ;
-        msg.rpy[0]= 0;
-        msg.rpy[1]= 3.14 ;
-        msg.rpy[2]= 0;
-        msg.gWidth = 0.3;
-        msg.type =count;
+        msg.x = x;
+        msg.y = y;
+        msg.z = z;
+        msg.r = 0;
+        msg.p = 3.14;
+        msg.y = 0;
+        msg.gWidth = 0.5;
+        msg.type = count;
         pub.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();
         count++;
     }
     while (ros::ok())
-    return 0;
+        return 0;
 }
 // %EndTag(FULLTEXT)%
