@@ -21,7 +21,7 @@
 #include "pick&place.h"
 
 #define RATE 10       // 10Hz
-#define QUEUE_SIZE 100 // salvo 100 blocchi in Buffer
+#define QUEUE_SIZE 11 // salvo 100 blocchi in Buffer
 using namespace Eigen;
 using namespace std;
 using namespace robot;
@@ -68,8 +68,8 @@ void brick_getter(const robot_movement::customMsg::ConstPtr &val)
 {
 
     // Position
-    block_position[0] = (val->x);
-    block_position[1] = (val->y);
+    block_position[0] = -(val->x);
+    block_position[1] = -(val->y);
     block_position[2] = (val->z);
 
     // Orientation
@@ -137,6 +137,7 @@ int main(int argc, char **argv)
         ros::spinOnce();
         loop_rate.sleep();
 
+        cout<<"Posizione Ricevuta:  x=>"<<block_position(0)<<"  y="<<block_position(1)<<"  z=>"<<block_position(2)<<endl;
         // Cerco il tipo di blocco per capire la posizione finale !!!
         Vector3f vff;
         vff << u.legoPos[blockNumber][0], u.legoPos[blockNumber][1], 0.15;
@@ -145,8 +146,6 @@ int main(int argc, char **argv)
         take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, block_position, vff, block_angle, Th, initial_jnt_pos, u.legos[blockNumber], u, loop_rate);
 
         //                                  *.CONTROLLI.*
-        // cout<<block_position(i,0)<<"  "<<block_position(i,1)<<" "<<block_position(i,2)<<endl;
-        // cout<<u.legos[(int)(blockNumber)]<<endl;
     }
     return 0;
 }

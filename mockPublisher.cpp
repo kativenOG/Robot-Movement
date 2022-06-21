@@ -33,13 +33,13 @@ int main(int argc, char **argv)
         msg.z = z;
         msg.r = 0;
         msg.p = 3.14;
-        msg.y = 0;
+        msg.y_1 = 0;
         msg.gWidth = 0.5;
         msg.type = count;
         pub.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();
-        count++;
+        count++_1;
 
         // std::cout<<"End?"<<std::endl;
         // std::cin>>exit;
