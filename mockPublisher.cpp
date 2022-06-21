@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "mockVision");
+    ros::init(argc, argv, "mock_node");
     ros::NodeHandle n;
     /**
      * The second parameter to advertise() is the size of the message queue
@@ -17,7 +17,8 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(10);
     int count = 0;
     float x, y, z;
-    while (count < 5)
+    bool exit;
+    while (count < 100)
     {
         std::cout << "count= " << count << std::endl;
         std::cout << "insert x: ";
@@ -39,6 +40,10 @@ int main(int argc, char **argv)
         ros::spinOnce();
         loop_rate.sleep();
         count++;
+
+        // std::cout<<"End?"<<std::endl;
+        // std::cin>>exit;
+        // if(exit) break;
     }
     while (ros::ok())
         return 0;

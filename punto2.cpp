@@ -21,7 +21,7 @@
 #include "pick&place.h"
 
 #define RATE 10       // 10Hz
-#define QUEUE_SIZE 12 // salvo 12 blocchi in buffer
+#define QUEUE_SIZE 100 // salvo 100 blocchi in Buffer
 using namespace Eigen;
 using namespace std;
 using namespace robot;
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", QUEUE_SIZE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
 
     // Vision topic with brick Data
-    ros::Subscriber kinect_name = n.subscribe("/brick", QUEUE_SIZE, brick_getter);
+    ros::Subscriber kinect_name = n.subscribe("brick", QUEUE_SIZE, brick_getter);
     int x;
 
     // METTI SEMPRE COUT PER SINCRONIZZARE COSÌ NON SI PERDONO MESSAGGI
