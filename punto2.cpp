@@ -75,7 +75,7 @@ void brick_getter(const robot_movement::customMsg::ConstPtr &val)
     // Orientation
     block_angle[0] = (val->r);
     block_angle[1] = (val->p);
-    block_angle[2] = (val->y);
+    block_angle[2] = (val->y_1);
 
     // Block Type and Gripper Width
     blockNumber = (val->type);
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     ros::Subscriber wrist_2_joint_sub = n.subscribe("/wrist_2_joint_position_controller/state", QUEUE_SIZE, wrist_2_getter);
     ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state", QUEUE_SIZE, wrist_3_getter);
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", QUEUE_SIZE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
-    // in teoria RATE è la queue size, controlla meglio
+
     // Vision topic with brick Data
     ros::Subscriber kinect_name = n.subscribe("/brick", QUEUE_SIZE, brick_getter);
     int x;
@@ -122,8 +122,8 @@ int main(int argc, char **argv)
     // METTI SEMPRE COUT PER SINCRONIZZARE COSÌ NON SI PERDONO MESSAGGI
     cout << "Inizio Programma !";
     cin >> x;
+    // sleep(1); 
 
-    sleep(1); // Startup Perdo informazioni dai topic? Non lo so fratm :(
     // Nodi per il dynamic linker
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
@@ -143,6 +143,7 @@ int main(int argc, char **argv)
 
         MatrixXf Th;
         take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, block_position, vff, block_angle, Th, initial_jnt_pos, u.legos[blockNumber], u, loop_rate);
+
         //                                  *.CONTROLLI.*
         // cout<<block_position(i,0)<<"  "<<block_position(i,1)<<" "<<block_position(i,2)<<endl;
         // cout<<u.legos[(int)(blockNumber)]<<endl;
