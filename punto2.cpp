@@ -8,6 +8,7 @@
 #include "control_msgs/JointControllerState.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
+#include <thread>
 
 // Movement Kinematics
 #include "p2pMotionPlan.h"
@@ -20,13 +21,19 @@
 #include "move.h"
 #include "pick&place.h"
 
-#define RATE 10       // 10Hz
+#define RATE 10  // 10Hz
 #define QUEUE_SIZE 11 // salvo 100 blocchi in Buffer
 using namespace Eigen;
 using namespace std;
 using namespace robot;
 
 ur5 u;
+
+// spin 
+// void thread_callback(){
+//   ros::spin();
+// }
+
 
 //                  ### Ros Control ###
 VectorXf initial_jnt_pos(7);
@@ -60,26 +67,28 @@ void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
 }
 
 //                  ### VISIONE ###
-VectorXf block_position(3);
-int blockNumber;
-VectorXf block_angle(3);
-float gripperWidth;
+int cnt=0;
+MatrixXf block_position(100,3);
+VectorXd blockNumber(100);
+MatrixXf block_angle(100,3);
+VectorXf gripperWidth(100);
 void brick_getter(const robot_movement::customMsg::ConstPtr &val)
 {
 
     // Position
-    block_position[0] = -(val->x);
-    block_position[1] = -(val->y);
-    block_position[2] = (val->z);
+    block_position(cnt,0) = (val->x);
+    block_position(cnt,1) = (val->y);
+    block_position(cnt,2) = (val->z);
 
     // Orientation
-    block_angle[0] = (val->r);
-    block_angle[1] = (val->p);
-    block_angle[2] = (val->y_1);
+    block_angle(cnt,0) = (val->r);
+    block_angle(cnt,1) = (val->p);
+    block_angle(cnt,2) = (val->y_1);
 
     // Block Type and Gripper Width
-    blockNumber = (val->type);
-    gripperWidth = (val->gWidth);
+    blockNumber[cnt] = (val->type);
+    gripperWidth[cnt] = (val->gWidth);
+    cnt++;
 }
 
 int main(int argc, char **argv)
@@ -116,13 +125,19 @@ int main(int argc, char **argv)
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", QUEUE_SIZE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
 
     // Vision topic with brick Data
-    ros::Subscriber kinect_name = n.subscribe("brick", QUEUE_SIZE, brick_getter);
-    int x;
+    ros::Subscriber kinect_name = n.subscribe("brick", 11, brick_getter);
+
+    // ASYNC SPINNING 
+    ros::AsyncSpinner spinner(4);
+    spinner.start();
 
     // METTI SEMPRE COUT PER SINCRONIZZARE COSÌ NON SI PERDONO MESSAGGI
+    int x;
     cout << "Inizio Programma !";
     cin >> x;
-    // sleep(1); 
+    
+    // thread per lo spinning 
+    // std::thread spinner( thread_callback);
 
     // Nodi per il dynamic linker
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
@@ -130,22 +145,27 @@ int main(int argc, char **argv)
 
     for (int i = 0; i < 11; i++)
     {
-        cout << "Prossimo blocco!";
+        cout << "Prossimo blocco! (if 1 exit)";
         cin >> x;
+        if(x==1) return 0;
 
-        // Indispensabili per prendere il blocco successivo
-        ros::spinOnce();
-        loop_rate.sleep();
-
-        cout<<"Posizione Ricevuta:  x=>"<<block_position(0)<<"  y="<<block_position(1)<<"  z=>"<<block_position(2)<<endl;
+        // cout<<"Posizione Ricevuta:  x=>"<<block_position(i,0)<<"  y="<<block_position(i,1)<<"  z=>"<<block_position(i,2)<<endl;
         // Cerco il tipo di blocco per capire la posizione finale !!!
+        int blockk = blockNumber[i];
         Vector3f vff;
-        vff << u.legoPos[blockNumber][0], u.legoPos[blockNumber][1], 0.15;
+        vff << u.legoPos[blockk][0], u.legoPos[blockk][1], 0.15;
+
+        // Carico i valori della iesima riga dentro un appoggio da caricare nella funzione pick&place
+        Vector3f ee_pos;
+        ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
+        cout<<"Position: "<<endl<<ee_pos<<endl;
+        Vector3f ee_angle;
+        ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2);
+        cout<<"Angle: "<<endl<<ee_angle<<endl;
 
         MatrixXf Th;
-        take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, block_position, vff, block_angle, Th, initial_jnt_pos, u.legos[blockNumber], u, loop_rate);
-
-        //                                  *.CONTROLLI.*
+        take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk], u, loop_rate);
+        // cout<<"Matrice posizioni: "<<block_position;
     }
     return 0;
 }

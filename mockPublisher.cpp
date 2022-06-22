@@ -39,7 +39,7 @@ int main(int argc, char **argv)
         pub.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();
-        count++_1;
+        count++;
 
         // std::cout<<"End?"<<std::endl;
         // std::cin>>exit;
