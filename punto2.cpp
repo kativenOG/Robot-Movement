@@ -8,132 +8,93 @@
 #include "control_msgs/JointControllerState.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
+#include <thread>
 
 // Movement Kinematics
 #include "p2pMotionPlan.h"
 #include "ur5.h"
 #include "direct.h"
 #include "inverse.h"
-#include "pick&place.h"
 
 // Link attacher and movement
 #include "gazebo_ros_link_attacher/Attach.h"
 #include "move.h"
+#include "pick&place.h"
 
-//#include "pick&place.h"
-
-#define RATE 10
-
+#define RATE 10  // 10Hz
+#define QUEUE_SIZE 11 // salvo 100 blocchi in Buffer
 using namespace Eigen;
 using namespace std;
 using namespace robot;
 
 ur5 u;
 
-// ### Ros Control ###
+// spin 
+// void thread_callback(){
+//   ros::spin();
+// }
+
+
+//                  ### Ros Control ###
 VectorXf initial_jnt_pos(7);
 void shoulder_pan_getter(const control_msgs::JointControllerState::ConstPtr &val)
 {
     initial_jnt_pos[0] = val->set_point;
-    // initial_jnt_pos[0]=val->process_value;
 }
 void shoulder_lift_getter(const control_msgs::JointControllerState::ConstPtr &val)
 {
     initial_jnt_pos[1] = val->set_point;
-    // initial_jnt_pos[1]=val->process_value;
 }
 void elbow_getter(const control_msgs::JointControllerState::ConstPtr &val)
 {
     initial_jnt_pos[2] = val->set_point;
-    // initial_jnt_pos[2]=val->process_value;
 }
 void wrist_1_getter(const control_msgs::JointControllerState::ConstPtr &val)
 {
     initial_jnt_pos[3] = val->set_point;
-    // initial_jnt_pos[3]=val->process_value;
 }
 void wrist_2_getter(const control_msgs::JointControllerState::ConstPtr &val)
 {
     initial_jnt_pos[4] = val->set_point;
-    // initial_jnt_pos[4]=val->process_value;
 }
 void wrist_3_getter(const control_msgs::JointControllerState::ConstPtr &val)
 {
     initial_jnt_pos[5] = val->set_point;
-    // initial_jnt_pos[5]=val->process_value;
 }
 void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
 {
     initial_jnt_pos[6] = val->set_point;
-    // initial_jnt_pos[6]=val->process_value;
 }
 
-// ### VISIONE ###
-MatrixXf block_position(11,3);
-VectorXf blockNumber(11);
-MatrixXf block_angle(11,3);
-VectorXf gripperWidth(11);
+//                  ### VISIONE ###
+int cnt=0;
+MatrixXf block_position(100,3);
+VectorXd blockNumber(100);
+MatrixXf block_angle(100,3);
+VectorXf gripperWidth(100);
+void brick_getter(const robot_movement::customMsg::ConstPtr &val)
+{
 
-// Nome blocco rilevato
-void name_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        blockNumber(i) = (val->content[i]);
-    // blockNumber = val->data;
-}
-// X del blocco
-void x_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_position(i, 0) = -(val->content[i]);
-    // block_position[0] = -val->data;
-    // cout<< "x:"<< block_position[0]<<std::endl;
-}
-// Y del blocco vf1
-void y_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_position(i, 1) = -(val->content[i]);
-    // block_position[1] = -val->data;
-    // cout<< "y:"<< block_position[1]<<std::endl;
-}
-// Z del blocco
-void z_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_position(i, 2) = (val->content[i]);
-    // block_position[2] = (val->data) - 0.77;
-    // cout<< "z:"<< block_position[2]<<std::endl;
-}
-// Alpha
-void alpha_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_angle(i, 0) = (val->content[i]);
-}
-// Theta
-void theta_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_angle(i, 1) = (val->content[i]);
-}
-// Phi
-void phi_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        block_angle(i, 2) = (val->content[i]);
-}
-// Gripper width
-void gripper_width(const robot_movement::customMsg::ConstPtr &val)
-{
-    for (int i = 0; i < 11; i++)
-        gripperWidth(i) = (val->content[i]);
+    // Position
+    block_position(cnt,0) = (val->x);
+    block_position(cnt,1) = (val->y);
+    block_position(cnt,2) = (val->z);
+
+    // Orientation
+    block_angle(cnt,0) = (val->r);
+    block_angle(cnt,1) = (val->p);
+    block_angle(cnt,2) = (val->y_1);
+
+    // Block Type and Gripper Width
+    blockNumber[cnt] = (val->type);
+    gripperWidth[cnt] = (val->gWidth);
+    cnt++;
 }
 
 int main(int argc, char **argv)
 {
     // Creo il nodo
-    ros::init(argc, argv, "gatto_node");
+    ros::init(argc, argv, "point_2_node");
     // Creo un nodo interno al nodo principale
     ros::NodeHandle n;
 
@@ -144,73 +105,67 @@ int main(int argc, char **argv)
 
     ros::Publisher ur5_gripper_pub;
     // lego l'array ai vari topic, in cui pubblicheranno i valori di posizione
-    ur5_joint_array_pub[0] = n.advertise<std_msgs::Float64>("/shoulder_pan_joint_position_controller/command", RATE);
-    ur5_joint_array_pub[1] = n.advertise<std_msgs::Float64>("/shoulder_lift_joint_position_controller/command", RATE);
-    ur5_joint_array_pub[2] = n.advertise<std_msgs::Float64>("/elbow_joint_position_controller/command", RATE);
-    ur5_joint_array_pub[3] = n.advertise<std_msgs::Float64>("/wrist_1_joint_position_controller/command", RATE);
-    ur5_joint_array_pub[4] = n.advertise<std_msgs::Float64>("/wrist_2_joint_position_controller/command", RATE);
-    ur5_joint_array_pub[5] = n.advertise<std_msgs::Float64>("/wrist_3_joint_position_controller/command", RATE);
+    ur5_joint_array_pub[0] = n.advertise<std_msgs::Float64>("/shoulder_pan_joint_position_controller/command", QUEUE_SIZE);
+    ur5_joint_array_pub[1] = n.advertise<std_msgs::Float64>("/shoulder_lift_joint_position_controller/command", QUEUE_SIZE);
+    ur5_joint_array_pub[2] = n.advertise<std_msgs::Float64>("/elbow_joint_position_controller/command", QUEUE_SIZE);
+    ur5_joint_array_pub[3] = n.advertise<std_msgs::Float64>("/wrist_1_joint_position_controller/command", QUEUE_SIZE);
+    ur5_joint_array_pub[4] = n.advertise<std_msgs::Float64>("/wrist_2_joint_position_controller/command", QUEUE_SIZE);
+    ur5_joint_array_pub[5] = n.advertise<std_msgs::Float64>("/wrist_3_joint_position_controller/command", QUEUE_SIZE);
 
     // Publihser per il gripper, range -0.5 - +0.5
-    ur5_gripper_pub = n.advertise<std_msgs::Float64>("/gripper_controller/command", RATE);
+    ur5_gripper_pub = n.advertise<std_msgs::Float64>("/gripper_controller/command", QUEUE_SIZE);
 
     // creo subscriber che ascoltano nei topic di poszione dei joint, e si salvano la loro poszione nello spazio tramite dei wrapper :)
-    ros::Subscriber shoulder_pan_joint_sub = n.subscribe("/shoulder_pan_joint_position_controller/state", RATE, shoulder_pan_getter);
-    ros::Subscriber shoulder_lift_joint_sub = n.subscribe("/shoulder_lift_joint_position_controller/state", RATE, shoulder_lift_getter);
-    ros::Subscriber elbow_joint_sub = n.subscribe("/elbow_joint_position_controller/state", RATE, elbow_getter);
-    ros::Subscriber wrist_1_joint_sub = n.subscribe("/wrist_1_joint_position_controller/state", RATE, wrist_1_getter);
-    ros::Subscriber wrist_2_joint_sub = n.subscribe("/wrist_2_joint_position_controller/state", RATE, wrist_2_getter);
-    ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state", RATE, wrist_3_getter);
-    ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", RATE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
-    ros::Subscriber kinect_name = n.subscribe("/kinects/name", RATE, name_getter);
-    ros::Subscriber kinect_coordinatex = n.subscribe("/kinects/coordinateX", RATE, x_getter);
-    ros::Subscriber kinect_coordinatey = n.subscribe("/kinects/coordinateY", RATE, y_getter);
-    ros::Subscriber kinect_coordinatez = n.subscribe("/kinects/coordinateZ", RATE, z_getter);
-    ros::Subscriber kinect_angle3 = n.subscribe("/kinects/coordinateAplpha", RATE, alpha_getter);
-    ros::Subscriber kinect_angle1 = n.subscribe("/kinects/coordinateTheta", RATE, theta_getter);
-    ros::Subscriber kinect_angle2 = n.subscribe("/kinects/coordinatePhi", RATE, phi_getter);
-    ros::Subscriber gripper_w = n.subscribe("/kinects/gripper", RATE, gripper_width);
+    ros::Subscriber shoulder_pan_joint_sub = n.subscribe("/shoulder_pan_joint_position_controller/state", QUEUE_SIZE, shoulder_pan_getter);
+    ros::Subscriber shoulder_lift_joint_sub = n.subscribe("/shoulder_lift_joint_position_controller/state", QUEUE_SIZE, shoulder_lift_getter);
+    ros::Subscriber elbow_joint_sub = n.subscribe("/elbow_joint_position_controller/state", QUEUE_SIZE, elbow_getter);
+    ros::Subscriber wrist_1_joint_sub = n.subscribe("/wrist_1_joint_position_controller/state", QUEUE_SIZE, wrist_1_getter);
+    ros::Subscriber wrist_2_joint_sub = n.subscribe("/wrist_2_joint_position_controller/state", QUEUE_SIZE, wrist_2_getter);
+    ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state", QUEUE_SIZE, wrist_3_getter);
+    ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", QUEUE_SIZE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
 
-    sleep(2);
+    // Vision topic with brick Data
+    ros::Subscriber kinect_name = n.subscribe("brick", 11, brick_getter);
 
-    // Indispensabili
-    ros::spinOnce();
-    loop_rate.sleep();
-    ros::spinOnce();
-    loop_rate.sleep();
-    ros::spinOnce();
-    loop_rate.sleep();
+    // ASYNC SPINNING 
+    ros::AsyncSpinner spinner(4);
+    spinner.start();
 
+    // METTI SEMPRE COUT PER SINCRONIZZARE COSÌ NON SI PERDONO MESSAGGI
+    int x;
+    cout << "Inizio Programma !";
+    cin >> x;
+    
+    // thread per lo spinning 
+    // std::thread spinner( thread_callback);
+
+    // Nodi per il dynamic linker
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
 
-    int x;
     for (int i = 0; i < 11; i++)
     {
-        cout<<"Prossimo blocco!";
-        cin>>x;
+        cout << "Prossimo blocco! (if 1 exit)";
+        cin >> x;
+        if(x==1) return 0;
 
-        ros::spinOnce();
-        loop_rate.sleep();
-        ros::spinOnce();
-        loop_rate.sleep();    
-        ros::spinOnce();
-        loop_rate.sleep();
-        
-        Vector3f block_pos; //= block_position.block(i, 0, 1, 3);
-        block_pos<<block_position(i,0),block_position(i,1),block_position(i,2);
-
-        Vector3f phiF;
-        phiF<<block_angle(i,0),block_angle(i,1),block_angle(i,2);//= block_angle.block(i, 0, 1, 3);
-        MatrixXf Th;
+        // cout<<"Posizione Ricevuta:  x=>"<<block_position(i,0)<<"  y="<<block_position(i,1)<<"  z=>"<<block_position(i,2)<<endl;
+        // Cerco il tipo di blocco per capire la posizione finale !!!
+        int blockk = blockNumber[i];
         Vector3f vff;
+        vff << u.legoPos[blockk][0], u.legoPos[blockk][1], 0.15;
 
-        int n = blockNumber[i];
-        vff << u.legoPos[n][0], u.legoPos[n][1], 0.15;
+        // Carico i valori della iesima riga dentro un appoggio da caricare nella funzione pick&place
+        Vector3f ee_pos;
+        ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
+        cout<<"Position: "<<endl<<ee_pos<<endl;
+        Vector3f ee_angle;
+        ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2);
+        cout<<"Angle: "<<endl<<ee_angle<<endl;
 
-        //cout<<block_position(i,0)<<"  "<<block_position(i,1)<<" "<<block_position(i,2)<<endl;
-        // cout<<u.legos[(int)(blockNumber)]<<endl;
-        take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, block_pos, vff, phiF, Th, initial_jnt_pos, u.legos[n], u, loop_rate);
+        MatrixXf Th;
+        take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk], u, loop_rate);
+        // cout<<"Matrice posizioni: "<<block_position;
     }
     return 0;
 }
