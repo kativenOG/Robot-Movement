@@ -16,6 +16,7 @@
 #include "direct.h"
 #include "inverse.h"
 #include "pick&place.h"
+#include "handlers.h"
 
 // Link attacher and movement
 #include "gazebo_ros_link_attacher/Attach.h"
@@ -23,72 +24,11 @@
 
 //#include "pick&place.h"
 
-#define RATE 10 // Fa anche da queque size
-
 using namespace Eigen;
 using namespace std;
 using namespace robot;
 
 ur5 u;
-
-// ### Ros Control ###
-VectorXf initial_jnt_pos(7);
-void shoulder_pan_getter(const control_msgs::JointControllerState::ConstPtr &val)
-{
-    initial_jnt_pos[0] = val->set_point;
-    // initial_jnt_pos[0]=val->process_value;
-}
-void shoulder_lift_getter(const control_msgs::JointControllerState::ConstPtr &val)
-{
-    initial_jnt_pos[1] = val->set_point;
-    // initial_jnt_pos[1]=val->process_value;
-}
-void elbow_getter(const control_msgs::JointControllerState::ConstPtr &val)
-{
-    initial_jnt_pos[2] = val->set_point;
-    // initial_jnt_pos[2]=val->process_value;
-}
-void wrist_1_getter(const control_msgs::JointControllerState::ConstPtr &val)
-{
-    initial_jnt_pos[3] = val->set_point;
-    // initial_jnt_pos[3]=val->process_value;
-}
-void wrist_2_getter(const control_msgs::JointControllerState::ConstPtr &val)
-{
-    initial_jnt_pos[4] = val->set_point;
-    // initial_jnt_pos[4]=val->process_value;
-}
-void wrist_3_getter(const control_msgs::JointControllerState::ConstPtr &val)
-{
-    initial_jnt_pos[5] = val->set_point;
-    // initial_jnt_pos[5]=val->process_value;
-}
-void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
-{
-    initial_jnt_pos[6] = val->set_point;
-    // initial_jnt_pos[6]=val->process_value;
-}
-
-// ### VISIONE ###
-VectorXf block_position(3);
-VectorXf block_angle(3);
-float blockNumber;
-float gripper_width;
-// Nome blocco rilevato
-
-void brick_getter(const robot_movement::customMsg::ConstPtr &val)
-{
-    blockNumber = val->type;
-    gripper_width = val->gWidth;
-
-    block_position[0] = -val->x;
-    block_position[1] = -val->y;
-    block_position[2] = val->z; 
-
-    block_angle[0] = val->r;
-    block_angle[1] = val->p; 
-    block_angle[2] = val->y_1;
-}
 
 int main(int argc, char **argv)
 {
@@ -130,9 +70,14 @@ int main(int argc, char **argv)
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
     MatrixXf Th;
     Vector3f vff;
-    int blockInt =(int) blockNumber;
+    int blockInt =(int) blockNumber[0];
     vff<<-u.legoPos[blockInt][0],u.legoPos[blockInt][1],0.15;
-    cout<<u.legos[(int)(blockNumber)]<<endl;
-    take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , block_position , vff, block_angle, Th, initial_jnt_pos, u.legos[(int)(blockNumber)], u, loop_rate);
+    
+    // prendo solo il primo blocco, quindi il primo valore della matrice 
+    MatrixXf ee_pos,ee_angle;
+    ee_pos<< block_position(0,0),block_position(0,1),block_position(0,2);
+    ee_angle<< block_angle(0,0),block_angle(0,1),block_angle(0,2);
+
+    take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , ee_pos , vff, ee_angle , Th, initial_jnt_pos, u.legos[blockInt], u, loop_rate);
     return 0;
 }
