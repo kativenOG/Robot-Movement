@@ -15,7 +15,7 @@ int main(int argc, char **argv)
      */
     ros::Publisher pub = n.advertise<robot_movement::customMsg>("brick", 10);
     ros::Rate loop_rate(10);
-    int count = 0;
+    int count = 0,type;
     float x, y, z;
     bool exit;
     while (count < 100)
@@ -27,6 +27,8 @@ int main(int argc, char **argv)
         std::cin >> y;
         std::cout << "insert z: ";
         std::cin >> z;
+        std::cout << "insert block type: " << std::endl;
+        std::cin >> type;
         robot_movement::customMsg msg;
         msg.x = x;
         msg.y = y;
@@ -35,7 +37,7 @@ int main(int argc, char **argv)
         msg.p = 3.14;
         msg.y_1 = 0;
         msg.gWidth = 0.5;
-        msg.type = count;
+        msg.type = type;
         pub.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();

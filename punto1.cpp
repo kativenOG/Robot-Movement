@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <math.h>
 #include "ros/ros.h"
@@ -22,7 +23,7 @@
 
 //#include "pick&place.h"
 
-#define RATE 10
+#define RATE 10 // Fa anche da queque size
 
 using namespace Eigen;
 using namespace std;
@@ -70,29 +71,23 @@ void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
 
 // ### VISIONE ###
 VectorXf block_position(3);
+VectorXf block_angle(3);
 float blockNumber;
+float gripper_width;
 // Nome blocco rilevato
-void name_getter(const  std_msgs::Float64::ConstPtr &val)
+
+void brick_getter(const robot_movement::customMsg::ConstPtr &val)
 {
-    blockNumber = val->data;
-}
-// X del blocco 
-void x_getter(const std_msgs::Float64::ConstPtr &val)
-{
-    block_position[0] = -val->data;
-    // cout<< "x:"<< block_position[0]<<std::endl;
-}
-// Y del blocco vf1
-void y_getter(const std_msgs::Float64::ConstPtr &val)
-{
-    block_position[1] = -val->data;
-    // cout<< "y:"<< block_position[1]<<std::endl;
-}
-// Z del blocco 
-void z_getter(const std_msgs::Float64::ConstPtr &val)
-{
-    block_position[2] = (val->data) - 0.77; 
-    // cout<< "z:"<< block_position[2]<<std::endl;
+    blockNumber = val->type;
+    gripper_width = val->gWidth;
+
+    block_position[0] = -val->x;
+    block_position[1] = -val->y;
+    block_position[2] = val->z; 
+
+    block_angle[0] = val->r;
+    block_angle[1] = val->p; 
+    block_angle[2] = val->y_1;
 }
 
 int main(int argc, char **argv)
@@ -128,48 +123,16 @@ int main(int argc, char **argv)
     ros::Subscriber wrist_2_joint_sub = n.subscribe("/wrist_2_joint_position_controller/state", RATE, wrist_2_getter);
     ros::Subscriber wrist_3_joint_sub = n.subscribe("/wrist_3_joint_position_controller/state", RATE, wrist_3_getter);
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", RATE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
-    ros::Subscriber kinect_name= n.subscribe("/kinects/Name", RATE, name_getter );
-    ros::Subscriber kinect_coordinatex= n.subscribe("/kinects/coordinateX", RATE,x_getter  );
-    ros::Subscriber kinect_coordinatey= n.subscribe("/kinects/coordinateY", RATE, y_getter );
-    ros::Subscriber kinect_coordinatez= n.subscribe("/kinects/coordinateZ", RATE, z_getter );
-    sleep(1);
+    ros::Subscriber brick_sub= n.subscribe("/brick", RATE, brick_getter);
 
     // Indispensabili 
-    ros::spinOnce();
-    loop_rate.sleep();
-    ros::spinOnce();
-    loop_rate.sleep();
-    ros::spinOnce();
-    loop_rate.sleep();
-
-    // trova vf2 in base al blocco rilevato da yolo ! 
-    // int c;
-    // for(c=0; c<11;c++){
-    //     if(strcmp(u.legos[c],blockName)) break;
-    // } 
-
-    // i client per comunicare il link dinamico con il modulo di gazebo 
-
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
-
-    Vector3f phiF;
-    phiF <<0,M_PI,0;
     MatrixXf Th;
     Vector3f vff;
-    vff<<u.legoPos[(int)(blockNumber)][0],u.legoPos[(int)(blockNumber)][1],0.15;
-
-    cout<<block_position<<endl;
-
-    // int x,y;
-    // cout << "inserire x" << endl;
-    // cin>>x;
-    // cout << "inserire y" << endl;
-    // cin>>y;
-    // block_position<<x,y,0.1;
-    
-    // movement(ur5_joint_array_pub, block_position, phiF, Th, initial_jnt_pos, u, loop_rate);
+    int blockInt =(int) blockNumber;
+    vff<<-u.legoPos[blockInt][0],u.legoPos[blockInt][1],0.15;
     cout<<u.legos[(int)(blockNumber)]<<endl;
-    take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , block_position , vff, phiF, Th, initial_jnt_pos, u.legos[(int)(blockNumber)], u, loop_rate);
+    take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , block_position , vff, block_angle, Th, initial_jnt_pos, u.legos[(int)(blockNumber)], u, loop_rate);
     return 0;
 }

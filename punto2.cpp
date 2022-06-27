@@ -29,12 +29,6 @@ using namespace robot;
 
 ur5 u;
 
-// spin 
-// void thread_callback(){
-//   ros::spin();
-// }
-
-
 //                  ### Ros Control ###
 VectorXf initial_jnt_pos(7);
 void shoulder_pan_getter(const control_msgs::JointControllerState::ConstPtr &val)
@@ -77,7 +71,7 @@ void brick_getter(const robot_movement::customMsg::ConstPtr &val)
 
     // Position
     block_position(cnt,0) = (val->x);
-    block_position(cnt,1) = (val->y);
+    block_position(cnt,1) = -(val->y);
     block_position(cnt,2) = (val->z);
 
     // Orientation
@@ -135,9 +129,6 @@ int main(int argc, char **argv)
     int x;
     cout << "Inizio Programma !";
     cin >> x;
-    
-    // thread per lo spinning 
-    // std::thread spinner( thread_callback);
 
     // Nodi per il dynamic linker
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
@@ -150,6 +141,7 @@ int main(int argc, char **argv)
         if(x==1) return 0;
 
         // cout<<"Posizione Ricevuta:  x=>"<<block_position(i,0)<<"  y="<<block_position(i,1)<<"  z=>"<<block_position(i,2)<<endl;
+
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         Vector3f vff;

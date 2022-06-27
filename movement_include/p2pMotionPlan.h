@@ -7,6 +7,7 @@ using namespace robot;
 
 Matrix3f ur5::eul2rotm(Vector3f &v)
 {
+    // METODO 1
     // Matrix3f rotm;
     // // Roll x u
     // float s_u = sin(v(0));
@@ -28,9 +29,6 @@ Matrix3f ur5::eul2rotm(Vector3f &v)
     // rotm(2, 1) = c_v * s_u;
     // rotm(2, 2) = c_u * c_v;
 
-    // std::cout << "Nuovo:" << std::endl
-    //           << rotm << std::endl;
-
     Eigen::Matrix3f rotm1;
     // Roll x u
     float s_1 = sin(v(0));
@@ -51,6 +49,8 @@ Matrix3f ur5::eul2rotm(Vector3f &v)
     rotm1(2, 0) = -s_2;
     rotm1(2, 1) = c_2 * s_3;
     rotm1(2, 2) = c_2 * c_3;
+    
+    //METODO 3
     // std::cout << "Prima" << std::endl
     //           << rotm1 << std::endl
     //           << std::endl;
@@ -141,7 +141,7 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     {
         deltaT = vel;
     }
-    deltaT = 4 * M_PI / (360 * deltaT);
+    deltaT = 8 * M_PI / (360 * deltaT);
     int ro = (maxT - minT) / deltaT + 1;
     float f2 = 0.00001;
     MatrixXf Th(ro, corners + 1);
