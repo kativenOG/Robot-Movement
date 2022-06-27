@@ -88,7 +88,7 @@ int main(int argc, char **argv)
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         Vector3f vff;
-        vff << u.legoPos[blockk][0], u.legoPos[blockk][1], 0.15;
+        vff << -u.legoPos[blockk][0], u.legoPos[blockk][1], 0.3;
 
         // Carico i valori della iesima riga dentro un appoggio da caricare nella funzione pick&place
         Vector3f ee_pos;
