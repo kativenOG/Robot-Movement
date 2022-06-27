@@ -29,7 +29,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     srv.request.model_name_2 = blockName; //"lego" + to_string(type+1);
     srv.request.link_name_2 = "link";
     attach.call(srv);
-    sleep(0.3);
+    sleep(0.5);
 
     // Ho accesso a Th
     int rows = Th.rows() - 1;
@@ -50,13 +50,14 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
     gazebo_ros_link_attacher::Attach srv;
     movement(ur5_pub, vf, phiF, Th, initial_pos, u, loop_rate);
 
+    sleep(0.5);
     srv.request.model_name_1 = "ur5";
     srv.request.model_name_1 = "ur5";
     srv.request.link_name_1 = "hand_link";
     srv.request.model_name_2 = blockName; //"lego" + to_string(type+1);
     srv.request.link_name_2 = "link";
     detach.call(srv);
-    sleep(0.3);
+
     // Ritorna posizione standard
     int rows = Th.rows() - 1;
     VectorXf v(6);
