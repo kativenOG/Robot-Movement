@@ -38,24 +38,30 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     STND_ANGLE << -0.4280, -0.0028, 3.0650;
 
     gazebo_ros_link_attacher::Attach srv;
-    movement(ur5_pub, vf, phiF, Th, initial_pos, u, loop_rate);
+    VectorXf vv(6);
+
+    Vector3f above_step;
+    above_step=vf;
+    above_step[2] = above_step[2]+0.5;
+    movement(ur5_pub, above_step, phiF, Th, initial_pos, u, loop_rate);
+    int rows = Th.rows() - 1;
+    for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+    cleanTh(Th);
+
+    movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
 
     // cout<<"take: "<<(blockName)<<std::endl;    // Per mock test commento il link dinamico
 
     srv.request.model_name_1 = "ur5";
     srv.request.link_name_1 = "hand_link";
-    srv.request.model_name_2 = blockName; //"lego" + to_string(type+1);
+    srv.request.model_name_2 = blockName;
     srv.request.link_name_2 = "link";
     attach.call(srv);
     sleep(2);
     closeGripper(gripper,gripperValue);
     // Ho accesso a Th
-    int rows = Th.rows() - 1;
-    VectorXf vv(6);
+    rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-    std::cout<<"vv take:  "<<vv<<std::endl;
-    // Prendo l'ultima posizione in cui è arrivata con il move di Th, sarebbe più facile se tornasse sempre a una posizione standard ;)
-    // for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
 
     cleanTh(Th);
     movement(ur5_pub, STND_POS, STND_ANGLE, Th, vv, u, loop_rate);
@@ -86,12 +92,10 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
     srv.request.model_name_1 = "ur5";
     srv.request.model_name_1 = "ur5";
     srv.request.link_name_1 = "hand_link";
-    srv.request.model_name_2 = blockName; //"lego" + to_string(type+1);
+    srv.request.model_name_2 = blockName; 
     srv.request.link_name_2 = "link";
     detach.call(srv);
 
-    // Ritorna posizione standard
-    // Prendo l'ultima posizione in cui è arrivata con il move di Th, sarebbe più facile se tornasse sempre a una posizione standard ;)
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     std::cout<<"vv place2:  "<<vv<<std::endl;
