@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     ur5_joint_array_pub[5] = n.advertise<std_msgs::Float64>("/wrist_3_joint_position_controller/command", RATE);
     
     // Publihser per il gripper, range -0.5 - +0.5
-    ur5_gripper_pub = n.advertise<std_msgs::Float64>("/gripper_controller/command", RATE);
+    ur5_gripper_pub = n.advertise<std_msgs::Float64>("/gripper_joint_position/command", RATE);
 
     // creo subscriber che ascoltano nei topic di poszione dei joint, e si salvano la loro poszione nello spazio tramite dei wrapper :)
     ros::Subscriber shoulder_pan_joint_sub = n.subscribe("/shoulder_pan_joint_position_controller/state", RATE, shoulder_pan_getter);
@@ -69,7 +69,8 @@ int main(int argc, char **argv)
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
     MatrixXf Th;
     Vector3f vff;
-    int blockInt =(int) blockNumber[0];
+    int blockInt = blockNumber[0];
+    float gg= gripperWidth[0];
     vff<<-u.legoPos[blockInt][0],u.legoPos[blockInt][1],0.15;
     
     // prendo solo il primo blocco, quindi il primo valore della matrice 
@@ -77,6 +78,6 @@ int main(int argc, char **argv)
     ee_pos<< block_position(0,0),block_position(0,1),block_position(0,2);
     ee_angle<< block_angle(0,0),block_angle(0,1),block_angle(0,2);
 
-    take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , ee_pos , vff, ee_angle , Th, initial_jnt_pos, u.legos[blockInt],blockInt, u, loop_rate,ur5_gripper_pub,gripperWidth[0]);
+    take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , ee_pos , vff, ee_angle , Th, initial_jnt_pos, u.legos[blockInt],blockInt, u, loop_rate,ur5_gripper_pub,gg);
     return 0;
 }

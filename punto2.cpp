@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     ur5_joint_array_pub[5] = n.advertise<std_msgs::Float64>("/wrist_3_joint_position_controller/command", QUEUE_SIZE);
 
     // Publihser per il gripper, range -0.5 - +0.5
-    ur5_gripper_pub = n.advertise<std_msgs::Float64>("/gripper_controller/command", QUEUE_SIZE);
+    ur5_gripper_pub = n.advertise<std_msgs::Float64>("/gripper_joint_position/command", QUEUE_SIZE);
 
     // creo subscriber che ascoltano nei topic di poszione dei joint, e si salvano la loro poszione nello spazio tramite dei wrapper :)
     ros::Subscriber shoulder_pan_joint_sub = n.subscribe("/shoulder_pan_joint_position_controller/state", QUEUE_SIZE, shoulder_pan_getter);
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", QUEUE_SIZE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
 
     // Vision topic with brick Data
-    ros::Subscriber k-0.4432458002497436inect_name = n.subscribe("brick", 11, brick_getter);
+    ros::Subscriber kinect_name = n.subscribe("brick", 11, brick_getter);
 
     // ASYNC SPINNING 
     ros::AsyncSpinner spinner(4);
@@ -86,6 +86,7 @@ int main(int argc, char **argv)
 
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
+        float gg= gripperWidth[i];
         Vector3f vff;
         vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], 0.32;
 
@@ -98,7 +99,7 @@ int main(int argc, char **argv)
         cout<<"Angle: "<<endl<<ee_angle<<endl;
 
         MatrixXf Th;
-        take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk],blockk, u, loop_rate, ur5_gripper_pub,gripperWidth[i]);
+        take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk],blockk, u, loop_rate, ur5_gripper_pub,gg);
         // cout<<"Matrice posizioni: "<<block_position;
     }
     return 0;
