@@ -77,6 +77,6 @@ int main(int argc, char **argv)
     ee_pos<< block_position(0,0),block_position(0,1),block_position(0,2);
     ee_angle<< block_angle(0,0),block_angle(0,1),block_angle(0,2);
 
-    take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , ee_pos , vff, ee_angle , Th, initial_jnt_pos, u.legos[blockInt], u, loop_rate);
+    take_and_place( dynLinkAtt, dynLinkDet , ur5_joint_array_pub , ee_pos , vff, ee_angle , Th, initial_jnt_pos, u.legos[blockInt],blockInt, u, loop_rate,ur5_gripper_pub,gripperWidth[0]);
     return 0;
 }

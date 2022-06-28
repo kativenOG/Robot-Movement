@@ -39,7 +39,6 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(RATE);
     // Creo un array per il publishing, ha una casella per ogni joint
     ros::Publisher ur5_joint_array_pub[6];
-
     ros::Publisher ur5_gripper_pub;
     // lego l'array ai vari topic, in cui pubblicheranno i valori di posizione
     ur5_joint_array_pub[0] = n.advertise<std_msgs::Float64>("/shoulder_pan_joint_position_controller/command", QUEUE_SIZE);
@@ -62,7 +61,7 @@ int main(int argc, char **argv)
     ros::Subscriber left_knucle_joint_sub = n.subscribe("/gripper_joint_position/state", QUEUE_SIZE, gripper_getter); // se è aperto o chiuso (non proprio un angolo )
 
     // Vision topic with brick Data
-    ros::Subscriber kinect_name = n.subscribe("brick", 11, brick_getter);
+    ros::Subscriber k-0.4432458002497436inect_name = n.subscribe("brick", 11, brick_getter);
 
     // ASYNC SPINNING 
     ros::AsyncSpinner spinner(4);
@@ -99,7 +98,7 @@ int main(int argc, char **argv)
         cout<<"Angle: "<<endl<<ee_angle<<endl;
 
         MatrixXf Th;
-        take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk], u, loop_rate);
+        take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk],blockk, u, loop_rate, ur5_gripper_pub,gripperWidth[i]);
         // cout<<"Matrice posizioni: "<<block_position;
     }
     return 0;
