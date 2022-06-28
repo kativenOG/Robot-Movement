@@ -51,13 +51,14 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     closeGripper(gripper,gripperValue);
     // Ho accesso a Th
     int rows = Th.rows() - 1;
-    VectorXf v(6);
-    v << 0, 0, 0, 0, 0, 0; // ma che cazz hahahahah
+    VectorXf vv(6);
+    for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+    std::cout<<"vv take:  "<<vv<<std::endl;
     // Prendo l'ultima posizione in cui è arrivata con il move di Th, sarebbe più facile se tornasse sempre a una posizione standard ;)
-    for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
+    // for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
 
     cleanTh(Th);
-    movement(ur5_pub, STND_POS, STND_ANGLE, Th, v, u, loop_rate);
+    movement(ur5_pub, STND_POS, STND_ANGLE, Th, vv, u, loop_rate);
 };
 
 void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper)
@@ -68,16 +69,17 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
     gazebo_ros_link_attacher::Attach srv;
     movement(ur5_pub, vf, phiF, Th, initial_pos, u, loop_rate);
 
-    VectorXf v(6);
-    v << 0, 0, 0, 0, 0, 0; // BUH // BUH   
     int rows = Th.rows() - 1;
-    for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
+    VectorXf vv(6);
+    for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+    std::cout<<"vv place1:  "<<vv<<std::endl;
+    // for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
 
     cleanTh(Th);
     sleep(1.5);
     Vector3f ffangle;
     ffangle<<u.legoAngle[blockNumber][0],u.legoAngle[blockNumber][1],u.legoAngle[blockNumber][2];
-    movement(ur5_pub, vf, ffangle , Th, v, u, loop_rate);
+    movement(ur5_pub, vf, ffangle , Th, vv, u, loop_rate);
     sleep(1.5);
     openGripper(gripper);
 
@@ -90,12 +92,12 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
 
     // Ritorna posizione standard
     // Prendo l'ultima posizione in cui è arrivata con il move di Th, sarebbe più facile se tornasse sempre a una posizione standard ;)
-    std::cout << "ciao1" << std::endl;
-    for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
-    std::cout << "ciao2" << std::endl;
+    rows = Th.rows() - 1;
+    for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+    std::cout<<"vv place2:  "<<vv<<std::endl;
 
     cleanTh(Th);
-    movement(ur5_pub, STND_POS, STND_ANGLE, Th, v, u, loop_rate);
+    movement(ur5_pub, STND_POS, STND_ANGLE, Th, vv, u, loop_rate);
 }
 
 void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName,int blockNumber, robot::ur5 u, ros::Rate loop_rate,ros::Publisher gripper,float gripperValue)
@@ -106,8 +108,6 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
 
     int rows = Th.rows() - 1;
     VectorXf v(6);
-    v << 0, 0, 0, 0, 0, 0; 
-    // Prendo l'ultima posizione in cui è arrivata con il move di Th, sarebbe più facile se tornasse sempre a una posizione standard ;)
     for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
 
     place(detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper);

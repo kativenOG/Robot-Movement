@@ -101,7 +101,7 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
 {
 
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
-    std::cout << "Matrice delle soluzioni!" <<std::endl<< qEf_t<< std::endl;
+    // std::cout << "Matrice delle soluzioni!" <<std::endl<< qEf_t<< std::endl;
     int corners = 6;
     // int solution;
     // std::cout << "Inserisci soluzione [0-7]: " << std::endl;
@@ -113,7 +113,7 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     //   if(qEf(3)<-1.57) break;
     //   if(i==5) qEf= qEf_t.row(0);
     // }
-    std::cout<<"Soluzione scelta n. "<<i<<std::endl<<qEf<<std::endl;
+    // std::cout<<"Soluzione scelta n. "<<i<<std::endl<<qEf<<std::endl;
     int minT = 0;
     int maxT = 1;
 
