@@ -8,10 +8,9 @@ roscpp
 std_msgs
 ) 
 
+# Custom msg
 add_message_files(
    FILES
-#   Message1.msg
-#   Message2.msg
    customMsg.msg
  )
 generate_messages(
@@ -33,13 +32,12 @@ ${catkin_INCLUDE_DIRS}
 ${Eigen_INCLUDE_DIRS}
 ${gazebo_ros_link_attacher_INCLUDE_DIRS}
 )
+# Include la cartella degli headers
 include_directories(movement_include)
 
-# add_executable(${PROJECT_NAME}_node1 robot_movement_node.cpp)
+add_executable(mock_node mockPublisher.cpp)
 add_executable(point_1_node punto1.cpp)
 add_executable(point_2_node punto2.cpp)
-add_executable(mock_node mockPublisher.cpp)
-
 # add_executable(point_3_node punto3.cpp)
 # add_executable(point_4_node punto3.cpp)
 

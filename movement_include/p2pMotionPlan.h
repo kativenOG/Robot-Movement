@@ -100,13 +100,17 @@ Vector3f ur5::rotm2eul(Matrix3f &m)
 void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1)
 {
 
-    // Version 2.0
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
-    int corners = 6;
-    RowVectorXf qEf = qEf_t.block(0, 0, 1, corners);
+    int corners = 6,solution;
+    std::cout << "Inserisci soluzione [0-7]: " << std::endl;
+    std::cin >> solution;
+    RowVectorXf qEf(6);
+    qEf= qEf_t.row(solution);
+    std::cout<<qEf<<std::endl;
     int minT = 0;
     int maxT = 1;
-    // distance control
+
+    // Distance control
     for (int i = 0; i < corners; i++)
     {
         while (qEs(i) > M_PI)
