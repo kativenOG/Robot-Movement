@@ -30,7 +30,7 @@ int main(int argc, char **argv)
         msg.x = x;
         msg.y = y;
         msg.z = z;
-        msg.r = 0;
+        msg.r = 0.8;
         msg.p = 3.14;
         msg.y_1 = 0;
         msg.gWidth = gripW;

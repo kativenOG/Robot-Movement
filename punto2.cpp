@@ -88,7 +88,7 @@ int main(int argc, char **argv)
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
         Vector3f vff;
-        vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], 0.32;
+        vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], 0.14;
 
         // Carico i valori della iesima riga dentro un appoggio da caricare nella funzione pick&place
         Vector3f ee_pos;
