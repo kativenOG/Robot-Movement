@@ -22,7 +22,7 @@ blocks = [
     "X2-Y2-Z2-FILLET"]
 
 #Generate random position
-pos = Pose(Point(random.uniform(-0.3, 0.3), random.uniform(-0.3, -0.5),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+pos = Pose(Point(random.uniform(-0.3, 0.3), random.uniform(-0.3, -0.95),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
 #Get a random lego block from all legos
 brickNumber = random.randint(0,10)
 brick=blocks[brickNumber]

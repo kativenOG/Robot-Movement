@@ -4,7 +4,6 @@
 #include "move.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
-#define MAX_LENGHT -1
 
 // Valori posizione standard 
 Vector3f STND_POS,STND_ANGLE;
@@ -19,7 +18,7 @@ void cleanTh(Eigen::MatrixXf &Th)
 void  closeGripper(ros::Publisher gripper,float size)
 {
     std_msgs::Float64 temp;
-    size = (size/MAX_LENGHT) - 0.5;
+    size = size;
     temp.data = size;
     gripper.publish(temp);
 };
