@@ -78,9 +78,9 @@ int main(int argc, char **argv)
 
     for (int i = 0; i < 11; i++)
     {
-        cout << "Prossimo blocco! (if 1 exit)";
-        cin >> x;
-        if(x==1) return 0;
+        // cout << "Prossimo blocco! (if 1 exit)";
+        // cin >> x;
+        // if(x==1) return 0;
 
         // cout<<"Posizione Ricevuta:  x=>"<<block_position(i,0)<<"  y="<<block_position(i,1)<<"  z=>"<<block_position(i,2)<<endl;
 
