@@ -18,9 +18,8 @@ void cleanTh(Eigen::MatrixXf &Th)
 void  closeGripper(ros::Publisher gripper,float size)
 {
     std_msgs::Float64 temp;
-    size = size;
     // CAMBIATO A FISSO 1 
-    temp.data = 1;
+    temp.data = size;
     gripper.publish(temp);
 };
 // Open
