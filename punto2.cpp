@@ -81,7 +81,10 @@ int main(int argc, char **argv)
         // cout << "Prossimo blocco! (if 1 exit)";
         // cin >> x;
         // if(x==1) return 0;
-        while(cnt==i);
+        while(cnt==i){
+          std::cout << "message" << std::endl;
+          sleep(1);
+        }
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];

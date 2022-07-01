@@ -19,7 +19,8 @@ void  closeGripper(ros::Publisher gripper,float size)
 {
     std_msgs::Float64 temp;
     size = size;
-    temp.data = size;
+    // CAMBIATO A FISSO 1 
+    temp.data = 1;
     gripper.publish(temp);
 };
 // Open
@@ -51,7 +52,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
 
     // cout<<"take: "<<(blockName)<<std::endl;    // Per mock test commento il link dinamico
 
-    sleep(3);
+    sleep(1.5);
     srv.request.model_name_1 = "ur5";
     srv.request.link_name_1 = "hand_link";
     srv.request.model_name_2 = blockName;
@@ -114,4 +115,4 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
 
     place(detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper);
     cleanTh(Th);
-    };
+};
