@@ -68,9 +68,9 @@ int main(int argc, char **argv)
     spinner.start();
 
     // METTI SEMPRE COUT PER SINCRONIZZARE COSÌ NON SI PERDONO MESSAGGI
-    int x;
-    cout << "Inizio Programma !";
-    cin >> x;
+    // int x;
+    // cout << "Inizio Programma !";
+    // cin >> x;
 
     // Nodi per il dynamic linker
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
@@ -81,7 +81,7 @@ int main(int argc, char **argv)
         // cout << "Prossimo blocco! (if 1 exit)";
         // cin >> x;
         // if(x==1) return 0;
-        while(blockQueue==0);
+        while(cnt==i);
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
@@ -91,14 +91,13 @@ int main(int argc, char **argv)
         // Carico i valori della iesima riga dentro un appoggio da caricare nella funzione pick&place
         Vector3f ee_pos;
         ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
-        cout<<"Position: "<<endl<<ee_pos<<endl;
+        // cout<<"Position: "<<endl<<ee_pos<<endl;
         Vector3f ee_angle;
         ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2);
-        cout<<"Angle: "<<endl<<ee_angle<<endl;
+        // cout<<"Angle: "<<endl<<ee_angle<<endl;
 
         MatrixXf Th;
         take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk],blockk, u, loop_rate, ur5_gripper_pub,gg);
-        blockQueue--;
     }
     return 0;
 }

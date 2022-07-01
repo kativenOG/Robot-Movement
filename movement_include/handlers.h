@@ -37,7 +37,6 @@ void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
 
 //                  ### VISIONE ###
 // Salva in matrici i valori inviati tramite messaggi dal topic di visione 
-int blockQueue=0;
 int cnt=0;
 MatrixXf block_position(100,3);
 VectorXd blockNumber(100);
@@ -59,6 +58,4 @@ void brick_getter(const robot_movement::customMsg::ConstPtr &val)
     blockNumber[cnt] = (val->type);
     gripperWidth[cnt] = (val->gWidth);
     cnt++;
-    blockQueue++;
 }
-  
