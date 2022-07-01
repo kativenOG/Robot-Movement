@@ -81,9 +81,7 @@ int main(int argc, char **argv)
         // cout << "Prossimo blocco! (if 1 exit)";
         // cin >> x;
         // if(x==1) return 0;
-
-        // cout<<"Posizione Ricevuta:  x=>"<<block_position(i,0)<<"  y="<<block_position(i,1)<<"  z=>"<<block_position(i,2)<<endl;
-
+        while(blockQueue==0);
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
@@ -100,7 +98,7 @@ int main(int argc, char **argv)
 
         MatrixXf Th;
         take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk],blockk, u, loop_rate, ur5_gripper_pub,gg);
-        // cout<<"Matrice posizioni: "<<block_position;
+        blockQueue--;
     }
     return 0;
 }

@@ -51,12 +51,12 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
 
     // cout<<"take: "<<(blockName)<<std::endl;    // Per mock test commento il link dinamico
 
+    sleep(3);
     srv.request.model_name_1 = "ur5";
     srv.request.link_name_1 = "hand_link";
     srv.request.model_name_2 = blockName;
     srv.request.link_name_2 = "link";
     attach.call(srv);
-    sleep(2);
     closeGripper(gripper,gripperValue);
     // Ho accesso a Th
     rows = Th.rows() - 1;
