@@ -118,25 +118,25 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     int maxT = 1;
 
     // Distance control
-    for (int i = 0; i < corners; i++)
-    {
-        while (qEs(i) > M_PI)
-        {
-            qEs(i) -= (2 * M_PI);
-        }
-        while (qEs(i) < -M_PI)
-        {
-            qEs(i) += (2 * M_PI);
-        }
-        while (qEf(i) > M_PI)
-        {
-            qEf(i) -= (2 * M_PI);
-        }
-        while (qEf(i) < -M_PI)
-        {
-            qEf(i) += (2 * M_PI);
-        }
-    }
+    // for (int i = 0; i < corners; i++)
+    // {
+    //     while (qEs(i) > M_PI)
+    //     {
+    //         qEs(i) -= (2 * M_PI);
+    //     }
+    //     while (qEs(i) < -M_PI)
+    //     {
+    //         qEs(i) += (2 * M_PI);
+    //     }
+    //     while (qEf(i) > M_PI)
+    //     {
+    //         qEf(i) -= (2 * M_PI);
+    //     }
+    //     while (qEf(i) < -M_PI)
+    //     {
+    //         qEf(i) += (2 * M_PI);
+    //     }
+    // }
     // Old Delta
     // float deltaT = 0;
     // for (int i = 0; i < corners; i++)
@@ -155,7 +155,7 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     // }
     // deltaT = 2 * M_PI / (360 * deltaT);
     
-    deltaT= deltaT/16;
+    deltaT= deltaT/32;
     int ro = (maxT - minT) / deltaT + 1;
     std::cout << ro << std::endl;
     float f2 = 0.00001;
