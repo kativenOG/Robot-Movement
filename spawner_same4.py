@@ -6,7 +6,7 @@ from geometry_msgs.msg import *
 import rospy
 import random
 # Numero di settori in cui viene diviso il tavolo 
-sectors = 2
+sectors = 4
 x_start = -0.4
 y_start = 0.25
 # y1 = 0.25/sectors

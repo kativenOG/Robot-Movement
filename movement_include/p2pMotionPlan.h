@@ -97,7 +97,7 @@ Vector3f ur5::rotm2eul(Matrix3f &m)
     return v;
 }
 
-void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1)
+void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1, float deltaT)
 {
 
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
@@ -137,23 +137,27 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
             qEf(i) += (2 * M_PI);
         }
     }
-    float deltaT = 0;
-    for (int i = 0; i < corners; i++)
-    {
-        float a = abs(qEf(i) - qEs(i));
-        if (a > deltaT)
-        {
-            deltaT = a;
-        }
-    }
+    // Old Delta
+    // float deltaT = 0;
+    // for (int i = 0; i < corners; i++)
+    // {
+    //     float a = abs(qEf(i) - qEs(i));
+    //     if (a > deltaT)
+    //     {
+    //         deltaT = a;
+    //     }
+    // }
     // velocity control
-    float vel = abs(qEf(1) - qEs(1) + qEf(2) - qEs(2));
-    if (vel > deltaT)
-    {
-        deltaT = vel;
-    }
-    deltaT = 8 * M_PI / (360 * deltaT);
+    // float vel = abs(qEf(1) - qEs(1) + qEf(2) - qEs(2));
+    // if (vel > deltaT)
+    // {
+    //     deltaT = vel;
+    // }
+    // deltaT = 2 * M_PI / (360 * deltaT);
+    
+    deltaT= deltaT/16;
     int ro = (maxT - minT) / deltaT + 1;
+    std::cout << ro << std::endl;
     float f2 = 0.00001;
     MatrixXf Th(ro, corners + 1);
     int counter = 0;

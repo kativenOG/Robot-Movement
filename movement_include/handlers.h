@@ -5,6 +5,7 @@
 
 //                      ### JOINTS ###
 // Per prendere i valori dei joint dai topic di ros_control
+
 VectorXf initial_jnt_pos(7);
 void shoulder_pan_getter(const control_msgs::JointControllerState::ConstPtr &val)
 {
@@ -37,6 +38,7 @@ void gripper_getter(const control_msgs::JointControllerState::ConstPtr &val)
 
 //                  ### VISIONE ###
 // Salva in matrici i valori inviati tramite messaggi dal topic di visione 
+int blockQueue=0;
 int cnt=0;
 MatrixXf block_position(100,3);
 VectorXd blockNumber(100);
@@ -49,7 +51,7 @@ void brick_getter(const robot_movement::customMsg::ConstPtr &val)
     block_position(cnt,1) = -(val->y);
     block_position(cnt,2) = (val->z)+ 0.1;
 
-    // Orientation
+    // Orienbtation
     block_angle(cnt,0) = (val->r);
     block_angle(cnt,1) = (val->p);
     block_angle(cnt,2) = (val->y_1);
@@ -58,5 +60,6 @@ void brick_getter(const robot_movement::customMsg::ConstPtr &val)
     blockNumber[cnt] = (val->type);
     gripperWidth[cnt] = (val->gWidth);
     cnt++;
+    blockQueue++;
 }
-  
+
