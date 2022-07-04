@@ -24,16 +24,17 @@ blocks = [
 #Generate random position
 pos = Pose(Point(random.uniform(-0.3, 0.3), random.uniform(-0.3, -0.95),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
 #Get a random lego block from all legos
-brickNumber = random.randint(0,10)
-brick=blocks[brickNumber]
-print(pos)
-print(brick)
-print(brickNumber)
+# brickNumber = 11
+# while((brickNumber>10) or (brickNumber<0)):
+    # brickNumber = int(input()) 
+
+brick="X1-Y1-Z2"
 #Call rospy spawn function to spawn objects in gazebo
 #spawna direttamente in gazebo !
 spawn_model_client = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
-spawn_model_client(model_name=''+str(brick), 
-    model_xml=open('../ultimate_gazebo/models/lego_'+brick+'/model.sdf', 'r').read(),
+spawn_model_client(model_name=str(brick), 
+    model_xml=open('../ultimate_gazebo/models/'+brick+'/model.sdf', 'r').read(),
     robot_namespace='/foo',
     initial_pose=pos,
     reference_frame='world')
+ 
