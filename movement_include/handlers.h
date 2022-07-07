@@ -45,8 +45,8 @@ VectorXf gripperWidth(100);
 void brick_getter(const robot_movement::customMsg::ConstPtr &val)
 {
     // Position
-    block_position(cnt,0) = -(val->x);
-    block_position(cnt,1) = -(val->y);
+    block_position(cnt,0) = (val->x);
+    block_position(cnt,1) = (val->y);
     block_position(cnt,2) = (val->z)+0.06;
 
     // Orientation
