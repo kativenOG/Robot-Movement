@@ -49,7 +49,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
     //-------------------------
-    movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+    /*movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
@@ -72,7 +72,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
             std::cin >> x;
             vf(2)=x;
         }
-        /*std::cout << "ang?";
+        std::cout << "ang?";
         std::cin >> y;
         if(y==1){
             std::cout << "ang1=";
@@ -84,12 +84,12 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
             std::cout << "ang3=";
             std::cin >> x;
             phiF(2)=x;
-        }*/
+        }
         movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
         rows = Th.rows() - 1;
         for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
         cleanTh(Th);
-        /*std::cout << "grip?";
+        std::cout << "grip?";
         std::cin >> y;
         while(y==1){
             std::cout << "gripper=";
@@ -97,15 +97,12 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
             closeGripper(gripper,gripperValue);
             std::cout << "new gripper?";
             std::cin >> y;
-        }*/
+        }
         std::cout << "vf=" << vf << "\n";
-        //----
-        closeGripper(gripper,-1);
-        //----
         std::cout << "phief=" << phiF << "\n";
-        /*std::cout << "continuare?";
-        std::cin >> y;*/
-    }
+        std::cout << "continuare?";
+        std::cin >> y;
+    }*/
     //-------------------------
     movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
 
@@ -168,42 +165,85 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
 {
     STND_POS << 0, 0.3203, 0.6147;
     //-----------------------
-    /*std::cout << blockNumber << "\n";
-    if(blockNumber==0){
-        //vf1(0)=vf1(0)+0.024;
-        //vf1(1)=vf1(1)+0.011;
-        vf1(2)=vf1(2)-0.002;
-        float block0x[7][7] = {{-162,-172,-167,-163,-173,-168,-164},
-                               {-107,-103,-113,-108,-104,-114,-109},
-                               {-38,-48,-44,-40,-54,-45,-41},
-                               {15,6,10,15,19,9,13},
-                               {70,60,65,69,59,64,68},
-                               {128,129,119,124,128,118,123},
-                               {194,184,188,192,183,187,191}};
-        float block0y[7][7] = {{170,115,47,-8,-63,-118,-186},
-                               {174,106,51,-4,-59,-113,-182},
-                               {179,110,41,-14,-49,-123,-178},
-                               {169,114,45,-10,-64,-119,-188},
-                               {173,119,50,-5,-60,-114,-168},
-                               {178,109,54,-15,-55,-124,-179},
-                               {168,113,44,-11,-64,-120,-189}};
-        int i,j;
-        float minx=-0.3;
-        float maxy=-0.25;
-        float X=vf1(0);
-        float Y=vf1(1);
-        if(X<minx) i=0;
-        if(Y>maxy) j=0;
-        if(X>0.2) i=5;
-        if(Y<-0.75) j=5;
-        for(int c=0; c<6; c++){
-            if(X>minx+0.1*c&&X<minx+0.1*(c+1)){
+    //std::cout << blockNumber << "\n";
+    //vf1(0)=vf1(0)+0.024;
+    //vf1(1)=vf1(1)+0.011;
+    vf1(2)=vf1(2)-0.002;
+    float indx[11] = {-0.43,-0.344,-0.258,-0.172,-0.086,0,0.086,0.172,0.258,0.344,0.43};
+    float indy[11] = {-0.2,-0.255,-0.31,-0.365,-0.42,-0.475,-0.53,-0.585,-0.64,-0.695,-0.75};
+    float Mx[11][11] = {
+        {0.449, 0.45, 0.451, 0.452, 0.453, 0.453, 0.453, 0.453, 0.454, 0.454, 0.455},
+        {0.365, 0.366, 0.366, 0.367, 0.368, 0.368, 0.368, 0.368, 0.368, 0.368, 0.368},
+        {0.281, 0.282, 0.282, 0.282, 0.282, 0.282, 0.282, 0.282, 0.282, 0.282, 0.282},
+        {0.196, 0.196, 0.196, 0.197, 0.196, 0.196, 0.197, 0.196, 0.196, 0.196, 0.196},
+        {0.109, 0.11, 0.109, 0.11, 0.11, 0.11, 0.109, 0.11, 0.109, 0.11, 0.11},
+        {0.017, 0.019, 0.02, 0.022, 0.022, 0.022, 0.022, 0.023, 0.023, 0.023, 0.023},
+        {-0.076, -0.072, -0.07, -0.068, -0.067, -0.066, -0.066, -0.065, -0.065, -0.064, -0.064},
+        {-0.166, -0.162, -0.16, -0.157, -0.156, -0.153, -0.154, -0.153, -0.152, -0.152, -0.151},
+        {-0.254, -0.252, -0.248, -0.246, -0.245, -0.243, -0.242, -0.241, -0.24, -0.239, -0.238},
+        {-0.343, -0.34, -0.337, -0.335, -0.333, -0.331, -0.33, -0.329, -0.328, -0.327, -0.326},
+        {-0.43, -0.428, -0.425, -0.423, -0.421, -0.419, -0.418, -0.417, -0.416, -0.415, -0.415}};
+
+    float My[11][11] = {
+        {0.184, 0.241, 0.298, 0.354, 0.41, 0.466, 0.522, 0.578, 0.635, 0.691, 0.748},
+        {0.187, 0.244, 0.301, 0.357, 0.414, 0.469, 0.525, 0.581, 0.637, 0.692, 0.749},
+        {0.191, 0.249, 0.305, 0.361, 0.417, 0.473, 0.529, 0.584, 0.64, 0.694, 0.751},
+        {0.198, 0.254, 0.31, 0.368, 0.422, 0.477, 0.532, 0.587, 0.642, 0.697, 0.752},
+        {0.208, 0.262, 0.317, 0.373, 0.426, 0.481, 0.536, 0.591, 0.646, 0.7, 0.755},
+        {0.217, 0.27, 0.323, 0.378, 0.431, 0.486, 0.54, 0.594, 0.649, 0.704, 0.757},
+        {0.222, 0.275, 0.328, 0.382, 0.435, 0.49, 0.543, 0.598, 0.652, 0.707, 0.76},
+        {0.224, 0.278, 0.331, 0.385, 0.438, 0.492, 0.546, 0.6, 0.654, 0.709, 0.762},
+        {0.224, 0.279, 0.333, 0.388, 0.44, 0.494, 0.548, 0.602, 0.657, 0.711, 0.764},
+        {0.225, 0.279, 0.333, 0.389, 0.442, 0.496, 0.55, 0.604, 0.658, 0.713, 0.767},
+        {0.225, 0.28, 0.334, 0.39, 0.443, 0.497, 0.551, 0.606, 0.66, 0.715, 0.772}};
+    /*float block0x[7][7] = {{-162,-172,-167,-163,-173,-168,-164},
+                           {-107,-103,-113,-108,-104,-114,-109},
+                           {-38,-48,-44,-40,-54,-45,-41},
+                           {15,6,10,15,19,9,13},
+                           {70,60,65,69,59,64,68},
+                           {128,129,119,124,128,118,123},
+                           {194,184,188,192,183,187,191}};
+    float block0y[7][7] = {{170,115,47,-8,-63,-118,-186},
+                           {174,106,51,-4,-59,-113,-182},
+                           {179,110,41,-14,-49,-123,-178},
+                           {169,114,45,-10,-64,-119,-188},
+                           {173,119,50,-5,-60,-114,-168},
+                           {178,109,54,-15,-55,-124,-179},
+                           {168,113,44,-11,-64,-120,-189}};*/
+    int i,j;
+    float minx=-0.43;
+    float maxx=0.43;
+    float miny=-0.2;
+    float maxy=-0.75;
+    float X=vf1(0);
+    float Y=vf1(1);
+    if(X<minx||X>maxx||Y>miny||Y<maxy){
+        std::cerr << "posizione invalida\n";
+    }
+    else{
+        std::cout << "vf " << vf1(0) << " " << vf1(1) << "\n";
+        for(int c=0; c<10; c++){
+            if(X>indx[c]&&X<indx[c+1]){
                 i=c;
             }
-            if(Y<maxy-0.1*c&&Y>maxy-0.1*(c+1)){
+            if(Y<indy[c]&&Y>indy[c+1]){
                 j=c;
             }
         }
+        //std::cout << "i=" << i << " j=" << j << " X range: " << indx[i] << "-" << indx[i+1] << " Y range: " << indy[j] << "-" << indy[j+1];
+        //std::cout << "\nMx=\n" << Mx[i][j]  << "-" << Mx[i][j+1]  << "\n" <<Mx[i+1][j]  << "-"<< Mx[i+1][j+1] << "\n";
+        //std::cout << "My=\n" << My[i][j]  << "-" << My[i][j+1]  << "\n" <<My[i+1][j]  << "-"<< My[i+1][j+1] << "\n";
+        //std::cout << "proporzione x:" << (X-indx[i])/(indx[i+1]-indx[i]);
+        //std::cout << "\nproporzione y:" << (Y-indy[j])/(indy[j+1]-indy[j]) << "\n";
+        float dx1,dx2,dy1,dy2;
+        dx1=Mx[i][j]+(Mx[i+1][j]-Mx[i][j])*(X-indx[i])/(indx[i+1]-indx[i]);
+        dx2=Mx[i][j+1]+(Mx[i+1][j+1]-Mx[i][j+1])*(X-indx[i])/(indx[i+1]-indx[i]);
+        vf1(0)=dx1+(dx2-dx1)*(Y-indy[j])/(indy[j+1]-indy[j]);
+
+        dy1=My[i][j]+(My[i][j+1]-My[i][j])*(Y-indy[j])/(indy[j+1]-indy[j]);
+        dy2=My[i+1][j]+(My[i+1][j+1]-My[i+1][j])*(Y-indy[j])/(indy[j+1]-indy[j]);
+        vf1(1)=dy1+(dy2-dy1)*(X-indx[i])/(indx[i+1]-indx[i]);
+        /*
         float dx,dx1,dx2,dy,dy1,dy2;
         dx1=block0x[i][j]+(block0x[i+1][j]-block0x[i][j])*(X-(minx+0.1*i))/0.1;
         dx2=block0x[i][j+1]+(block0x[i+1][j+1]-block0x[i][j+1])*(X-(minx+0.1*i))/0.1;
@@ -211,18 +251,16 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
 
         dy1=block0y[i][j]-(block0y[i][j+1]-block0y[i][j])*(Y-(maxy-0.1*j))/0.1;
         dy2=block0y[i+1][j]-(block0y[i+1][j+1]-block0y[i+1][j])*(Y-(maxy-0.1*j))/0.1;
-        dy=dy1+(dy2-dy1)*(X-(maxy-0.1*j))/0.1;
+        dy=dy1+(dy2-dy1)*(X-(maxy-0.1*j))/0.1;*/
 
 
-
-        std::cout << "vf " << -vf1(0) << " " << -vf1(1) << "\n";
-        vf1(0)=vf1(0)+dx*0.0001;
-        vf1(1)=vf1(1)+dy*0.0001;
-        std::cout << "vf corretto " << -vf1(0) << " " << -vf1(1) << "\n";
+        //vf1(0)=vf1(0)+dx*0.0001;
+        //vf1(1)=vf1(1)+dy*0.0001;
+        std::cout << "vf corretto " << vf1(0) << " " << vf1(1) << "\n";
     }
     int g;
     std::cout << "iniziare?";
-    std::cin >> g;*/
+    std::cin >> g;
     //-----------------------
     take(attach, ur5_pub, vf1, phiF, Th, initial_pos, blockName, u, loop_rate,gripper, gripperValue);
 
