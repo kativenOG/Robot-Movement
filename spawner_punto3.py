@@ -9,7 +9,7 @@ import random
 # Numero di settori in cui viene diviso il tavolo 
 sectors = 2
 # Numero di blocchi per settore 
-blockXarea=2
+blockXarea=3
 last_blocks = []
 for i in range(blockXarea):
     last_blocks.append(11) 

@@ -50,11 +50,27 @@ namespace robot
 
     public:
 
+        // lego height : quanti blocchi per ogni posizione finale 
+        float legoHeights [11] = {0,0,0,0,0,0,0,0,0,0,0};
+
+        char lastLego [11][30]={
+          "end_table",
+          "end_table",
+          "end_table",
+          "end_table",
+          "end_table",
+          "end_table",
+          "end_table",
+          "end_table",
+          "end_table",
+          "end_table",
+          "end_table",
+        }; 
         // lego pos
-        float legoPos [11][2] = {{-0.56,0.35},{-0.72,-0.25},{-0.72,-0.391},{-0.72,0.05},{-0.72,-0.1},{-0.56,-0.24},{-0.72,0.21},{-0.56,0.064},{-0.56,-0.0972},{-0.56,0.209},{-0.56,-0.39}};
+        float legoPos [11][2] = {{-0.54,0.34},{-0.7,-0.25},{-0.7,-0.391},{-0.7,0.05},{-0.7,-0.1},{-0.56,-0.24},{-0.7,0.21},{-0.56,0.064},{-0.56,-0.1072},{-0.56,0.209},{-0.56,-0.39}};
 
         //lego angles   
-        float legoAngle [11][3] = {{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0}};         
+        float legoAngle [11][3] = {{M_PI_2,M_PI,0},{M_PI_2,M_PI,0},{M_PI_2,M_PI,0},{M_PI_2,M_PI,0},{M_PI_2,M_PI,0},{M_PI_2,M_PI,0},{M_PI_2,M_PI,0},{M_PI_2,M_PI,0},{M_PI,M_PI,0},{M_PI_2,M_PI,0},{M_PI_2,M_PI,0}};         
 
         // lego names 
         char legos [11][30]  = {

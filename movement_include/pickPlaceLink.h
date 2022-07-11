@@ -4,9 +4,26 @@
 #include "move.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
-
+#include <string.h>
+#include <cstdio> 
 // Valori posizione standard 
 Vector3f STND_POS,STND_ANGLE;
+
+// funzione per incollare i blocchi tra di loro 
+void attach_detach_blocks(ros::ServiceClient service, char* block1,char* block2){
+    char link_choice[20]= "link";
+    gazebo_ros_link_attacher::Attach srv;
+
+    srv.request.model_name_1 = block1;
+    srv.request.link_name_1 = "link";
+
+    srv.request.model_name_2 = block2; 
+    if(!strcmp(block2,"end_table")) std::strcpy(link_choice,"top_plate");
+    std::cout << "BLOCK1: " <<link_choice<< std::endl;
+    srv.request.link_name_2 = link_choice;
+
+    service.call(srv);
+}
 // Clean 
 void cleanTh(Eigen::MatrixXf &Th)
 {
@@ -45,65 +62,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     int rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
-    //-------------------------
-    /*movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
-    rows = Th.rows() - 1;
-    for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-    cleanTh(Th);
-    int y=1;
-    float x;
-    phiF(0)=0;
-    phiF(1)=3.14;
-    phiF(2)=0;
-    while(y==1){
-        std::cout << "pos?";
-        std::cin >> y;
-        if(y==1){
-            std::cout << "posx=";
-            std::cin >> x;
-            vf(0)=x;
-            std::cout << "posy=";
-            std::cin >> x;
-            vf(1)=x;
-            std::cout << "posz=";
-            std::cin >> x;
-            vf(2)=x;
-        }
-        std::cout << "ang?";
-        std::cin >> y;
-        if(y==1){
-            std::cout << "ang1=";
-            std::cin >> x;
-            phiF(0)=x;
-            std::cout << "ang2=";
-            std::cin >> x;
-            phiF(1)=x;
-            std::cout << "ang3=";
-            std::cin >> x;
-            phiF(2)=x;
-        }
-        movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
-        rows = Th.rows() - 1;
-        for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-        cleanTh(Th);
-        std::cout << "grip?";
-        std::cin >> y;
-        while(y==1){
-            std::cout << "gripper=";
-            std::cin >> gripperValue;
-            closeGripper(gripper,gripperValue);
-            std::cout << "new gripper?";
-            std::cin >> y;
-        }
-        std::cout << "vf=" << vf << "\n";
-        std::cout << "phief=" << phiF << "\n";
-        std::cout << "continuare?";
-        std::cin >> y;
-    }*/
-    //-------------------------
     movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
-
-    // cout<<"take: "<<(blockName)<<std::endl;    // Per mock test commento il link dinamico
 
     sleep(1.5);
     srv.request.model_name_1 = "ur5";
@@ -112,15 +71,14 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     srv.request.link_name_2 = "link";
     attach.call(srv);
     closeGripper(gripper,gripperValue);
-    // Ho accesso a Th
+
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-
     cleanTh(Th);
     movement(ur5_pub, above_step, phiF, Th, vv, u, loop_rate);
 };
 
-void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper)
+void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper)
 {
     STND_POS << 0, 0.3203, 0.6147;
     STND_ANGLE << -0.4280, -0.0028, 3.0650;
@@ -144,12 +102,19 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
     sleep(1.8);
     openGripper(gripper);
 
+    // Attacca blocco a tavolo o blocco precendente in colonna 
+    attach_detach_blocks(attach,blockName,u.lastLego[blockNumber]);
+
+    // Stacca il blocco dal gripper 
     srv.request.model_name_1 = "ur5";
     srv.request.model_name_1 = "ur5";
     srv.request.link_name_1 = "hand_link";
     srv.request.model_name_2 = blockName; 
     srv.request.link_name_2 = "link";
-    detach.call(srv);
+    detach.call(srv);   
+
+    // Salva l'ultimo blocco attaccato per quella posizione
+    std::strcpy(u.lastLego[blockNumber],blockName);
 
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
@@ -158,7 +123,7 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
     movement(ur5_pub, STND_POS, STND_ANGLE, Th, vv, u, loop_rate);
 }
 
-void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName,int blockNumber, robot::ur5 u, ros::Rate loop_rate,ros::Publisher gripper,float gripperValue)
+void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName,int blockNumber, robot::ur5 u, ros::Rate loop_rate,ros::Publisher gripper,float gripperValue)
 {
     STND_POS << 0, 0.3203, 0.6147;
 
@@ -202,7 +167,7 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
         std::cerr << "posizione invalida\n";
     }
     else{
-        std::cout << "vf " << vf1(0) << " " << vf1(1) << "\n";
+        // std::cout << "vf " << vf1(0) << " " << vf1(1) << "\n";
         for(int c=0; c<10; c++){
             if(X>indx[c]&&X<indx[c+1]){
                 i=c;
@@ -220,7 +185,7 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
         dy2=My[i+1][j]+(My[i+1][j+1]-My[i+1][j])*(Y-indy[j])/(indy[j+1]-indy[j]);
         vf1(1)=dy1+(dy2-dy1)*(X-indx[i])/(indx[i+1]-indx[i]);
 
-        std::cout << "vf corretto " << vf1(0) << " " << vf1(1) << "\n";
+        // std::cout << "vf corretto " << vf1(0) << " " << vf1(1) << "\n";
     }
     int g;
 
@@ -230,6 +195,6 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
     VectorXf v(6);
     for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
 
-    place(detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper);
+    place(attach,detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper);
     cleanTh(Th);
 };
