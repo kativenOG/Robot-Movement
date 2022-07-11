@@ -82,7 +82,7 @@ int main(int argc, char **argv)
         // cin >> x;
         // if(x==1) return 0;
         while(cnt==i){
-          std::cout << "message" << std::endl;
+          std::cout << "cnt: " <<cnt<<"  i: "<<i<< std::endl;
           sleep(1);
         }
         // Cerco il tipo di blocco per capire la posizione finale !!!
