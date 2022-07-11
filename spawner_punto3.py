@@ -9,20 +9,20 @@ import random
 # Numero di settori in cui viene diviso il tavolo 
 sectors = 2
 # Numero di blocchi per settore 
-blockXarea=3
+blockXarea=2
 last_blocks = []
 for i in range(blockXarea):
     last_blocks.append(11) 
 print(last_blocks)
 
 x_start = -0.4
-y_start = 0.17
+y_start = 0.20
 # y1 = 0.25/sectors
 # y2 = 0.95/sectors
 # x1 = -0.4/sectors
 # x2 = 0.4/sectors
 x_sector = abs((0.4/sectors)-(x_start/sectors))
-y_sector = abs((0.95/sectors)-(y_start/sectors))
+y_sector = abs((0.75/sectors)-(y_start/sectors))
 # (Definisco chiamata a spawner) 
 # Call rospy spawn function to spawn objects in gazebo
 spawn_model_client = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
@@ -62,7 +62,7 @@ for i in range(sectors):
             print("Area: ",i," ",j,"  Block: ",brick)
             # Passo i dati allo spawner
             spawn_model_client(model_name=''+str(brick)+'_'+str(i)+'_'+str(j), 
-            model_xml=open('../ultimate_gazebo/models/lego_'+brick+'/model.sdf', 'r').read(),
+            model_xml=open('../ultimate_gazebo/models/'+brick+'/model.sdf', 'r').read(),
             robot_namespace='/foo',
             initial_pose=pos,
             reference_frame='world')
