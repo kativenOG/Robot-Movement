@@ -44,20 +44,21 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     above_step=vf;
     //above_step[2] = above_step[2]+0.5;
     above_step[2] = above_step[2]+0.1;
+    std::cout << phiF << "\n";
     movement(ur5_pub, above_step, phiF, Th, initial_pos, u, loop_rate);
     int rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
     //-------------------------
-    /*movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+    movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
     int y=1;
     float x;
-    phiF(0)=0;
-    phiF(1)=3.14;
-    phiF(2)=0;
+    //phiF(0)=0;
+    //phiF(1)=3.14;
+    //phiF(2)=0;
     while(y==1){
         std::cout << "pos?";
         std::cin >> y;
@@ -102,7 +103,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
         std::cout << "phief=" << phiF << "\n";
         std::cout << "continuare?";
         std::cin >> y;
-    }*/
+    }
     //-------------------------
     movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
 
@@ -228,6 +229,14 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
             }
             if(Y<indy[c]&&Y>indy[c+1]){
                 j=c;
+            }
+        }
+        if(Y<-0.695){
+            if(X<-0.344){
+                vf1(2)+=0.007;
+            }
+            if(X>0.344){
+                vf1(2)+=0.002;
             }
         }
         //std::cout << "i=" << i << " j=" << j << " X range: " << indx[i] << "-" << indx[i+1] << " Y range: " << indy[j] << "-" << indy[j+1];
