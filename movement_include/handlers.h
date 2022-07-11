@@ -57,5 +57,6 @@ void brick_getter(const robot_movement::customMsg::ConstPtr &val)
     // Block Type and Gripper Width
     blockNumber[cnt] = (val->type);
     gripperWidth[cnt] = (val->gWidth);
+    std::cout<<cnt<<" esimo blocco:"<<"  Tipo: "<<blockNumber(cnt)<<"Position: "<< block_position.row(cnt)<<"Angle: "<<block_angle.row(cnt)<<std::endl;
     cnt++;
 }
