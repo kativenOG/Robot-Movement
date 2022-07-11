@@ -108,6 +108,12 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     // std::cin >> solution;
     RowVectorXf qEf(6);
     int i=6; // soluzione migliore senza il bisogno di cercarla tra le 8
+    
+    //--------------------
+    //std::cout << "scegliere soluzione:";
+    //std::cin >> i;
+    //--------------------
+
     // for(i=0;i<qEf.rows();i++){
     qEf= qEf_t.row(i);
     //   if(qEf(3)<-1.57) break;
