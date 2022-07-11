@@ -204,6 +204,14 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
                 j=c;
             }
         }
+        if(Y<-0.695){
+            if(X<-0.344){
+                vf1(2)+=0.007;
+            }
+            if(X>0.344){
+                vf1(2)+=0.002;
+            }
+        }
         float dx1,dx2,dy1,dy2;
         dx1=Mx[i][j]+(Mx[i+1][j]-Mx[i][j])*(X-indx[i])/(indx[i+1]-indx[i]);
         dx2=Mx[i][j+1]+(Mx[i+1][j+1]-Mx[i][j+1])*(X-indx[i])/(indx[i+1]-indx[i]);
