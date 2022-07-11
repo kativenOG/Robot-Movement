@@ -19,7 +19,8 @@
 // Link attacher and movement
 #include "gazebo_ros_link_attacher/Attach.h"
 #include "move.h"
-#include "pick&place.h"
+// #include "pick&place.h"
+#include "pickPlaceLink.h"
 
 using namespace Eigen;
 using namespace std;
@@ -96,7 +97,7 @@ int main(int argc, char **argv)
         ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2);
 
         MatrixXf Th;
-        take_and_place(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk],blockk, u, loop_rate, ur5_gripper_pub,gg);
+        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk],blockk, u, loop_rate, ur5_gripper_pub,gg);
     }
     return 0;
 }
