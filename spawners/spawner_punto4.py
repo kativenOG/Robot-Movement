@@ -5,16 +5,11 @@ from geometry_msgs.msg import *
 import rospy
 import random
 import numpy as np 
-# Numero di settori in cui viene diviso il tavolo 
-sectors = 2
-# Numero di blocchi per settore 
-blockXarea=3
-last_blocks = []
-for i in range(blockXarea):
-    last_blocks.append(11) 
-print(last_blocks)
-# Posizioni in cui ci sono già blocchi 
 
+# Numero di settori in cui viene diviso il tavolo ( 2^sectors )  
+sectors = 2
+# Numero di blocchi per settore ( sempre 4 in questa versione mi raccomando non cambiare ) 
+blockXarea=4
 # Threshold di distanza minima tra i blocchi 
 threshold = 0.12
 
@@ -22,10 +17,9 @@ x_start = -0.4
 y_start = 0.20
 x_sector = abs((0.4/sectors)-(x_start/sectors))
 y_sector = abs((0.75/sectors)-(y_start/sectors))
-# (Definisco chiamata a spawner) 
-# Call rospy spawn function to spawn objects in gazebo
-spawn_model_client = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
 
+# Definisco chiamata a spawner 
+spawn_model_client = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
 blocks = [
     "X1-Y1-Z2",
     "X1-Y2-Z1",
@@ -62,28 +56,23 @@ for i in range(sectors):
                             positions.append(pos)
                             posCnt = False
 
-
-            #Controllo che il blocco che andrei a spawnare sia unico all'interno della sua area
-            while True:
-                x = False
-                brickNumber = random.randint(0,10)
-                # if(n==0):
-                #     x = True
-                for f in range(blockXarea):
-                    if(brickNumber == last_blocks[f]):
-                        x = True
-                if(x==False):
-                    break;
-
-            last_blocks[n]= brickNumber
+            # Spawner rudimentale per il punto 4 ( sono stanco :[ ) 
+            if(n==0):
+                brickNumber = 8 
+            elif(n==1):
+                brickNumber = 9
+            elif(n==2):
+                brickNumber = 2 
+            elif(n==3):
+                if(j==0 and i==0):
+                    brickNumber = 3 
+                else:
+                    brickNumber = 4 
             brick= blocks[brickNumber]
-            # print("Area: ",i," ",j,"  Block: ",brick)
+
             # Passo i dati allo spawner
             spawn_model_client(model_name=''+str(brick)+'_'+str(i)+'_'+str(j), 
             model_xml=open('../../ultimate_gazebo/models/'+brick+'/model.sdf', 'r').read(),
             robot_namespace='/foo',
             initial_pose=pos,
             reference_frame='world')
-        # Resetta i blocchi
-        for l in range(blockXarea):
-            last_blocks[l]=11 
