@@ -8,7 +8,7 @@
 #include "control_msgs/JointControllerState.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
-
+#include <cstdio>
 // Movement Kinematics
 #include "p2pMotionPlan.h"
 #include "ur5.h"
@@ -19,7 +19,6 @@
 // Link attacher and movement
 #include "gazebo_ros_link_attacher/Attach.h"
 #include "move.h"
-// #include "pick&place.h"
 #include "pickPlaceLink.h"
 
 using namespace Eigen;
@@ -76,7 +75,7 @@ int main(int argc, char **argv)
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
 
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < 12; i++)
     {
         while(cnt==i){
           std::cout << "cnt: " <<cnt<<"  i: "<<i<< std::endl;
@@ -85,8 +84,13 @@ int main(int argc, char **argv)
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
-        float fheigth = 0.115;
-        if(blockk==7 || blockk==1) fheigth= 0.105; 
+        float fheigth;
+        if(blockk==7 || blockk==1){
+          fheigth = 0.105 + (u.legoHeights[blockk])*0.041;  
+        }else{
+          fheigth = 0.115 + (u.legoHeights[blockk])*0.0586;  
+        }
+
         Vector3f vff;
         vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
 
@@ -95,9 +99,19 @@ int main(int argc, char **argv)
         ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
         Vector3f ee_angle;
         ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2);
-
+        
+        // Determina il quadrante del blocco e cambia il nome di conseguenza 
+        // FICCALO DENTRO A BLOCKNAME CON IL QUADRANTE :) 
+        char blockName[80];
+        int ipos,jpos; 
+        if(ee_pos[0]< 0) ipos=0;
+        else ipos=1;
+        if(ee_pos[1]> -0.475) jpos=0; // più vicino all'origine 
+        else jpos=1;
+        sprintf(blockName,"%s_%i_%i",u.legos[blockk],ipos,jpos);
         MatrixXf Th;
-        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk],blockk, u, loop_rate, ur5_gripper_pub,gg);
+        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, blockName, blockk, u, loop_rate, ur5_gripper_pub,gg);
+        u.legoHeights[blockk]++;
     }
     return 0;
 }

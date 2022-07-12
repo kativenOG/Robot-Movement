@@ -153,6 +153,7 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
             qEf(i) += (2 * M_PI);
         }
     }
+
     //----------------
     std::cout << qEf << "\n";
     /*int f;
@@ -180,8 +181,9 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
         }
     }*/
     //----------------
+
     float deltaT = 0;
-    for (int i = 0; i < corners; i++)
+    for (int i = 0; i < corners-3; i++)
     {
         float a = abs(qEf(i) - qEs(i));
         if (a > deltaT)
@@ -189,6 +191,16 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
             deltaT = a;
         }
     }
+
+    for (int i = 3; i < corners; i++)
+    {
+        float a = 0.5*abs(qEf(i) - qEs(i));
+        if (a > deltaT)
+        {
+            deltaT = a;
+        }
+    }
+ 
     // velocity control
     float vel = abs(qEf(1) - qEs(1) + qEf(2) - qEs(2));
     if (vel > deltaT)
