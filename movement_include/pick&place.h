@@ -46,7 +46,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
     //-------------------------
-    movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+    /*movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
@@ -99,7 +99,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
         std::cout << "phief=" << phiF << "\n";
         std::cout << "continuare?";
         std::cin >> y;
-    }
+    }*/
     //-------------------------
     movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
 
