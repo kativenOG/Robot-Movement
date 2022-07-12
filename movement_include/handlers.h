@@ -50,9 +50,9 @@ void brick_getter(const robot_movement::customMsg::ConstPtr &val)
     block_position(cnt,2) = (val->z)+0.06;
 
     // Orientation
-    block_angle(cnt,0) = (val->r);
+    block_angle(cnt,0) = (val->y_1);
     block_angle(cnt,1) = (val->p);
-    block_angle(cnt,2) = (val->y_1);
+    block_angle(cnt,2) = (val->r);
 
     // Block Type and Gripper Width
     blockNumber[cnt] = (val->type);

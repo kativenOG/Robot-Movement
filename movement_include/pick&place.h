@@ -45,6 +45,64 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     int rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
+
+    //-------------------------
+    /*movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+    rows = Th.rows() - 1;
+    for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+    cleanTh(Th);
+    int y=1;
+    float x;
+    //phiF(0)=0;
+    //phiF(1)=3.14;
+    //phiF(2)=0;
+    while(y==1){
+        std::cout << "pos?";
+        std::cin >> y;
+        if(y==1){
+            std::cout << "posx=";
+            std::cin >> x;
+            vf(0)=x;
+            std::cout << "posy=";
+            std::cin >> x;
+            vf(1)=x;
+            std::cout << "posz=";
+            std::cin >> x;
+            vf(2)=x;
+        }
+        std::cout << "ang?";
+        std::cin >> y;
+        if(y==1){
+            std::cout << "ang1=";
+            std::cin >> x;
+            phiF(0)=x;
+            std::cout << "ang2=";
+            std::cin >> x;
+            phiF(1)=x;
+            std::cout << "ang3=";
+            std::cin >> x;
+            phiF(2)=x;
+        }
+        movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+        rows = Th.rows() - 1;
+        for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+        cleanTh(Th);
+        std::cout << "grip?";
+        std::cin >> y;
+        while(y==1){
+            std::cout << "gripper=";
+            std::cin >> gripperValue;
+            closeGripper(gripper,gripperValue);
+            std::cout << "new gripper?";
+            std::cin >> y;
+        }
+        std::cout << "vf=" << vf << "\n";
+        std::cout << "phief=" << phiF << "\n";
+        std::cout << "continuare?";
+        std::cin >> y;
+    }*/
+    //-------------------------
+
     movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
     sleep(1.5);
     srv.request.model_name_1 = "ur5";
@@ -150,6 +208,14 @@ void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::P
             }
             if(Y<indy[c]&&Y>indy[c+1]){
                 j=c;
+            }
+        }
+        if(Y<-0.695){
+            if(X<-0.344){
+                vf1(2)+=0.007;
+            }
+            if(X>0.344){
+                vf1(2)+=0.002;
             }
         }
         float dx1,dx2,dy1,dy2;
