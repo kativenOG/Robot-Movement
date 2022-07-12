@@ -31,20 +31,20 @@ for i in range(0,11):
     itsNew = False 
     while(itsNew== False):
         brickNumber = random.randint(0,10)
-        print(i,"esimo blocco di tipo: ", brickNumber)
         itsNew = True 
         if (already_called[0]!=11):
             for x in range(0,11) :
                 if(already_called[x] == brickNumber):
                     itsNew= False
-                    print("TROVATA COPIA")
     # Riempie array blocchi presenti e cerca il vero nome del blocco 
     already_called[i] = brickNumber
+    if(brickNumber==7):
+        print("Brick 7 Pos: ",pos)
     brick= blocks[brickNumber]
 
     # Spawn del blocco :) 
     spawn_model_client(model_name=''+str(brick), 
-    model_xml=open('../ultimate_gazebo/models/'+brick+'/model.sdf', 'r').read(),
+    model_xml=open('../../ultimate_gazebo/models/'+brick+'/model.sdf', 'r').read(),
     robot_namespace='/foo',
     initial_pose=pos,
     reference_frame='world')

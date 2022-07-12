@@ -81,7 +81,7 @@ for i in range(sectors):
             # print("Area: ",i," ",j,"  Block: ",brick)
             # Passo i dati allo spawner
             spawn_model_client(model_name=''+str(brick)+'_'+str(i)+'_'+str(j), 
-            model_xml=open('../ultimate_gazebo/models/'+brick+'/model.sdf', 'r').read(),
+            model_xml=open('../../ultimate_gazebo/models/'+brick+'/model.sdf', 'r').read(),
             robot_namespace='/foo',
             initial_pose=pos,
             reference_frame='world')

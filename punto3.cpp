@@ -75,7 +75,7 @@ int main(int argc, char **argv)
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
 
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < 12; i++)
     {
         while(cnt==i){
           std::cout << "cnt: " <<cnt<<"  i: "<<i<< std::endl;
