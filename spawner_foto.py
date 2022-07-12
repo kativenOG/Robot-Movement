@@ -28,7 +28,7 @@ pos = Pose(Point(random.uniform(-0.3, 0.3), random.uniform(-0.3, -0.95),0.775), 
 # while((brickNumber>10) or (brickNumber<0)):
     # brickNumber = int(input()) 
 
-brick="X1-Y4-Z2"
+brick="X1-Y4-Z1"
 #Call rospy spawn function to spawn objects in gazebo
 #spawna direttamente in gazebo !
 spawn_model_client = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
