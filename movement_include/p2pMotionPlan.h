@@ -110,12 +110,22 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     int i=6; // soluzione migliore senza il bisogno di cercarla tra le 8
     
     //--------------------
+    if(phiEf(2)>1.56&&phiEf(2)<1.58){
+        if(qEf_t(i,3)>0){
+            i=7;
+        }
+        qEf= qEf_t.row(i);
+        qEf(5)=0;
+    }
+    else{
+        qEf= qEf_t.row(i);
+    }
     //std::cout << "scegliere soluzione:";
     //std::cin >> i;
     //--------------------
 
     // for(i=0;i<qEf.rows();i++){
-    qEf= qEf_t.row(i);
+    //qEf= qEf_t.row(i);
     //   if(qEf(3)<-1.57) break;
     //   if(i==5) qEf= qEf_t.row(0);
     // }
@@ -143,6 +153,33 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
             qEf(i) += (2 * M_PI);
         }
     }
+    //----------------
+    std::cout << qEf << "\n";
+    /*int f;
+    float f1;
+    std::cout << "w?";
+    std::cin >> f;
+    if(f==1){
+        std::cout << "w1?";
+        std::cin >> f;
+        if(f==1){
+            std::cin >> f1;
+            qEf(3)=f1;
+        }
+        std::cout << "w2?";
+        std::cin >> f;
+        if(f==1){
+            std::cin >> f1;
+            qEf(4)=f1;
+        }
+        std::cout << "w3?";
+        std::cin >> f;
+        if(f==1){
+            std::cin >> f1;
+            qEf(5)=f1;
+        }
+    }*/
+    //----------------
     float deltaT = 0;
     for (int i = 0; i < corners; i++)
     {
