@@ -70,8 +70,12 @@ namespace robot
         float legoPos [11][2] = {{-0.52,0.37},{-0.68,-0.23},{-0.675,-0.389},{-0.67,0.075},{-0.675,-0.077},{-0.549,-0.24},{-0.665,0.227},{-0.548,0.064},{-0.545,-0.1072},{-0.543,0.218},{-0.56,-0.39}};
 
         //lego angles   
+        float legoAngle [11][3] = {{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0.82,M_PI,0},{0.851,M_PI,0},{0,M_PI,0},{0,M_PI,0}};         
 
-        float legoAngle [11][3] = {{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0},{0.82,M_PI,0},{0.831,M_PI,0},{M_PI,M_PI,0},{M_PI,M_PI,0}};         
+        // Valori castello 
+        float castePos [11][2]=  {{-0.002,0.571},{-0.002,0.629},{-0.002,0.51},{0.057,0.57},{-0.061,0.569},{-0.003,0.673},{-0.003,0.462},{-0.106,0.572},{0.102,0.572},{-0.017,0.566},{0.017,0.566}}; 
+        //                           CENTER          UP_1          DOWN_1        RIGHT_1       LEFT_1         UP_2            DOWN_2          LEFT_2       RIGHT_2     FILLET_LEFT   FILLET_RIGHT
+        float casteAngle [2][3]={{0,M_PI,0},{M_PI_2,M_PI,0}}; 
 
         // lego names 
         char legos [11][30]  = {
