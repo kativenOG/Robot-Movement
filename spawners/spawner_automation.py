@@ -1,13 +1,27 @@
 #!/usr/bin/python3
-
-#spawner che genera casualmente un solo blocco (usato per il testing con mock_node) scritto da Carlo 
 from gazebo_msgs.srv import SpawnModel
 from geometry_msgs.msg import *
 import rospy
 import random
+import sys 
+import math 
 
-#Array containing all lego blocks names
-# blocks  = ["X1-Y2-Z1", "X2-Y2-Z2", "X1-Y3-Z2", "X1-Y2-Z2", "X1-Y2-Z2-CHAMFER", "X1-Y4-Z2", "X1-Y1-Z2", "X1-Y2-Z2-TWINFILLET", "X1-Y3-Z2-FILLET", "X1-Y4-Z1", "X2-Y2-Z2-FILLET"];
+
+def ToQuaternion(yaw, pitch, roll): #  yaw (Z), pitch (Y), roll (X)
+    cy = math.cos(yaw * 0.5)
+    sy = math.sin(yaw * 0.5)
+    cp = math.cos(pitch * 0.5)
+    sp = math.sin(pitch * 0.5)
+    cr = math.cos(roll * 0.5)
+    sr = math.sin(roll * 0.5)
+
+    w = (cr * cp * cy) + (sr * sp * sy)
+    x = (sr * cp * cy) - (cr * sp * sy)
+    y = (cr * sp * cy) + (sr * cp * sy)
+    z = (cr * cp * sy) - (sr * sp * cy)
+    q = Quaternion(w,x,y,z)
+    return q;
+
 blocks = [
     "X1-Y1-Z2",
     "X1-Y2-Z1",
@@ -21,14 +35,16 @@ blocks = [
     "X2-Y2-Z2",
     "X2-Y2-Z2-FILLET"]
 
-#Generate random position
-pos = Pose(Point(random.uniform(-0.3, 0.3), random.uniform(-0.3, -0.95),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
-#Get a random lego block from all legos
-# brickNumber = 11
-# while((brickNumber>10) or (brickNumber<0)):
-    # brickNumber = int(input()) 
+type_arg=int(sys.argv[1])
+x_arg = float(sys.argv[2])
+y_arg = float(sys.argv[3])
+yaw_arg=float(sys.argv[4])
 
-brick="X1-Y4-Z1"
+#Generate random position
+q=ToQuaternion(0,3.14,yaw_arg)
+pos = Pose(Point( x_arg,y_arg,0.785), q)
+#Get a random lego block from all legos
+brick=blocks[type_arg]
 #Call rospy spawn function to spawn objects in gazebo
 #spawna direttamente in gazebo !
 spawn_model_client = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)

@@ -11,7 +11,7 @@ sectors = 2
 # Numero di blocchi per settore ( sempre 4 in questa versione mi raccomando non cambiare ) 
 blockXarea=4
 # Threshold di distanza minima tra i blocchi 
-threshold = 0.12
+threshold = 0.068
 
 x_start = -0.4
 y_start = 0.20
@@ -58,11 +58,11 @@ for i in range(sectors):
 
             # Spawner rudimentale per il punto 4 ( sono stanco :[ ) 
             if(n==0):
-                brickNumber = 8 
+                brickNumber = 7 
             elif(n==1):
                 brickNumber = 9
             elif(n==2):
-                brickNumber = 2 
+                brickNumber = 5 
             elif(n==3):
                 if(j==0 and i==0):
                     brickNumber = 3 

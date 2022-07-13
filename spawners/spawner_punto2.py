@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 from gazebo_msgs.srv import SpawnModel
 from geometry_msgs.msg import *
 import rospy
