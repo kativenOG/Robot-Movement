@@ -28,7 +28,7 @@ while test ${a} -lt ${maxAngle}
   # echo ${angleArray[$a]} 
   ( roslaunch --disable-title --no-summary ultimate_robot automation.launch ) & 
   sleep 5
-  # ( rosrun ultimate_vision automation.py )
+  ( rosrun ultimate_vision automation.py )
   ( ../spawners/spawner_automation.py $1 ${x} ${y} ${angleArray[$a]} ) &  
   sleep 8
   ( pkill gzserver )

@@ -32,9 +32,9 @@ for x in ${allY[@]}; do
     # echo ${angleArray[$a]} 
     ( roslaunch --disable-title --no-summary ultimate_robot automation.launch ) & 
     sleep 5
-    # ( rosrun ultimate_vision automation.py )
+    ( rosrun ultimate_vision automation.py $1 ${angleArray[$a]} ) & 
     ( ../spawners/spawner_automation.py $1 ${x} ${y} ${angleArray[$a]} ) &  
-    sleep 8
+    sleep 9
     ( pkill gzserver )
     ( pkill gzclient )
     ( pkill roslaunch )        
