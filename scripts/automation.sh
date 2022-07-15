@@ -30,15 +30,17 @@ for x in ${allY[@]}; do
   while test ${a} -lt ${maxAngle}  
   do
     # echo ${angleArray[$a]} 
-    ( roslaunch --disable-title --no-summary ultimate_robot automation.launch ) & 
+    # echo ${x} 
+    # echo ${y} 
+    ( roslaunch --disable-title --no-summary ultimate_robot automation.launch ) &
     sleep 5
-    ( rosrun ultimate_vision automation.py $1 ${angleArray[$a]} ) & 
-    ( ../spawners/spawner_automation.py $1 ${x} ${y} ${angleArray[$a]} ) &  
-    sleep 9
+    ( rosrun ultimate_vision automation.py $1 ${angleArray[$a]} ) &
+    ( ../spawners/spawner_automation.py $1 ${x} ${y} ${angleArray[$a]} ) & 
+    sleep 8
     ( pkill gzserver )
     ( pkill gzclient )
-    ( pkill roslaunch )        
-    sleep 15
+    ( pkill roslaunch )       
+    sleep 10
     (( a++ )) 
   done
   # (( b++ ))
