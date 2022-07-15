@@ -73,10 +73,10 @@ namespace robot
         float legoAngle [11][3] = {{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0.82,M_PI,0},{0.851,M_PI,0},{0,M_PI,0},{0,M_PI,0}};         
 
         // Valori castello 
-        float castePos [11][2]=  {{-0.002,0.571},{-0.002,0.629},{-0.002,0.51},{0.057,0.57},{-0.061,0.569},{-0.003,0.673},{-0.003,0.462},{-0.106,0.572},{0.102,0.572},{-0.017,0.566},{0.017,0.566}}; 
-        //                           CENTER          Y3_1            Y3_2          Y3_3         Y3_4           Y4_1            Y4_2          Y4_3          Y4_4        FILLET_LEFT    FILLET_RIGHT
-        float casteAngle [2][3]={{0,M_PI,0},{M_PI_2,M_PI,0}}; 
-
+        float castePos [11][2]=  {{-0.002,0.531},{-0.11,0.531},{-0.002,0.651},{0.11,0.531},{-0.002,0.419},{-0.071,0.607},{0.071,0.607},{0.071,0.460},{-0.071,0.460},{-0.019,0.531},{0.019,0.531}}; 
+        //                           CENTER          Y3_1            Y3_2          Y3_3         Y3_4           Y4_1            Y4_2          Y4_3          Y4_4      FILLET_LEFT    FILLET_RIGHT
+        float casteAngle [2][3]={{0,M_PI,0},{M_PI_2,M_PI,0},{2.38,M_PI,0},{-2.38,M_PI,0}}; 
+        //                                                      DESTRA        SINISTRA 
         // Magari da portare fuori (globali) in pickPlaceLink per permettere di controllare se sono superiori al primo :)    
         int cTypeOne=0,cTypeTwo=0,cTypeThree=0;
 
