@@ -167,7 +167,7 @@ void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::
         {0.1508, 0.1508, 0.1508, 0.1511, 0.1515, 0.1518, 0.1528, 0.1533, 0.1538, 0.1541, 0.155},
         {0.1515, 0.1515, 0.1518, 0.1523, 0.1526, 0.1528, 0.1532, 0.1535, 0.154, 0.1541, 0.1548},
         {0.1525, 0.1524, 0.1527, 0.1528, 0.1531, 0.1533, 0.1536, 0.1538, 0.1542, 0.1544, 0.155},
-        {0.154, 0.1538, 0.1538, 0.1538, 0.1541, 0.1541, 0.1542, 0.1543, 0.1546, 0.1552, 0.157},};
+        {0.154, 0.1538, 0.1538, 0.1538, 0.1541, 0.1541, 0.1542, 0.1543, 0.1546, 0.1552, 0.157}};
 
     int i,j;
     float minx=-0.43;
@@ -182,7 +182,7 @@ void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::
         std::cerr << "posizione invalida\n";
     }
     else{
-        // std::cout << "vf " << vf1(0) << " " << vf1(1) << "\n";
+        std::cout << "vf " << vf1(0) << " " << vf1(1) << " " << vf1(2) << "\n";
         for(int c=0; c<10; c++){
             if(X>indx[c]&&X<indx[c+1]){
                 i=c;
@@ -206,9 +206,8 @@ void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::
 
         
 
-        std::cout << "vf corretto " << vf1(0) << " " << vf1(1) << "\n";
+        std::cout << "vf corretto " << vf1(0) << " " << vf1(1) << " " << vf1(2) <<"\n";
     }
-    int g;
 
     take(attach, ur5_pub, vf1, phiF, Th, initial_pos, blockName, u, loop_rate,gripper, gripperValue);
 
