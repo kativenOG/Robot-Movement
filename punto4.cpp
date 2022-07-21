@@ -75,6 +75,8 @@ int main(int argc, char **argv)
     ros::ServiceClient dynLinkAtt = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/attach");
     ros::ServiceClient dynLinkDet = n.serviceClient<gazebo_ros_link_attacher::Attach>("/link_attacher_node/detach");
 
+    // Magari da portare fuori (globali) in pickPlaceLink per permettere di controllare se sono superiori al primo :)    
+    int cTypeOne=0,cTypeTwo=0,cTypeThree=0;
 
     for (int i = 0; i < 16; i++){
     
@@ -104,41 +106,42 @@ int main(int argc, char **argv)
         sprintf(blockName,"%s_%i_%i",u.legos[blockk],ipos,jpos);
 
         char squareBlockNames[4][30];
+        u.castleMode = true;
 
         switch (blockk) {
           case 7: // y4-z1
-            fheigth = 0.1636;  // altezza standard blocco z1 + un blocco z2 
+            fheigth = 0.165;  // altezza standard blocco z1 + un blocco z2 
             std::strcpy(u.lastLego[7],squareBlockNames[cTypeOne]);
             // forse metti un altro link 
-            vff << u.castlePos[5+cTypeOne][0],u.castlePos[5+cTypeOne][1] ,fheigth;
-            cTypeOne++;
+            vff <<u.castlePos[5+u.cTypeOne][0],u.castlePos[5+u.cTypeOne][1] ,fheigth;
+            u.cTypeOne++;
             break;
           case 9: // x2-y2
             fheigth = 0.115 + (u.legoHeights[blockk])*0.0586;  
-            vff << u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
+            vff <<u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
             break;
           case 5: // y3-z2
             fheigth = 0.115;  
             std::strcpy(u.lastLego[5],"end_table");
-            std::strcpy(squareBlockNames[cTypeTwo],u.lastLego[5]);
-            vff << u.castlePos[1+cTypeTwo][0],u.castlePos[1+cTypeTwo][1] ,fheigth;
-            cTypeTwo++;
+            std::strcpy(squareBlockNames[u.cTypeTwo],u.lastLego[5]);
+            vff <<u.castlePos[1+u.cTypeTwo][0],u.castlePos[1+u.cTypeTwo][1] ,fheigth;
+            u.cTypeTwo++;
             break;
           case 4: // twinfillet
             if(cTypeThree==2){
               fheigth = 0.1736 + (u.legoHeights[9])*0.0586;  // sommo un blocco di z2 in più che rappresenta i twinfillet
-              vff << u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
+              vff <<u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
             }else{
               fheigth = 0.115 + (u.legoHeights[9])*0.0586; // l'altezza della colonna dei blocchi di tipo 9  
-              vff << u.castlePos[9+cTypeThree][0],u.castlePos[9+cTypeThree][1] ,fheigth;
+              vff <<u.castlePos[9+u.cTypeThree][0],u.castlePos[9+u.cTypeThree][1] ,fheigth;
               std::strcpy(u.lastLego[4],u.lastLego[9]);
             }
-            cTypeThree++;
+            u.cTypeThree++;
             break;
           case 3: // bandiera  
             std::strcpy(u.lastLego[3],u.lastLego[4]); // copia l'ultimo twinfillet per fare il link dinamico 
             fheigth = 0.2322 + (u.legoHeights[9])*0.0586;  // sommo un blocco di z2 in più che rappresenta i twinfillet
-            vff << u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
+            vff <<u.castlePos[0][0],u.castlePos[0][1],fheigth;
             break;
         }
 

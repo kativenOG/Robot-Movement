@@ -35,11 +35,11 @@ ${gazebo_ros_link_attacher_INCLUDE_DIRS}
 # Include la cartella degli headers
 include_directories(movement_include)
 
-add_executable(mock_node mockPublisher.cpp)
 add_executable(point_1_node punto1.cpp)
 add_executable(point_2_node punto2.cpp)
 add_executable(point_3_node punto3.cpp)
-# add_executable(point_4_node punto3.cpp)
+add_executable(point_4_node punto4.cpp)
+# add_executable(mock_node mockPublisher.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries( 
@@ -58,9 +58,13 @@ target_link_libraries(
     ${Eigen_LIBRARIES}
 )
 target_link_libraries( 
-    mock_node
+    point_4_node 
     ${catkin_LIBRARIES}
     ${Eigen_LIBRARIES}
 )
-
+# target_link_libraries( 
+#     mock_node
+#     ${catkin_LIBRARIES}
+#     ${Eigen_LIBRARIES}
+# )
 

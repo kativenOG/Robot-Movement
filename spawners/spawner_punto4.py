@@ -11,7 +11,7 @@ sectors = 2
 # Numero di blocchi per settore ( sempre 4 in questa versione mi raccomando non cambiare ) 
 blockXarea=4
 # Threshold di distanza minima tra i blocchi 
-threshold = 0.068
+threshold = 0.088
 
 x_start = -0.4
 y_start = 0.20

@@ -87,17 +87,31 @@ void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher u
 
     int rows;
     VectorXf vv(6);
- 
     Vector3f above_step;
     above_step=vf;
     above_step[2] = above_step[2]+0.25;
+    
     movement(ur5_pub, above_step, phiF, Th, initial_pos, u, loop_rate);
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);   
 
     Vector3f ffangle;
-    ffangle<<u.legoAngle[blockNumber][0],u.legoAngle[blockNumber][1],u.legoAngle[blockNumber][2];
+    int counter;
+    if(u.castleMode == false){
+      ffangle<<u.legoAngle[blockNumber][0],u.legoAngle[blockNumber][1],u.legoAngle[blockNumber][2];
+    }else{
+      if(blockNumber==4 && u.cTypeThree==3){
+        ffangle<<u.castleAngle[1][0],u.castleAngle[1][1],u.castleAngle[1][2]; // cicla tra le 2 posizioni inclinate
+      }else if(blockNumber == 7 ){ // y4
+        counter = u.cTypeOne%2; 
+        ffangle<<u.castleAngle[2+counter][0],u.castleAngle[2+counter][1],u.castleAngle[2+counter][2]; // cicla tra le 2 posizioni inclinate
+      }else if(blockNumber = 5){ //y3
+        counter = u.cTypeTwo%2; 
+        ffangle<<u.castleAngle[counter][0],u.castleAngle[counter][1],u.castleAngle[counter][2]; // cicla tra dritti e in piedi 
+      }else ffangle<<u.castleAngle[0][0],u.castleAngle[0][1],u.castleAngle[0][2]; // tutti gli altri blocchi vanno storti di 90 gradi 
+    } 
+
     movement(ur5_pub, vf, ffangle , Th, vv, u, loop_rate);
     sleep(1.8);
     openGripper(gripper);
