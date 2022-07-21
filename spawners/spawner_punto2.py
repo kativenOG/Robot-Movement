@@ -24,9 +24,7 @@ positions = [[-0.33,0.25],[-0.1,0.35],[0.1,0.25],[0.25,0.23],[0.35,0.45],[-0.33,
 
 for i in range(0,11):
     # Posizione del blocco 
-    pos = Pose(Point(-positions[i][0],-positions[i][1] ,0.777), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
-
-    # Calcolo tipo del blocco 
+        # Calcolo tipo del blocco 
     itsNew = False 
     while(itsNew== False):
         brickNumber = random.randint(0,10)
@@ -36,6 +34,11 @@ for i in range(0,11):
                 if(already_called[x] == brickNumber):
                     itsNew= False
     # Riempie array blocchi presenti e cerca il vero nome del blocco 
+    if(brickNumber==0):
+        pos = Pose(Point(-positions[i][0],-positions[i][1] ,0.82), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+    else:
+        pos = Pose(Point(-positions[i][0],-positions[i][1] ,0.777), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+
     already_called[i] = brickNumber
     if(brickNumber==7):
         print("Brick 7 Pos: ",pos)
@@ -43,7 +46,7 @@ for i in range(0,11):
 
     # Spawn del blocco :) 
     spawn_model_client(model_name=''+str(brick), 
-    model_xml=open('../../ultimate_gazebo/models/'+brick+'/model1.sdf', 'r').read(),
+    model_xml=open('/home/robotica/progetto_ws/src/ultimate_gazebo/models/'+brick+'/model1.sdf', 'r').read(),
     robot_namespace='/foo',
     initial_pose=pos,
     reference_frame='world')

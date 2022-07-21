@@ -45,25 +45,6 @@ for i in range(sectors):
     for j in range(sectors):
         positions = []
         for n in range(blockXarea):
-            # Generate random position
-            posCnt= True 
-            if (n==0):
-                pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
-                positions.append(pos)
-                print(positions)
-            else:
-                while posCnt==True:
-                    print("Continua a andare")
-                    pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
-                    for k in range(n):
-                        print(positions)
-                        if np.sqrt((pos.position.x-positions[k].position.x)**2+(pos.position.y-positions[k].position.y)**2) < threshold:
-                            print("Non è andata: ",np.sqrt((pos.position.x-positions[k].position.x)**2+(pos.position.y-positions[k].position.y)**2))
-                            break
-                        if k == n-1:
-                            positions.append(pos)
-                            posCnt = False
-
 
             #Controllo che il blocco che andrei a spawnare sia unico all'interno della sua area
             while True:
@@ -76,6 +57,33 @@ for i in range(sectors):
                         x = True
                 if(x==False):
                     break;
+
+            # Generate random position
+            posCnt= True 
+            if (n==0):
+                if(brickNumber==0):
+                    pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.82), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+                else:
+                     pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+                positions.append(pos)
+                print(positions)
+            else:
+                while posCnt==True:
+                    print("Continua a andare")
+                    if(brickNumber==0):
+                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.82), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+                    else:
+                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+                    for k in range(n):
+                        print(positions)
+                        if np.sqrt((pos.position.x-positions[k].position.x)**2+(pos.position.y-positions[k].position.y)**2) < threshold:
+                            print("Non è andata: ",np.sqrt((pos.position.x-positions[k].position.x)**2+(pos.position.y-positions[k].position.y)**2))
+                            break
+                        if k == n-1:
+                            positions.append(pos)
+                            posCnt = False
+
+            
             blockTypeCounter[brickNumber]= blockTypeCounter[brickNumber]+1 
             last_blocks[n]= brickNumber
             brick= blocks[brickNumber]
@@ -83,7 +91,7 @@ for i in range(sectors):
             # print("Area: ",i," ",j,"  Block: ",brick)
             # Passo i dati allo spawner
             spawn_model_client(model_name=''+str(brick)+'_'+str(i)+'_'+str(j), 
-            model_xml=open('../../ultimate_gazebo/models/'+brick+sdfName, 'r').read(),
+            model_xml=open('/home/robotica/progetto_ws/src/ultimate_gazebo/models/'+brick+sdfName, 'r').read(),
             robot_namespace='/foo',
             initial_pose=pos,
             reference_frame='world')

@@ -86,9 +86,13 @@ int main(int argc, char **argv)
         float gg= gripperWidth[i];
         float fheigth;
         if(blockk==7 || blockk==1){
-          fheigth = 0.105 + (u.legoHeights[blockk])*0.041;  
+          // if( u.legoHeights[blockk]!=0 ) 
+          fheigth = 0.1 + (u.legoHeights[blockk])*0.025;  
+          // else fheigth = 0.105;  
         }else{
-          fheigth = 0.115 + (u.legoHeights[blockk])*0.0586;  
+          // if( u.legoHeights[blockk]!=0 ) 
+          fheigth = 0.110+ (u.legoHeights[blockk])*0.0436;  
+          // else fheigth = 0.115; 
         }
 
         Vector3f vff;

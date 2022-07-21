@@ -81,7 +81,7 @@ for i in range(sectors):
 
             # Passo i dati allo spawner
             spawn_model_client(model_name=''+str(brick)+'_'+str(i)+'_'+str(j), 
-            model_xml=open('../../ultimate_gazebo/models/'+brick+sdfName, 'r').read(),
+            model_xml=open('/home/robotica/progetto_ws/src/ultimate_gazebo/models/'+brick+sdfName, 'r').read(),
             robot_namespace='/foo',
             initial_pose=pos,
             reference_frame='world')
