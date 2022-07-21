@@ -12,6 +12,8 @@ sectors = 2
 blockXarea=4
 # Threshold di distanza minima tra i blocchi 
 threshold = 0.088
+# numero di blocchi sul tavolo per ogni tipo 
+blockTypeCounter = [0,0,0,0,0,0,0,0,0,0,0]
 
 x_start = -0.4
 y_start = 0.20
@@ -59,20 +61,27 @@ for i in range(sectors):
             # Spawner rudimentale per il punto 4 ( sono stanco :[ ) 
             if(n==0):
                 brickNumber = 7 
+                sdfName = "/model1.sdf"
             elif(n==1):
                 brickNumber = 9
+                blockTypeCounter[brickNumber]= blockTypeCounter[brickNumber]+1 
+                sdfName = "/model%d.sdf" % (blockTypeCounter[brickNumber])
             elif(n==2):
                 brickNumber = 5 
+                sdfName = "/model2.sdf"
             elif(n==3):
                 if(j==0 and i==0):
                     brickNumber = 3 
+                    sdfName = "/model4.sdf"
                 else:
                     brickNumber = 4 
+                    blockTypeCounter[brickNumber]= blockTypeCounter[brickNumber]+1 
+                    sdfName = "/model%d.sdf" % (blockTypeCounter[brickNumber])
             brick= blocks[brickNumber]
 
             # Passo i dati allo spawner
             spawn_model_client(model_name=''+str(brick)+'_'+str(i)+'_'+str(j), 
-            model_xml=open('../../ultimate_gazebo/models/'+brick+'/model.sdf', 'r').read(),
+            model_xml=open('../../ultimate_gazebo/models/'+brick+sdfName, 'r').read(),
             robot_namespace='/foo',
             initial_pose=pos,
             reference_frame='world')

@@ -9,12 +9,14 @@ import numpy as np
 sectors = 2
 # Numero di blocchi per settore 
 blockXarea=3
+# ultimo blocchi inseriti nel settore
 last_blocks = []
 for i in range(blockXarea):
     last_blocks.append(11) 
 print(last_blocks)
-# Posizioni in cui ci sono già blocchi 
 
+# numero di blocchi sul tavolo per ogni tipo 
+blockTypeCounter = [0,0,0,0,0,0,0,0,0,0,0]
 # Threshold di distanza minima tra i blocchi 
 threshold = 0.12
 
@@ -74,13 +76,14 @@ for i in range(sectors):
                         x = True
                 if(x==False):
                     break;
-
+            blockTypeCounter[brickNumber]= blockTypeCounter[brickNumber]+1 
             last_blocks[n]= brickNumber
             brick= blocks[brickNumber]
+            sdfName = "/model%d.sdf" % (blockTypeCounter[brickNumber])
             # print("Area: ",i," ",j,"  Block: ",brick)
             # Passo i dati allo spawner
             spawn_model_client(model_name=''+str(brick)+'_'+str(i)+'_'+str(j), 
-            model_xml=open('../../ultimate_gazebo/models/'+brick+'/model.sdf', 'r').read(),
+            model_xml=open('../../ultimate_gazebo/models/'+brick+sdfName, 'r').read(),
             robot_namespace='/foo',
             initial_pose=pos,
             reference_frame='world')

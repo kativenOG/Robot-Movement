@@ -43,7 +43,7 @@ for i in range(0,11):
 
     # Spawn del blocco :) 
     spawn_model_client(model_name=''+str(brick), 
-    model_xml=open('../../ultimate_gazebo/models/'+brick+'/model.sdf', 'r').read(),
+    model_xml=open('../../ultimate_gazebo/models/'+brick+'/model1.sdf', 'r').read(),
     robot_namespace='/foo',
     initial_pose=pos,
     reference_frame='world')
