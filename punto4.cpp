@@ -111,7 +111,7 @@ int main(int argc, char **argv)
         switch (blockk) {
           case 7: // y4-z1
             fheigth = 0.1586;  // altezza standard blocco z1 + un blocco z2 
-            st::strcpy(u.lastLego[7],squareBlockNames[u.cTypeOne]);
+            std::strcpy(u.lastLego[7],squareBlockNames[u.cTypeOne]);
             // forse metti un altro link 
             vff <<u.castlePos[5+u.cTypeOne][0],u.castlePos[5+u.cTypeOne][1] ,fheigth;
             u.cTypeOne++;
@@ -142,7 +142,8 @@ int main(int argc, char **argv)
           case 3: // bandiera  
             std::strcpy(u.lastLego[3],u.lastLego[4]); // copia l'ultimo twinfillet per fare il link dinamico 
             fheigth = 0.2022 + (u.legoHeights[9])*0.0436;  // sommo un blocco di z2 in più che rappresenta i twinfillet
-            vff <<u.castlePos[0][0],u.castlePos[0][1],fheigth;
+            float deltaBandiera = -0.031;
+            vff <<deltaBandiera,u.castlePos[0][1],fheigth;
             break;
         }
 
