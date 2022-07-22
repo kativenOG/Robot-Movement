@@ -3,6 +3,8 @@ from gazebo_msgs.srv import SpawnModel
 from geometry_msgs.msg import *
 import rospy
 import random
+import os  
+home_path = os.environ["HOME"]
 
 spawn_model_client = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
 
@@ -46,7 +48,7 @@ for i in range(0,11):
 
     # Spawn del blocco :) 
     spawn_model_client(model_name=''+str(brick), 
-    model_xml=open('/home/robotica/progetto_ws/src/ultimate_gazebo/models/'+brick+'/model1.sdf', 'r').read(),
+    model_xml=open(home_path+'/progetto_ws/src/ultimate_gazebo/models/'+brick+'/model1.sdf', 'r').read(),
     robot_namespace='/foo',
     initial_pose=pos,
     reference_frame='world')

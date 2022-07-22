@@ -5,6 +5,8 @@ from geometry_msgs.msg import *
 import rospy
 import random
 import numpy as np 
+import os  
+home_path = os.environ["HOME"]
 
 # Numero di settori in cui viene diviso il tavolo ( 2^sectors )  
 sectors = 2
@@ -81,7 +83,7 @@ for i in range(sectors):
 
             # Passo i dati allo spawner
             spawn_model_client(model_name=''+str(brick)+'_'+str(i)+'_'+str(j), 
-            model_xml=open('/home/robotica/progetto_ws/src/ultimate_gazebo/models/'+brick+sdfName, 'r').read(),
+            model_xml=open(home_path+'/progetto_ws/src/ultimate_gazebo/models/'+brick+sdfName, 'r').read(),
             robot_namespace='/foo',
             initial_pose=pos,
             reference_frame='world')
