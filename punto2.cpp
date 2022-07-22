@@ -8,7 +8,7 @@
 #include "control_msgs/JointControllerState.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
-
+#include <std_srvs/Empty.h>
 // Movement Kinematics
 #include "p2pMotionPlan.h"
 #include "ur5.h"
@@ -67,6 +67,9 @@ int main(int argc, char **argv)
     ros::AsyncSpinner spinner(4);
     spinner.start();
 
+    ros::ServiceClient pauseGazebo = n.serviceClient<std_srvs::Empty>("/gazebo/unpause_physics");
+    std_srvs::Empty emptySrv;
+    pauseGazebo.call(emptySrv);
     // METTI SEMPRE COUT PER SINCRONIZZARE COSÌ NON SI PERDONO MESSAGGI
     // int x;
     // cout << "Inizio Programma !";

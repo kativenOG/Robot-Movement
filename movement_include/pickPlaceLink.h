@@ -85,16 +85,6 @@ void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher u
 
     gazebo_ros_link_attacher::Attach srv;
 
-    int rows;
-    VectorXf vv(6);
-    Vector3f above_step;
-    above_step=vf;
-    above_step[2] = above_step[2]+0.25;
-    
-    movement(ur5_pub, above_step, phiF, Th, initial_pos, u, loop_rate);
-    rows = Th.rows() - 1;
-    for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-    cleanTh(Th);   
 
     Vector3f ffangle;
     int counter;
@@ -111,6 +101,17 @@ void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher u
         ffangle<<u.castleAngle[counter][0],u.castleAngle[counter][1],u.castleAngle[counter][2]; // cicla tra dritti e in piedi 
       }else ffangle<<u.castleAngle[0][0],u.castleAngle[0][1],u.castleAngle[0][2]; // tutti gli altri blocchi vanno storti di 90 gradi 
     } 
+
+    int rows;
+    VectorXf vv(6);
+    Vector3f above_step;
+    above_step=vf;
+    above_step[2] = above_step[2]+0.25;
+    
+    movement(ur5_pub, above_step, ffangle, Th, initial_pos, u, loop_rate);
+    rows = Th.rows() - 1;
+    for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+    cleanTh(Th);   
 
     movement(ur5_pub, vf, ffangle , Th, vv, u, loop_rate);
     sleep(1.8);
