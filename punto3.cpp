@@ -91,6 +91,7 @@ int main(int argc, char **argv)
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
+        float rtype= rotType[i];
         float fheigth;
         if(blockk==7 || blockk==1){
           // if( u.legoHeights[blockk]!=0 ) 
@@ -110,7 +111,6 @@ int main(int argc, char **argv)
         ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
         Vector3f ee_angle;
         ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2);
-        float rtype= rotType[i];
         // Determina il quadrante del blocco e cambia il nome di conseguenza 
         // FICCALO DENTRO A BLOCKNAME CON IL QUADRANTE :) 
         char blockName[80];
