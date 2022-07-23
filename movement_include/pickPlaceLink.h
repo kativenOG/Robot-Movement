@@ -111,8 +111,7 @@ void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher u
     movement(ur5_pub, above_step, ffangle, Th, initial_pos, u, loop_rate);
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-    cleanTh(Th);   
-
+    cleanTh(Th);
     movement(ur5_pub, vf, ffangle , Th, vv, u, loop_rate);
     sleep(1.8);
     openGripper(gripper);
