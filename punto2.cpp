@@ -88,6 +88,7 @@ int main(int argc, char **argv)
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
+        float rtype= rotType[i];
         float fheigth = 0.115;
         if(blockk==7 || blockk==1) fheigth= 0.105; 
         Vector3f vff;
@@ -100,7 +101,7 @@ int main(int argc, char **argv)
         ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2);
 
         MatrixXf Th;
-        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk],blockk, u, loop_rate, ur5_gripper_pub,gg);
+        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, u.legos[blockk],blockk, u, loop_rate, ur5_gripper_pub,gg,rtype);
     }
     return 0;
 }

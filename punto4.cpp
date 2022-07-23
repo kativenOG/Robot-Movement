@@ -153,9 +153,9 @@ int main(int argc, char **argv)
             vff <<deltaBandiera,u.castlePos[0][1],fheigth;
             break;
         }
-
+        float rtype= rotType[i];
         MatrixXf Th;
-        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, blockName, blockk, u, loop_rate, ur5_gripper_pub,gg);
+        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, blockName, blockk, u, loop_rate, ur5_gripper_pub,gg,rtype);
         u.legoHeights[blockk]++;
     }
     return 0;

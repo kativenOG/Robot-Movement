@@ -78,7 +78,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     movement(ur5_pub, above_step, phiF, Th, vv, u, loop_rate);
 };
 
-void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper)
+void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper,float rotType)
 {
     STND_POS << 0, 0.3203, 0.6147;
     STND_ANGLE << -0.4280, -0.0028, 3.0650;
@@ -138,7 +138,7 @@ void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher u
     movement(ur5_pub, STND_POS, STND_ANGLE, Th, vv, u, loop_rate);
 }
 
-void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName,int blockNumber, robot::ur5 u, ros::Rate loop_rate,ros::Publisher gripper,float gripperValue)
+void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName,int blockNumber, robot::ur5 u, ros::Rate loop_rate,ros::Publisher gripper,float gripperValue,float rotType)
 {
     STND_POS << 0, 0.3203, 0.6147;
 
@@ -230,6 +230,6 @@ void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::
     VectorXf v(6);
     for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
 
-    place(attach,detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper);
+    place(attach,detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper,rotType);
     cleanTh(Th);
 };

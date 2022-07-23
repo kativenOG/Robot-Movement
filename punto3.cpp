@@ -110,7 +110,7 @@ int main(int argc, char **argv)
         ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
         Vector3f ee_angle;
         ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2);
-        
+        float rtype= rotType[i];
         // Determina il quadrante del blocco e cambia il nome di conseguenza 
         // FICCALO DENTRO A BLOCKNAME CON IL QUADRANTE :) 
         char blockName[80];
@@ -121,7 +121,7 @@ int main(int argc, char **argv)
         else jpos=1;
         sprintf(blockName,"%s_%i_%i",u.legos[blockk],ipos,jpos);
         MatrixXf Th;
-        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, blockName, blockk, u, loop_rate, ur5_gripper_pub,gg);
+        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, blockName, blockk, u, loop_rate, ur5_gripper_pub,gg,rtype);
         u.legoHeights[blockk]++;
     }
     return 0;
