@@ -66,17 +66,27 @@ namespace robot
           "end_table",
           "end_table",
         }; 
+
         // lego pos
         float legoPos [11][2] = {{-0.52,0.37},{-0.68,-0.23},{-0.675,-0.389},{-0.67,0.075},{-0.675,-0.077},{-0.549,-0.24},{-0.665,0.227},{-0.548,0.064},{-0.545,-0.1072},{-0.543,0.218},{-0.56,-0.39}};
-
+        // lego side pos
+        float lSidePos [11][2] = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
         //lego angles   
         float legoAngle [11][3] = {{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0.82,M_PI,0},{0.851,M_PI,0},{0,M_PI,0},{0,M_PI,0}};         
-
-        // Valori castello 
-        float castlePos [11][2]=  {{-0.002,-0.531},{-0.11,-0.531},{-0.002,-0.641},{0.11,-0.531},{-0.002,-0.419},{-0.071,-0.607},{0.071,-0.607},{0.071,-0.460},{-0.071,-0.460},{-0.002,-0.5155},{-0.002,-0.5465}}; 
+        // angoli dal lato (solo tre da calcolare, gli altri sono tutti uguali )  
+        float lSideAngles[11][3] = {{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}};         
+         
+        // castle pos 
+        float castlePos[11][2]={{-0.002,-0.531},{-0.11,-0.531},{-0.002,-0.641},{0.11,-0.531},{-0.002,-0.419},{-0.071,-0.607},{0.071,-0.607},{0.071,-0.460},{-0.071,-0.460},{-0.002,-0.5155},{-0.002,-0.5465}}; 
         //                           CENTER          Y3_1               Y3_2            Y3_3          Y3_4            Y4_1            Y4_2           Y4_3            Y4_4        FILLET_LEFT   FILLET_RIGHT
+        // castle side pos 
+        float castlePos[11][2]={{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}; 
+        // castle angles
         float castleAngle [4][3]={{M_PI_2,M_PI,0},{0,M_PI,0},{2.38,M_PI,0},{-2.38,M_PI,0}}; 
         //                                                      DESTRA        SINISTRA 
+        //angoli dal lato castello 
+        float cSideAngles[4][3]={{0,0,0},{0,0,0},{0,0,0},{0,0,0}}; 
+
         // check per angoli e numero di blocchi castello     
         int cTypeOne=0,cTypeTwo=0,cTypeThree=0;
         bool castleMode = false;
