@@ -9,7 +9,7 @@ home_path = os.environ["HOME"]
 # Numero di settori in cui viene diviso il tavolo 
 sectors = 2
 # Numero di blocchi per settore 
-blockXarea=3
+blockXarea=1
 
 #rpy to Quaternion
 # def get_quaternion_from_euler(roll, pitch, yaw):

@@ -100,8 +100,11 @@ int main(int argc, char **argv)
         Vector3f ee_angle;
         int ee_roll_appo = ((int)(block_angle(i,2)*1000))%10000;
         float ee_roll = ee_roll_appo/1000;
-        if(ee_roll<0.7) ee_roll=0;
+
+        if(ee_roll<1) ee_roll=0;
+        else if(ee_roll>2) ee_roll=3.14;
         else ee_roll=1.57;
+
         ee_angle<< block_angle(i,0),block_angle(i,1),ee_roll;
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
