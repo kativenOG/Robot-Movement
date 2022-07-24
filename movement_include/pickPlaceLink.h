@@ -125,16 +125,23 @@ void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher u
             }
         }
     }else{
-        std::cout << " castle on ---------------------------------------------------------\n";
-        if(blockNumber==4 && u.cTypeThree==3){
-            ffangle<<u.castleAngle[1][0],u.castleAngle[1][1],u.castleAngle[1][2]; // cicla tra le 2 posizioni inclinate
-        }else if(blockNumber == 7 ){ // y4
-            counter = u.cTypeOne%2; 
-            ffangle<<u.castleAngle[2+counter][0],u.castleAngle[2+counter][1],u.castleAngle[2+counter][2]; // cicla tra le 2 posizioni inclinate
-        }else if(blockNumber = 5){ //y3
-            counter = u.cTypeTwo%2; 
-            ffangle<<u.castleAngle[counter][0],u.castleAngle[counter][1],u.castleAngle[counter][2]; // cicla tra dritti e in piedi 
-        }else ffangle<<u.castleAngle[0][0],u.castleAngle[0][1],u.castleAngle[0][2]; // tutti gli altri blocchi vanno storti di 90 gradi 
+        std::cout << " castlemod on ---------------------------------------------------------\n";
+        if(rotType==0){
+          if(blockNumber==4 && u.cTypeThree==3){
+              ffangle<<u.castleAngle[1][0],u.castleAngle[1][1],u.castleAngle[1][2]; // cicla tra le 2 posizioni inclinate
+          }else if(blockNumber == 7 ){ // y4
+              counter = u.cTypeOne%2; 
+              ffangle<<u.castleAngle[2+counter][0],u.castleAngle[2+counter][1],u.castleAngle[2+counter][2]; // cicla tra le 2 posizioni inclinate
+          }else if(blockNumber = 5){ //y3
+              counter = u.cTypeTwo%2; 
+              ffangle<<u.castleAngle[counter][0],u.castleAngle[counter][1],u.castleAngle[counter][2]; // cicla tra dritti e in piedi 
+          }else ffangle<<u.castleAngle[0][0],u.castleAngle[0][1],u.castleAngle[0][2]; // tutti gli altri blocchi vanno storti di 90 gradi 
+        }else if(rotType==2){
+            std::cout << " angol laterali ---------------------------------------------------------\n";
+        
+        }else{
+            std::cout << " angolo sotto sopra ---------------------------------------------------------\n";
+        }
     }
     int rows;
     VectorXf vv(6);
