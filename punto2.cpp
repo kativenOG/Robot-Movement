@@ -88,7 +88,7 @@ int main(int argc, char **argv)
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
-        float rtype= rotType[i];
+        float rtype= rType[i];
         float fheigth = 0.115;
         if(blockk==7 || blockk==1) fheigth= 0.105; 
         Vector3f vff;

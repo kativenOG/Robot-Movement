@@ -92,6 +92,7 @@ int main(int argc, char **argv)
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
         float rt= rType[i];
+        std::cout << "RTYPE: "<< rt<< std::endl;
         float fheigth;
         if(blockk==7 || blockk==1){
           // if( u.legoHeights[blockk]!=0 ) 
@@ -110,21 +111,50 @@ int main(int argc, char **argv)
 
         // calcolo posizione di appoggio 
         Vector3f vff;
-        if(rt==1 ){ // sotto sopra  
-          if(blockk==1 || blockk==7 || blockk==1 || blockk==3 || blockk==6 || blockk==10) std::cout << "presa da sottosopra non funziona con:"<<blockk<< std::endl; 
-          else if(blockk==0) vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
-          else if(blockk==8) vff << -0.59,-0.1521,fheigth;
-          else vff << -u.lSidePos[blockk][0], -u.lSidePos[blockk][1], fheigth;
+        float G=0.0155;
+        if(rt==1 ){ // sotto sopra 
+          std::cout << " blocco sottosopra ---------------------------------------------------------\n";
+          if(blockk==0){
+            vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], G;
+          }
+          else if(blockk==2||blockk==4){
+            vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1]-G, G;
+          }
+          else if(blockk==5){
+            vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1]-2*G, G;
+          }
+          else if(blockk==9){
+            vff << -u.legoPos[blockk][0]+G, -u.legoPos[blockk][1], G;
+          }
+          else if(blockk==8){
+            vff << -0.59,-0.1521, G;
+          }
+          else{
+            std::cout << "Prese sotto sopra assenti per block=" << blockk << "\n";
+          }
+        }
+        else if(rt==2){ // di lato 
+          std::cout << " blocco di lato---------------------------------------------------------\n";
+          if(blockk==1 || blockk==7){
+            std::cout << "Prese laterali assenti per block=" << blockk << "\n";
+          }
+          else if(blockk==2){
+            if(ee_pos[2]>0.003){
+              vff << -u.lSidePos[0][0], -u.lSidePos[0][1], fheigth;
+              std::cout << " pos laterali 1x2 lato corto ---------------------------------------------------------\n";
+            }else{
+              vff << -u.lSidePos[blockk][0], -u.lSidePos[blockk][1], fheigth;
+              std::cout << " pos laterali 1x2 lato lungo ---------------------------------------------------------\n";
+            }
+          }else{
 
-        }else if( rt==2 ){// di lato 
-          // fheigth = (u.legoHeights[blockk])*0.0436;  
-          if(blockk== 1  ||  blockk==7 ) std::cout << "presa dal lato non funziona con:"<<blockk<< std::endl;
-          else if(blockk==0 || blockk==5 || blockk==6 || blockk==8) vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
-          else if(ee_pos[2]>0.003 && blockk==2) vff << -u.lSidePos[0][0], -u.lSidePos[0][1], fheigth;
-          else vff << -u.lSidePos[blockk][0], -u.lSidePos[blockk][1], fheigth;
+            vff << -u.lSidePos[blockk][0], -u.lSidePos[blockk][1], fheigth;
+          }   
         }else{
+          std::cout << " blocco dritto---------------------------------------------------------\n";
           vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
         }
+
         // Determina il quadrante del blocco e cambia il nome di conseguenza 
         // FICCALO DENTRO A BLOCKNAME CON IL QUADRANTE :) 
         char blockName[80];

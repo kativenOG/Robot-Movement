@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 
         char squareBlockNames[4][30];
         u.castleMode = true;
-        float rtype= rotType[i];
+        float rtype= rType[i];
         switch (blockk) {
           case 7: // y4-z1
             fheigth = 0.1586;  // altezza standard blocco z1 + un blocco z2 
