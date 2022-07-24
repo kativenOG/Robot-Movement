@@ -92,7 +92,7 @@ int main(int argc, char **argv)
         Vector3f ee_pos;
         ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
         Vector3f ee_angle;
-        ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2)%10;
+        ee_angle<< block_angle(i,0),block_angle(i,1), block_angle(i,2)%10;
 
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
