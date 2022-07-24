@@ -77,7 +77,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     movement(ur5_pub, above_step, phiF, Th, vv, u, loop_rate);
 };
 
-void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper,float rotType,float oldZ)
+void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper,int rotType,float oldZ)
 {
     STND_POS << 0, 0.3203, 0.6147;
     STND_ANGLE << -0.4280, -0.0028, 3.0650;
@@ -232,7 +232,7 @@ if(u.castleMode == false){
     movement(ur5_pub, STND_POS, STND_ANGLE, Th, vv, u, loop_rate);
 }
 
-void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName,int blockNumber, robot::ur5 u, ros::Rate loop_rate,ros::Publisher gripper,float gripperValue,float rotType)
+void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName,int blockNumber, robot::ur5 u, ros::Rate loop_rate,ros::Publisher gripper,float gripperValue,int rotType)
 {
     STND_POS << 0, 0.3203, 0.6147;
 

@@ -88,7 +88,7 @@ int main(int argc, char **argv)
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
-        float rtype= block_angle(i,2)/10;
+        int rtype= (int)(block_angle(i,2)/10);
         float fheigth = 0.115;
         if(blockk==7 || blockk==1) fheigth= 0.105; 
         Vector3f vff;
@@ -99,7 +99,7 @@ int main(int argc, char **argv)
         ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
         Vector3f ee_angle;
 
-        int ee_roll_appo = ((int)(block_angle(i,2)*1000))%10;
+        int ee_roll_appo = ((int)(block_angle(i,2)*1000))%10000;
         float ee_roll = ee_roll_appo/1000;
         ee_angle<< block_angle(i,0),block_angle(i,1),ee_roll;
 
