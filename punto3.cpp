@@ -89,9 +89,14 @@ int main(int argc, char **argv)
           sleep(1);
         }
         // Cerco il tipo di blocco per capire la posizione finale !!!
+        Vector3f ee_pos;
+        ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
+        Vector3f ee_angle;
+        ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2)%10;
+
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
-        float rt= rType[i];
+        float rt= block_angle(i,2)/10;
         std::cout << "RTYPE: "<< rt<< std::endl;
         float fheigth;
         if(blockk==7 || blockk==1){
@@ -104,10 +109,6 @@ int main(int argc, char **argv)
           // else fheigth = 0.115; 
         }
         // Carico i valori della iesima riga dentro un appoggio da caricare nella funzione pick&place
-        Vector3f ee_pos;
-        ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
-        Vector3f ee_angle;
-        ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2);
 
         // calcolo posizione di appoggio 
         Vector3f vff;

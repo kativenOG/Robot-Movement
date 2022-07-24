@@ -20,7 +20,7 @@ then
   gnome-terminal -- ../spawners/spawner_punto3.py 
   gnome-terminal -- rosrun robot_movement point_3_node 
   sleep 8 
-  gnome-terminal -- rosrun ultimate_vision ultimate_position.py  
+  gnome-terminal -- rosrun ultimate_vision ultimate_position_point3.py  
 elif test $1 -eq 4        
 then
   gnome-terminal -- ../spawners/spawner_punto4.py  

@@ -12,25 +12,25 @@ sectors = 2
 blockXarea=3
 
 #rpy to Quaternion
-def get_quaternion_from_euler(roll, pitch, yaw):
-  """
-  Convert an Euler angle to a quaternion.
-   
-  Input
-    :param roll: The roll (rotation around x-axis) angle in radians.
-    :param pitch: The pitch (rotation around y-axis) angle in radians.
-    :param yaw: The yaw (rotation around z-axis) angle in radians.
- 
-  Output
-    :return qx, qy, qz, qw: The orientation in quaternion [x,y,z,w] format
-  """
-  qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
-  qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
-  qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
-  qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
- 
-  return [qx, qy, qz, qw]
-
+# def get_quaternion_from_euler(roll, pitch, yaw):
+#   """
+#   Convert an Euler angle to a quaternion.
+#    
+#   Input
+#     :param roll: The roll (rotation around x-axis) angle in radians.
+#     :param pitch: The pitch (rotation around y-axis) angle in radians.
+#     :param yaw: The yaw (rotation around z-axis) angle in radians.
+#  
+#   Output
+#     :return qx, qy, qz, qw: The orientation in quaternion [x,y,z,w] format
+#   """
+#   qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+#   qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
+#   qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
+#   qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+#  
+#   return [qx, qy, qz, qw]
+#
 
 # ultimo blocchi inseriti nel settore
 last_blocks = []
@@ -87,7 +87,7 @@ for i in range(sectors):
                 if(brickNumber==3 or brickNumber==6 or brickNumber==10): #dritto, di lato con punta verso l'alto 
                     # [xq,yq,zq,wq] = get_quaternion_from_euler() 
                     pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.85), Quaternion(0.001809,0.70710,-0.70706,0.00748))
-                elif(brickNumber==2 or brickNumber==4 or brickNumber==7):
+                elif(brickNumber==1 or brickNumber==4 or brickNumber==7):
                     pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.85), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
                 else:
                     # [xq,yq,zq,wq] = get_quaternion_from_euler() 
