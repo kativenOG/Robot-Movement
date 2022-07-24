@@ -42,7 +42,7 @@ MatrixXf block_position(100,3);
 VectorXd blockNumber(100);
 MatrixXf block_angle(100,3);
 VectorXf gripperWidth(100);
-VectorXf rotType(100);
+VectorXf rType(100);
 void brick_getter(const robot_movement::customMsg::ConstPtr &val)
 {
     // Position
@@ -58,7 +58,7 @@ void brick_getter(const robot_movement::customMsg::ConstPtr &val)
     // Block Type and Gripper Width
     blockNumber[cnt] = (val->type);
     gripperWidth[cnt] = (val->gWidth);
-    rotType[cnt] = (val->rotType);
+    rType[cnt] = (val->rotType);
     std::cout<<cnt<<" esimo blocco:"<<"  Tipo: "<<blockNumber(cnt)<<"Position: "<< block_position.row(cnt)<<"Angle: "<<block_angle.row(cnt)<<std::endl;
     cnt++;
 }

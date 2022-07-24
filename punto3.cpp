@@ -91,7 +91,7 @@ int main(int argc, char **argv)
         // Cerco il tipo di blocco per capire la posizione finale !!!
         int blockk = blockNumber[i];
         float gg= gripperWidth[i];
-        float rtype= rotType[i];
+        float rt= rType[i];
         float fheigth;
         if(blockk==7 || blockk==1){
           // if( u.legoHeights[blockk]!=0 ) 
@@ -110,13 +110,13 @@ int main(int argc, char **argv)
 
         // calcolo posizione di appoggio 
         Vector3f vff;
-        if(rtype==1 ){ // sotto sopra  
+        if(rt==1 ){ // sotto sopra  
           if(blockk==1 || blockk==7 || blockk==1 || blockk==3 || blockk==6 || blockk==10) std::cout << "presa da sottosopra non funziona con:"<<blockk<< std::endl; 
           else if(blockk==0) vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
           else if(blockk==8) vff << -0.59,-0.1521,fheigth;
           else vff << -u.lSidePos[blockk][0], -u.lSidePos[blockk][1], fheigth;
 
-        }else if( rtype==2 ){// di lato 
+        }else if( rt==2 ){// di lato 
           // fheigth = (u.legoHeights[blockk])*0.0436;  
           if(blockk== 1  ||  blockk==7 ) std::cout << "presa dal lato non funziona con:"<<blockk<< std::endl;
           else if(blockk==0 || blockk==5 || blockk==6 || blockk==8) vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
         else jpos=1;
         sprintf(blockName,"%s_%i_%i",u.legos[blockk],ipos,jpos);
         MatrixXf Th;
-        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, blockName, blockk, u, loop_rate, ur5_gripper_pub,gg,rtype);
+        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, blockName, blockk, u, loop_rate, ur5_gripper_pub,gg,rt);
         u.legoHeights[blockk]++;
     }
     return 0;

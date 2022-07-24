@@ -121,13 +121,78 @@ void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher u
     above_step=vf;
     above_step[2] = above_step[2]+0.25;
     
+    Vector3f ffangle2 = ffangle;
     movement(ur5_pub, above_step, ffangle, Th, initial_pos, u, loop_rate);
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);   
     // Parte calibrazione
+    //-------------------------
+    int y=1;
+    float x;
+    while(y==1){
+        std::cout << "pos?";
+        std::cin >> y;
+        if(y==1){
+            std::cout << "posx=";
+            std::cin >> x;
+            vf(0)=x;
+            std::cout << "posy=";
+            std::cin >> x;
+            vf(1)=x;
+            std::cout << "posz=";
+            std::cin >> x;
+            vf(2)=x;
+        }
+        /*else{
+            std::cout << "posz?";
+            std::cin >> y;
+            while(y==1){
+                std::cout << "posz=";
+                std::cin >> x;
+                vf(2)=x;
+                movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+                rows = Th.rows() - 1;
+                for(int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+                cleanTh(Th);
+                std::cout << "aggiornare?";
+                std::cin >> y;
+            }
+        }*/
+        std::cout << "ang?";
+        std::cin >> y;
+        if(y==1){
+            std::cout << "ang1=";
+            std::cin >> x;
+            phiF(0)=x;
+            std::cout << "ang2=";
+            std::cin >> x;
+            phiF(1)=x;
+            std::cout << "ang3=";
+            std::cin >> x;
+            phiF(2)=x;
+        }
+        movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+        rows = Th.rows() - 1;
+        for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+        cleanTh(Th);
+        /*std::cout << "grip?";
+        std::cin >> y;
+        while(y==1){
+            std::cout << "gripper=";
+            std::cin >> gripperValue;
+            closeGripper(gripper,gripperValue);
+            std::cout << "new gripper?";
+            std::cin >> y;
+        }*/
+        std::cout << "vf=" << vf << "\n";
+        std::cout << "phief=" << phiF << "\n";
+        std::cout << "continuare?";
+        std::cin >> y;
+    }
+    //-------------------------
 
-    movement(ur5_pub, vf, ffangle , Th, vv, u, loop_rate);
+    movement(ur5_pub, vf, ffangle2, Th, vv, u, loop_rate);
     sleep(1.8);
     openGripper(gripper);
 

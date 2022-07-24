@@ -42,25 +42,7 @@ for i in range(sectors):
         positions = []
         for n in range(blockXarea):
             # Generate random position
-            posCnt= True 
-            if (n==0):
-                pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
-                positions.append(pos)
-                print(positions)
-            else:
-                while posCnt==True:
-                    print("Continua a andare")
-                    pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
-                    for k in range(n):
-                        print(positions)
-                        if np.sqrt((pos.position.x-positions[k].position.x)**2+(pos.position.y-positions[k].position.y)**2) < threshold:
-                            print("Non è andata: ",np.sqrt((pos.position.x-positions[k].position.x)**2+(pos.position.y-positions[k].position.y)**2))
-                            break
-                        if k == n-1:
-                            positions.append(pos)
-                            posCnt = False
 
-            # Spawner rudimentale per il punto 4 ( sono stanco :[ ) 
             if(n==0):
                 brickNumber = 7 
                 sdfName = "/model1.sdf"
@@ -81,7 +63,32 @@ for i in range(sectors):
                     sdfName = "/model%d.sdf" % (blockTypeCounter[brickNumber])
             brick= blocks[brickNumber]
 
-            # Passo i dati allo spawner
+            posCnt= True 
+            if (n==0):
+                pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.875), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+                positions.append(pos)
+            else:
+                while posCnt==True:
+                    print("Continua a andare")
+                    if(brickNumber==9 and i==0 and j==0):
+                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.875), Quaternion(-0.054039,-0.998512,-0.00725,-0.00044))
+                    elif(brickNumber==5 and i==1 and j==0):
+                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.875), Quaternion(-0.694536983038046,0.1434257497205644,-0.14258561288277205,0.6904467948425478))
+                    elif(brickNumber==3 and i==0 and j==0):
+                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.875), Quaternion(-0.0029611401990584413,0.707099952996502,-0.7071022095401454,0.0027117124682581734))
+                    else:
+                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.875), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+                    for k in range(n):
+                        print(positions)
+                        if np.sqrt((pos.position.x-positions[k].position.x)**2+(pos.position.y-positions[k].position.y)**2) < threshold:
+                            print("Non è andata: ",np.sqrt((pos.position.x-positions[k].position.x)**2+(pos.position.y-positions[k].position.y)**2))
+                            break
+                        if k == n-1:
+                            positions.append(pos)
+                            posCnt = False
+
+            # Spawner rudimentale per il punto 4 ( sono stanco :[ ) 
+                        # Passo i dati allo spawner
             spawn_model_client(model_name=''+str(brick)+'_'+str(i)+'_'+str(j), 
             model_xml=open(home_path+'/progetto_ws/src/ultimate_gazebo/models/'+brick+sdfName, 'r').read(),
             robot_namespace='/foo',

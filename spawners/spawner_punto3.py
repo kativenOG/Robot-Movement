@@ -10,6 +10,28 @@ home_path = os.environ["HOME"]
 sectors = 2
 # Numero di blocchi per settore 
 blockXarea=3
+
+#rpy to Quaternion
+def get_quaternion_from_euler(roll, pitch, yaw):
+  """
+  Convert an Euler angle to a quaternion.
+   
+  Input
+    :param roll: The roll (rotation around x-axis) angle in radians.
+    :param pitch: The pitch (rotation around y-axis) angle in radians.
+    :param yaw: The yaw (rotation around z-axis) angle in radians.
+ 
+  Output
+    :return qx, qy, qz, qw: The orientation in quaternion [x,y,z,w] format
+  """
+  qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+  qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
+  qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
+  qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+ 
+  return [qx, qy, qz, qw]
+
+
 # ultimo blocchi inseriti nel settore
 last_blocks = []
 for i in range(blockXarea):
@@ -41,7 +63,7 @@ blocks = [
     "X1-Y4-Z2",
     "X2-Y2-Z2",
     "X2-Y2-Z2-FILLET"]
-specialBlock = -1
+# specialBlock = 0 
 for i in range(sectors):
     for j in range(sectors):
         positions = []
@@ -61,28 +83,24 @@ for i in range(sectors):
 
             # Generate random position
             posCnt= True 
-            if (n==0):
-                if(brickNumber==0):
-                    pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.82), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+            if (n==0 ):
+                if(brickNumber==3 or brickNumber==6 or brickNumber==10): #dritto, di lato con punta verso l'alto 
+                    # [xq,yq,zq,wq] = get_quaternion_from_euler() 
+                    pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.85), Quaternion(0.001809,0.70710,-0.70706,0.00748))
+                elif(brickNumber==2 or brickNumber==4 or brickNumber==7):
+                    pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.85), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
                 else:
-                    if(n==specialBlock+1 ):
-                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.825),Quaternion(0,1.57,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
-                        print("lato")
-                    elif(n==specialBlock):
-                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.885), Quaternion(0,1.57,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
-                        print("sottosopra")
-                    else:
-                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.775), Quaternion(0,1.57,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
-                        
+                    # [xq,yq,zq,wq] = get_quaternion_from_euler() 
+                    pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.845), Quaternion(-0.054039,-0.998512,-0.00725,-0.00044))
                 positions.append(pos)
                 # print(positions)
             else:
                 while posCnt==True:
                     # print("Continua a andare")
                     if(brickNumber==0):
-                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.82), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.85), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
                     else:
-                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.775), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
+                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.855), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
                     for k in range(n):
                         # print(positions)
                         if np.sqrt((pos.position.x-positions[k].position.x)**2+(pos.position.y-positions[k].position.y)**2) < threshold:
@@ -107,4 +125,4 @@ for i in range(sectors):
         # Resetta i blocchi
         for l in range(blockXarea):
             last_blocks[l]=11 
-        specialBlock= specialBlock+1
+        # specialBlock= specialBlock+1
