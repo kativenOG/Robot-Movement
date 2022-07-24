@@ -10,8 +10,7 @@
 Vector3f STND_POS,STND_ANGLE;
 
 // funzione per incollare i blocchi tra di loro 
-void attach_detach_blocks(ros::ServiceClient service, char* block1,char* block2){
-    char link_choice[20]= "link";
+void attach_detach_blocks(ros::ServiceClient service, char* block1,char* block2){ char link_choice[20]= "link";
     gazebo_ros_link_attacher::Attach srv;
 
     srv.request.model_name_1 = block1;
@@ -78,7 +77,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     movement(ur5_pub, above_step, phiF, Th, vv, u, loop_rate);
 };
 
-void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper,float rotType)
+void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper,float rotType,float oldZ)
 {
     STND_POS << 0, 0.3203, 0.6147;
     STND_ANGLE << -0.4280, -0.0028, 3.0650;
@@ -88,11 +87,17 @@ void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher u
 
     Vector3f ffangle;
     int counter;
-    if(rotType==2){ // Sotto sopra 
-
+    if(rotType==2 && blockNumber!=5 && blockNumber!=8){ // Di lato
+      if(u.castleMode == false){
+        if(oldZ>0.003 && blockNumber==2) ffangle<<u.lSideAngles[1][0],u.lSideAngles[1][1],u.lSideAngles[1][2];
+        else ffangle<<u.lSideAngles[blockNumber][0],u.lSideAngles[blockNumber][1],u.lSideAngles[blockNumber][2];
+       }
     }
-    if(rotType==1){   // Di lato 
-   
+    if(rotType==1){   // Sotto sopra  
+      if(u.castleMode == false){
+        if(blockNumber==8) ffangle<<0,3.92,1.57; 
+        else ffangle<<u.lSideAngles[blockNumber][0],u.lSideAngles[blockNumber][1],u.lSideAngles[1][2];
+       }
     }
     else{ // normali 
       if(u.castleMode == false){
@@ -238,7 +243,7 @@ void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::
     int rows = Th.rows() - 1;
     VectorXf v(6);
     for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
-
-    place(attach,detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper,rotType);
+    float oldZ= vf1[2];
+    place(attach,detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper,rotType,oldZ);
     cleanTh(Th);
 };

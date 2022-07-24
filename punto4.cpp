@@ -120,28 +120,36 @@ int main(int argc, char **argv)
             fheigth = 0.1586;  // altezza standard blocco z1 + un blocco z2 
             std::strcpy(u.lastLego[7],squareBlockNames[u.cTypeOne]);
             // forse metti un altro link 
-            vff <<u.castlePos[5+u.cTypeOne][0],u.castlePos[5+u.cTypeOne][1] ,fheigth;
+            if(rtype == 1 || rtype==2 ) vff <<u.cSidePos[5+u.cTypeOne][0],u.cSidePos[5+u.cTypeOne][1] ,fheigth; 
+            else vff <<u.castlePos[5+u.cTypeOne][0],u.castlePos[5+u.cTypeOne][1] ,fheigth;
             u.cTypeOne++;
             break;
           case 9: // x2-y2
             fheigth = 0.119 + (u.legoHeights[blockk])*0.0436;  
+            if(rtype==1 || rtype==2) vff <<u.cSidePos[0][0],u.cSidePos[0][1] ,fheigth;
             vff <<u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
             break;
           case 5: // y3-z2
             fheigth = 0.115;  
             std::strcpy(u.lastLego[5],"end_table");
             std::strcpy(squareBlockNames[u.cTypeTwo],u.lastLego[5]);
-            vff <<u.castlePos[1+u.cTypeTwo][0],u.castlePos[1+u.cTypeTwo][1] ,fheigth;
+
+            if(rtype==1 || rtype==2) vff <<u.cSidePos[1+u.cTypeTwo][0],u.cSidePos[1+u.cTypeTwo][1] ,fheigth;
+            else vff <<u.castlePos[1+u.cTypeTwo][0],u.castlePos[1+u.cTypeTwo][1] ,fheigth;
+
             u.cTypeTwo++;
             break;
           case 4: // twinfillet
             if(u.cTypeThree==2){
               fheigth = 0.1586 + (u.legoHeights[9])*0.0436;  // sommo un blocco di z2 in più che rappresenta i twinfillet
-              vff <<u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
-              std::cout << "Sono dentro, vff" <<vff<< std::endl;
+              if(rtype==1 || rtype==2) vff <<u.cSidePos[0][0],u.cSidePos[0][1] ,fheigth;
+              else vff <<u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
             }else{
               fheigth = 0.115 + (u.legoHeights[9])*0.0436; // l'altezza della colonna dei blocchi di tipo 9  
-              vff <<u.castlePos[9+u.cTypeThree][0],u.castlePos[9+u.cTypeThree][1] ,fheigth;
+
+              if(rtype==1 || rtype==2) vff <<u.cSidePos[9+u.cTypeThree][0],u.cSidePos[9+u.cTypeThree][1] ,fheigth;
+              else vff <<u.castlePos[9+u.cTypeThree][0],u.castlePos[9+u.cTypeThree][1] ,fheigth;
+
               std::strcpy(u.lastLego[4],u.lastLego[9]);
             }
             u.cTypeThree++;

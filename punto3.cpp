@@ -95,22 +95,36 @@ int main(int argc, char **argv)
         float fheigth;
         if(blockk==7 || blockk==1){
           // if( u.legoHeights[blockk]!=0 ) 
-          fheigth = 0.1 + (u.legoHeights[blockk])*0.025;  
+          fheigth = 0.097 + (u.legoHeights[blockk])*0.025;  
           // else fheigth = 0.105;  
         }else{
           // if( u.legoHeights[blockk]!=0 ) 
-          fheigth = 0.110+ (u.legoHeights[blockk])*0.0436;  
+          fheigth = 0.107+ (u.legoHeights[blockk])*0.0436;  
           // else fheigth = 0.115; 
         }
-
-        Vector3f vff;
-        vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
-
         // Carico i valori della iesima riga dentro un appoggio da caricare nella funzione pick&place
         Vector3f ee_pos;
         ee_pos<< block_position(i,0),block_position(i,1),block_position(i,2);
         Vector3f ee_angle;
         ee_angle<< block_angle(i,0),block_angle(i,1),block_angle(i,2);
+
+        // calcolo posizione di appoggio 
+        Vector3f vff;
+        if(rtype==1 ){ // sotto sopra  
+          if(blockk==1 || blockk==7 || blockk==1 || blockk==3 || blockk==6 || blockk==10) std::cout << "presa da sottosopra non funziona con:"<<blockk<< std::endl; 
+          else if(blockk==0) vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
+          else if(blockk==8) vff << -0.59,-0.1521,fheigth;
+          else vff << -u.lSidePos[blockk][0], -u.lSidePos[blockk][1], fheigth;
+
+        }else if( rtype==2 ){// di lato 
+          // fheigth = (u.legoHeights[blockk])*0.0436;  
+          if(blockk== 1  ||  blockk==7 ) std::cout << "presa dal lato non funziona con:"<<blockk<< std::endl;
+          else if(blockk==0 || blockk==5 || blockk==6 || blockk==8) vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
+          else if(ee_pos[2]>0.003 && blockk==2) vff << -u.lSidePos[0][0], -u.lSidePos[0][1], fheigth;
+          else vff << -u.lSidePos[blockk][0], -u.lSidePos[blockk][1], fheigth;
+        }else{
+          vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
+        }
         // Determina il quadrante del blocco e cambia il nome di conseguenza 
         // FICCALO DENTRO A BLOCKNAME CON IL QUADRANTE :) 
         char blockName[80];
