@@ -9,7 +9,7 @@ home_path = os.environ["HOME"]
 # Numero di settori in cui viene diviso il tavolo 
 sectors = 2
 # Numero di blocchi per settore 
-blockXarea=1
+blockXarea=3
 
 #rpy to Quaternion
 # def get_quaternion_from_euler(roll, pitch, yaw):
@@ -84,10 +84,10 @@ for i in range(sectors):
             # Generate random position
             posCnt= True 
             if (n==0 ):
-                if(brickNumber==3 or brickNumber==6 or brickNumber==10): #dritto, di lato con punta verso l'alto 
+                if(brickNumber==3 or brickNumber==6 or brickNumber==10 and i==0): #dritto, di lato con punta verso l'alto 
                     # [xq,yq,zq,wq] = get_quaternion_from_euler() 
                     pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.85), Quaternion(0.001809,0.70710,-0.70706,0.00748))
-                elif(brickNumber==1 or brickNumber==4 or brickNumber==7):
+                elif(brickNumber==1 or brickNumber==4 or brickNumber==7 and i==0):
                     pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.85), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
                 else:
                     # [xq,yq,zq,wq] = get_quaternion_from_euler() 
@@ -96,10 +96,11 @@ for i in range(sectors):
                 # print(positions)
             else:
                 while posCnt==True:
-                    # print("Continua a andare")
-                    if(brickNumber==0):
+                    if(brickNumber==3 or brickNumber==6 or brickNumber==10 and i==0 and n==1): #dritto, di lato con punta verso l'alto 
+                        pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.85), Quaternion(0.001809,0.70710,-0.70706,0.00748))
+                    elif(brickNumber==1 or brickNumber==4 or brickNumber==7 and i==0 and n==1):
                         pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.85), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
-                    else:
+                    else:       
                         pos = Pose(Point(random.uniform((x_sector*i)+x_start+0.06,(x_sector*i)+x_sector+x_start-0.06), random.uniform(-((y_sector*j)+y_start+ 0.06),-((y_sector*j)+y_sector+y_start-0.06)),0.855), Quaternion(0,0,random.uniform(-3.14, 3.14), random.uniform(-1.57, 1.57)))
                     for k in range(n):
                         # print(positions)

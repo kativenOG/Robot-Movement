@@ -176,4 +176,4 @@ int main(int argc, char **argv)
         u.legoHeights[blockk]++;
     }
     return 0;
-
+}

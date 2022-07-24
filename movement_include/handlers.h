@@ -7,7 +7,7 @@
 // Per prendere i valori dei joint dai topic di ros_control
 VectorXf initial_jnt_pos(7);
 void shoulder_pan_getter(const control_msgs::JointControllerState::ConstPtr &val)
-
+{
     initial_jnt_pos[0] = val->set_point;
 }
 void shoulder_lift_getter(const control_msgs::JointControllerState::ConstPtr &val)
