@@ -97,10 +97,11 @@ Vector3f ur5::rotm2eul(Matrix3f &m)
     return v;
 }
 
-void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1)
+void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf &Th_1, int w)
 {
 
     MatrixXf qEf_t = ur5inverse(xEf, eul2rotm(phiEf).inverse());
+    std::cout << "posizione d'arrivo: " << xEf << "\n";
     // std::cout << "Matrice delle soluzioni!" <<std::endl<< qEf_t<< std::endl;
     int corners = 6;
     // int solution;
@@ -119,6 +120,13 @@ void ur5::p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiEf, MatrixXf 
     }
     else{
         qEf= qEf_t.row(i);
+    }
+    if(w){
+        if(qEf(5)<0){
+            qEf(5)+=3.14;
+        }else{
+            qEf(5)-=3.14;
+        }
     }
     //std::cout << "scegliere soluzione:";
     //std::cin >> i;

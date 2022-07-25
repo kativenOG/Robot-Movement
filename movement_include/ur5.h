@@ -70,11 +70,11 @@ namespace robot
         // lego pos
         float legoPos [11][2] = {{-0.52,0.37},{-0.68,-0.23},{-0.675,-0.389},{-0.67,0.075},{-0.675,-0.077},{-0.549,-0.24},{-0.665,0.227},{-0.548,0.064},{-0.545,-0.1072},{-0.543,0.218},{-0.56,-0.39}};
         // lego side pos
-        float lSidePos [11][2] = {{-0.52,0.37},{-0.675,-0.389},{-0.675,-0.374},{-0.67,0.06},{-0.675,-0.062},{-0.549,-0.24},{-0.665,0.227},{0,0},{-0.545,-0.1072},{-0.558,0.218},{-0.575,-0.39}};
+        float lSidePos [11][2] = {{-0.52,0.37},{-0.675,-0.404},{-0.675,-0.389},{-0.67,0.06},{-0.675,-0.077},{-0.549,-0.24},{-0.665,0.227},{0,0},{-0.545,-0.1072},{-0.543,0.203},{-0.56,-0.39}};
         //lego angles   
         float legoAngle [11][3] = {{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0,M_PI,0},{0.82,M_PI,0},{0.851,M_PI,0},{0,M_PI,0},{0,M_PI,0}};         
         // angoli dal lato (solo tre da calcolare, gli altri sono tutti uguali )  
-        float lSideAngles[11][3] = {{0,-1.57,1.57},{0,-1.57,1.57},{0,3.14,1.57},{0,3.14,1.57},{0,3.14,1.57},{0,M_PI,0},{0,M_PI,0},{0,0,0},{0.851,M_PI,0},{0,M_PI,0},{0,M_PI,0}}; 
+        float lSideAngles[11][3] = {{0,-1.57,1.57},{0,M_PI,0},{0,-1.57,1.57},{3.14,3.14,1.57},{0,-1.57,1.57},{0,M_PI,0},{0,M_PI,0},{0,0,0},{0.851,M_PI,0},{0,M_PI,0},{0,M_PI,0}}; 
         //                                              \---> 1*2 appoggiato sul lato corto: {0,3.14,1.57}
         // la z per quelli sottosopra non è h/2 ma G=0,0155
         //sottosopra pos 1={-0.52,0.37};
@@ -120,6 +120,6 @@ namespace robot
         // Direct kinematics function:  
         MatrixXf ur5inverse(Vector3f eep, Matrix3f eer);
 
-        void p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiE0, MatrixXf &Th_1);
+        void p2pMotionPlan(VectorXf &qEs, Vector3f &xEf, Vector3f &phiE0, MatrixXf &Th_1, int w);
     };
 };

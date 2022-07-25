@@ -41,7 +41,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     Vector3f above_step;
     above_step=vf;
     above_step[2] = above_step[2]+0.1;
-    movement(ur5_pub, above_step, phiF, Th, initial_pos, u, loop_rate);
+    movement(ur5_pub, above_step, phiF, Th, initial_pos, u, loop_rate,0);
     int rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
@@ -83,7 +83,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
             std::cin >> x;
             phiF(2)=x;
         }
-        movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+        movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate,0);
         rows = Th.rows() - 1;
         for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
         cleanTh(Th);
@@ -103,7 +103,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     }*/
     //-------------------------
 
-    movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+    movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate,0);
     sleep(1.5);
     srv.request.model_name_1 = "ur5";
     srv.request.link_name_1 = "hand_link";
@@ -116,7 +116,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
 
     cleanTh(Th);
-    movement(ur5_pub, above_step, phiF, Th, vv, u, loop_rate);
+    movement(ur5_pub, above_step, phiF, Th, vv, u, loop_rate,0);
 };
 
 void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper)
@@ -132,14 +132,14 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
     Vector3f above_step;
     above_step=vf;
     above_step[2] = above_step[2]+0.25;
-    movement(ur5_pub, above_step, phiF, Th, initial_pos, u, loop_rate);
+    movement(ur5_pub, above_step, phiF, Th, initial_pos, u, loop_rate,0);
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);   
 
     Vector3f ffangle;
     ffangle<<u.legoAngle[blockNumber][0],u.legoAngle[blockNumber][1],u.legoAngle[blockNumber][2];
-    movement(ur5_pub, vf, ffangle , Th, vv, u, loop_rate);
+    movement(ur5_pub, vf, ffangle , Th, vv, u, loop_rate,0);
     sleep(1.8);
     openGripper(gripper);
 
@@ -154,7 +154,7 @@ void place(ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f 
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
 
     cleanTh(Th);
-    movement(ur5_pub, STND_POS, STND_ANGLE, Th, vv, u, loop_rate);
+    movement(ur5_pub, STND_POS, STND_ANGLE, Th, vv, u, loop_rate,0);
 }
 
 void take_and_place(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName,int blockNumber, robot::ur5 u, ros::Rate loop_rate,ros::Publisher gripper,float gripperValue)

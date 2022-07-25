@@ -57,11 +57,76 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     Vector3f above_step;
     above_step=vf;
     above_step[2] = above_step[2]+0.1;
-    movement(ur5_pub, above_step, phiF, Th, initial_pos, u, loop_rate);
+    movement(ur5_pub, above_step, phiF, Th, initial_pos, u, loop_rate,0);
+    closeGripper(gripper,0.5);
     int rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
-    movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+    //-------------------------
+    int y=1;
+    float x;
+    while(y==1){
+        std::cout << "pos?";
+        std::cin >> y;
+        if(y==1){
+            std::cout << "posx=";
+            std::cin >> x;
+            vf(0)=x;
+            std::cout << "posy=";
+            std::cin >> x;
+            vf(1)=x;
+            std::cout << "posz=";
+            std::cin >> x;
+            vf(2)=x;
+        }
+        /*else{
+            std::cout << "posz?";
+            std::cin >> y;
+            while(y==1){
+                std::cout << "posz=";
+                std::cin >> x;
+                vf(2)=x;
+                movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
+                rows = Th.rows() - 1;
+                for(int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+                cleanTh(Th);
+                std::cout << "aggiornare?";
+                std::cin >> y;
+            }
+        }*/
+        std::cout << "ang?";
+        std::cin >> y;
+        if(y==1){
+            std::cout << "ang1=";
+            std::cin >> x;
+            phiF(0)=x;
+            std::cout << "ang2=";
+            std::cin >> x;
+            phiF(1)=x;
+            std::cout << "ang3=";
+            std::cin >> x;
+            phiF(2)=x;
+        }
+        movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate,0);
+        rows = Th.rows() - 1;
+        for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+        cleanTh(Th);
+        /*std::cout << "grip?";
+        std::cin >> y;
+        while(y==1){
+            std::cout << "gripper=";
+            std::cin >> gripperValue;
+            closeGripper(gripper,gripperValue);
+            std::cout << "new gripper?";
+            std::cin >> y;
+        }*/
+        std::cout << "vf=" << vf << "\n";
+        std::cout << "phief=" << phiF << "\n";
+        std::cout << "continuare?";
+        std::cin >> y;
+    }
+    //-------------------------
+    movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate,0);
 
     sleep(1.5);
     srv.request.model_name_1 = "ur5";
@@ -74,10 +139,10 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
-    movement(ur5_pub, above_step, phiF, Th, vv, u, loop_rate);
+    movement(ur5_pub, above_step, phiF, Th, vv, u, loop_rate,0);
 };
 
-void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper,int rotType,float oldZ)
+void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf, Eigen::Vector3f phiF, Eigen::MatrixXf &Th, Eigen::VectorXf initial_pos, char *blockName, robot::ur5 u, ros::Rate loop_rate,int blockNumber,ros::Publisher gripper,int rotType,int e)
 {
     STND_POS << 0, 0.3203, 0.6147;
     STND_ANGLE << -0.4280, -0.0028, 3.0650;
@@ -87,15 +152,17 @@ void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher u
 
     Vector3f ffangle;
     int counter;
+    int w=0;
 if(u.castleMode == false){
         if(rotType==0){ // Dritto
             std::cout << " ang dritte ---------------------------------------------------------\n";
             ffangle<<u.legoAngle[blockNumber][0],u.legoAngle[blockNumber][1],u.legoAngle[blockNumber][2];
         }else if(rotType==1){ //Sotto sopra 
             std::cout << " ang sotto sopra ---------------------------------------------------------\n";
-            if(blockNumber==0||blockNumber==9){
-                ffangle<<0,-1.57,1.57;
-            }else if(blockNumber==2||blockNumber==4||blockNumber==5){
+            w=1;
+            if(blockNumber==2){
+                ffangle<<0,0,1.57;
+            }else if(blockNumber==0||blockNumber==4||blockNumber==5||blockNumber==9){
                 ffangle<<0,3.14,1.57;
             }else if(blockNumber==8){
                 ffangle<<0,3.92,1.57;
@@ -107,8 +174,8 @@ if(u.castleMode == false){
             if(blockNumber==1 || blockNumber==7){
                 std::cout << "Prese laterali assenti per block=" << blockNumber << "\n";
             }else if(blockNumber==2){
-                if(oldZ>0.003){
-                    ffangle<<u.lSideAngles[1][0],u.lSideAngles[1][1],u.lSideAngles[1][2];
+                if(e==1){
+                    ffangle<<u.lSideAngles[e][0],u.lSideAngles[e][1],u.lSideAngles[e][2];
                     std::cout << " ang laterali 1x2 lato corto ---------------------------------------------------------\n";
                 }else{
                     ffangle<<u.lSideAngles[blockNumber][0],u.lSideAngles[blockNumber][1],u.lSideAngles[blockNumber][2];
@@ -118,6 +185,7 @@ if(u.castleMode == false){
                 ffangle<<u.lSideAngles[blockNumber][0],u.lSideAngles[blockNumber][1],u.lSideAngles[blockNumber][2];
             }
         }
+        std::cout << "-------------------------------angolazione d'arrivo = " << ffangle << "\n";
     }else{
         std::cout << " castle on ---------------------------------------------------------\n";
         if(blockNumber==4 && u.cTypeThree==3){
@@ -137,77 +205,77 @@ if(u.castleMode == false){
     above_step[2] = above_step[2]+0.25;
     
     Vector3f ffangle2 = ffangle;
-    movement(ur5_pub, above_step, ffangle, Th, initial_pos, u, loop_rate);
+    movement(ur5_pub, above_step, ffangle, Th, initial_pos, u, loop_rate,w);
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);   
     // Parte calibrazione
     //-------------------------
-    // int y=1;
-    // float x;
-    // while(y==1){
-    //     std::cout << "pos?";
-    //     std::cin >> y;
-    //     if(y==1){
-    //         std::cout << "posx=";
-    //         std::cin >> x;
-    //         vf(0)=x;
-    //         std::cout << "posy=";
-    //         std::cin >> x;
-    //         vf(1)=x;
-    //         std::cout << "posz=";
-    //         std::cin >> x;
-    //         vf(2)=x;
-    //     }
-    //     /*else{
-    //         std::cout << "posz?";
-    //         std::cin >> y;
-    //         while(y==1){
-    //             std::cout << "posz=";
-    //             std::cin >> x;
-    //             vf(2)=x;
-    //             movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
-    //             rows = Th.rows() - 1;
-    //             for(int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-    //             cleanTh(Th);
-    //             std::cout << "aggiornare?";
-    //             std::cin >> y;
-    //         }
-    //     }*/
-    //     std::cout << "ang?";
-    //     std::cin >> y;
-    //     if(y==1){
-    //         std::cout << "ang1=";
-    //         std::cin >> x;
-    //         phiF(0)=x;
-    //         std::cout << "ang2=";
-    //         std::cin >> x;
-    //         phiF(1)=x;
-    //         std::cout << "ang3=";
-    //         std::cin >> x;
-    //         phiF(2)=x;
-    //     }
-    //     movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
-    //     rows = Th.rows() - 1;
-    //     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-    //     cleanTh(Th);
-    //     /*std::cout << "grip?";
-    //     std::cin >> y;
-    //     while(y==1){
-    //         std::cout << "gripper=";
-    //         std::cin >> gripperValue;
-    //         closeGripper(gripper,gripperValue);
-    //         std::cout << "new gripper?";
-    //         std::cin >> y;
-    //     }*/
-    //     std::cout << "vf=" << vf << "\n";
-    //     std::cout << "phief=" << phiF << "\n";
-    //     std::cout << "continuare?";
-    //     std::cin >> y;
-    // }
+    int y=1;
+    float x;
+    while(y==1){
+        std::cout << "pos?";
+        std::cin >> y;
+        if(y==1){
+            std::cout << "posx=";
+            std::cin >> x;
+            vf(0)=x;
+            std::cout << "posy=";
+            std::cin >> x;
+            vf(1)=x;
+            std::cout << "posz=";
+            std::cin >> x;
+            vf(2)=x;
+        }
+        /*else{
+            std::cout << "posz?";
+            std::cin >> y;
+            while(y==1){
+                std::cout << "posz=";
+                std::cin >> x;
+                vf(2)=x;
+                movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate,0);
+                rows = Th.rows() - 1;
+                for(int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+                cleanTh(Th);
+                std::cout << "aggiornare?";
+                std::cin >> y;
+            }
+        }*/
+        std::cout << "ang?";
+        std::cin >> y;
+        if(y==1){
+            std::cout << "ang1=";
+            std::cin >> x;
+            ffangle(0)=x;
+            std::cout << "ang2=";
+            std::cin >> x;
+            ffangle(1)=x;
+            std::cout << "ang3=";
+            std::cin >> x;
+            ffangle(2)=x;
+        }
+        movement(ur5_pub, vf, ffangle, Th, vv, u, loop_rate,w);
+        rows = Th.rows() - 1;
+        for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
+        cleanTh(Th);
+        /*std::cout << "grip?";
+        std::cin >> y;
+        while(y==1){
+            std::cout << "gripper=";
+            std::cin >> gripperValue;
+            closeGripper(gripper,gripperValue);
+            std::cout << "new gripper?";
+            std::cin >> y;
+        }*/
+        std::cout << "vf=" << vf << "\n";
+        std::cout << "ffangle=" << ffangle << "\n";
+        std::cout << "continuare?";
+        std::cin >> y;
+    }
     //-------------------------
 
-    movement(ur5_pub, vf, ffangle2, Th, vv, u, loop_rate);
+    movement(ur5_pub, vf, ffangle2, Th, vv, u, loop_rate,w);
     sleep(1.8);
     openGripper(gripper);
 
@@ -229,10 +297,10 @@ if(u.castleMode == false){
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
 
     cleanTh(Th);
-    movement(ur5_pub, STND_POS, STND_ANGLE, Th, vv, u, loop_rate);
+    movement(ur5_pub, STND_POS, STND_ANGLE, Th, vv, u, loop_rate,0);
 }
 
-void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName,int blockNumber, robot::ur5 u, ros::Rate loop_rate,ros::Publisher gripper,float gripperValue,int rotType)
+void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::Publisher ur5_pub[], Eigen::Vector3f vf1, Eigen::Vector3f vf2, Eigen::Vector3f phiF, Eigen::MatrixXf Th, Eigen::VectorXf initial_pos, char *blockName,int blockNumber, robot::ur5 u, ros::Rate loop_rate,ros::Publisher gripper,float gripperValue,int rotType,int e)
 {
     STND_POS << 0, 0.3203, 0.6147;
 
@@ -323,7 +391,6 @@ void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::
     int rows = Th.rows() - 1;
     VectorXf v(6);
     for (int i = 0; i < 6; i++) v[i] = Th(rows, i + 1);
-    float oldZ= vf1[2];
-    place(attach,detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper,rotType,oldZ);
+    place(attach,detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper,rotType,e);
     cleanTh(Th);
 };

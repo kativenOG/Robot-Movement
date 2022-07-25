@@ -118,23 +118,30 @@ int main(int argc, char **argv)
 
         // calcolo posizione di appoggio 
         Vector3f vff;
+        int e;
         float G=0.0155;
         if(rt==1 ){ // sotto sopra 
           std::cout << " blocco sottosopra ---------------------------------------------------------\n";
+          fheigth = G + (u.legoHeights[blockk])*0.0436;  
           if(blockk==0){
-            vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], G;
+            vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
+            std::cout << "block: " << blockk << "\n";
           }
           else if(blockk==2||blockk==4){
-            vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1]-G, G;
+            vff << -u.legoPos[blockk][0], -(u.legoPos[blockk][1]-G), fheigth;
+            std::cout << "block: " << blockk << "\n";
           }
-          else if(blockk==5){
-            vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1]-2*G, G;
+          else if(blockk==5){ 
+            vff << -u.legoPos[blockk][0], -(u.legoPos[blockk][1]-2*G), fheigth;
+            std::cout << "block: " << blockk << "\n";
           }
-          else if(blockk==9){
-            vff << -u.legoPos[blockk][0]+G, -u.legoPos[blockk][1], G;
+          else if(blockk==9){  
+            vff << -(u.legoPos[blockk][0]+G), -u.legoPos[blockk][1], fheigth;
+            std::cout << "block: " << blockk << "\n";
           }
           else if(blockk==8){
-            vff << -0.59,-0.1521, G;
+            vff << 0.59,0.1521, fheigth;
+            std::cout << "block: " << blockk << "\n";
           }
           else{
             std::cout << "Prese sotto sopra assenti per block=" << blockk << "\n";
@@ -142,19 +149,23 @@ int main(int argc, char **argv)
         }
         else if(rt==2){ // di lato 
           std::cout << " blocco di lato---------------------------------------------------------\n";
+          fheigth = 0.0285 + (u.legoHeights[blockk])*0.0436;  
           if(blockk==1 || blockk==7){
             std::cout << "Prese laterali assenti per block=" << blockk << "\n";
           }
           else if(blockk==2){
-            if(ee_pos[2]>0.003){
-              vff << -u.lSidePos[0][0], -u.lSidePos[0][1], fheigth;
+            std::cout << "-------------------ee_pos=" << ee_pos << "\n";
+            if(ee_pos[2]>0.03){
+              vff << -u.lSidePos[1][0], -u.lSidePos[1][1], fheigth;
               std::cout << " pos laterali 1x2 lato corto ---------------------------------------------------------\n";
+              e=1;
             }else{
               vff << -u.lSidePos[blockk][0], -u.lSidePos[blockk][1], fheigth;
               std::cout << " pos laterali 1x2 lato lungo ---------------------------------------------------------\n";
+              e=2;
             }
           }else{
-
+            std::cout << "block: " << blockk << "\n";
             vff << -u.lSidePos[blockk][0], -u.lSidePos[blockk][1], fheigth;
           }   
         }else{
@@ -164,6 +175,7 @@ int main(int argc, char **argv)
 
         // Determina il quadrante del blocco e cambia il nome di conseguenza 
         // FICCALO DENTRO A BLOCKNAME CON IL QUADRANTE :) 
+        std::cout << "-------------posizione d'arrivo: " << vff << "------------------\n";
         char blockName[80];
         int ipos,jpos; 
         if(ee_pos[0]< 0) ipos=0;
@@ -172,8 +184,9 @@ int main(int argc, char **argv)
         else jpos=1;
         sprintf(blockName,"%s_%i_%i",u.legos[blockk],ipos,jpos);
         MatrixXf Th;
-        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, blockName, blockk, u, loop_rate, ur5_gripper_pub,gg,rt);
+        take_place_link(dynLinkAtt, dynLinkDet, ur5_joint_array_pub, ee_pos, vff, ee_angle, Th, initial_jnt_pos, blockName, blockk, u, loop_rate, ur5_gripper_pub,gg,rt,e);
         u.legoHeights[blockk]++;
     }
     return 0;
+}
 
