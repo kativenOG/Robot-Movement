@@ -122,7 +122,7 @@ int main(int argc, char **argv)
         float G=0.0155;
         if(rt==1 ){ // sotto sopra 
           std::cout << " blocco sottosopra ---------------------------------------------------------\n";
-          fheigth = G + (u.legoHeights[blockk])*0.0436;  
+          // fheigth = G + (u.legoHeights[blockk])*0.0436;  
           if(blockk==0){
             vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
             std::cout << "block: " << blockk << "\n";
@@ -149,7 +149,7 @@ int main(int argc, char **argv)
         }
         else if(rt==2){ // di lato 
           std::cout << " blocco di lato---------------------------------------------------------\n";
-          fheigth = 0.0285 + (u.legoHeights[blockk])*0.0436;  
+          // fheigth = 0.0285 + (u.legoHeights[blockk])*0.0436;  
           if(blockk==1 || blockk==7){
             std::cout << "Prese laterali assenti per block=" << blockk << "\n";
           }
