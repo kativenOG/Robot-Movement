@@ -62,71 +62,7 @@ void take(ros::ServiceClient attach, ros::Publisher ur5_pub[], Eigen::Vector3f v
     int rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);
-    //-------------------------
-    int y=1;
-    float x;
-    while(y==1){
-        std::cout << "pos?";
-        std::cin >> y;
-        if(y==1){
-            std::cout << "posx=";
-            std::cin >> x;
-            vf(0)=x;
-            std::cout << "posy=";
-            std::cin >> x;
-            vf(1)=x;
-            std::cout << "posz=";
-            std::cin >> x;
-            vf(2)=x;
-        }
-        /*else{
-            std::cout << "posz?";
-            std::cin >> y;
-            while(y==1){
-                std::cout << "posz=";
-                std::cin >> x;
-                vf(2)=x;
-                movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate);
-                rows = Th.rows() - 1;
-                for(int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-                cleanTh(Th);
-                std::cout << "aggiornare?";
-                std::cin >> y;
-            }
-        }*/
-        std::cout << "ang?";
-        std::cin >> y;
-        if(y==1){
-            std::cout << "ang1=";
-            std::cin >> x;
-            phiF(0)=x;
-            std::cout << "ang2=";
-            std::cin >> x;
-            phiF(1)=x;
-            std::cout << "ang3=";
-            std::cin >> x;
-            phiF(2)=x;
-        }
         movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate,0);
-        rows = Th.rows() - 1;
-        for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-        cleanTh(Th);
-        /*std::cout << "grip?";
-        std::cin >> y;
-        while(y==1){
-            std::cout << "gripper=";
-            std::cin >> gripperValue;
-            closeGripper(gripper,gripperValue);
-            std::cout << "new gripper?";
-            std::cin >> y;
-        }*/
-        std::cout << "vf=" << vf << "\n";
-        std::cout << "phief=" << phiF << "\n";
-        std::cout << "continuare?";
-        std::cin >> y;
-    }
-    //-------------------------
-    movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate,0);
 
     sleep(1.5);
     srv.request.model_name_1 = "ur5";
@@ -153,9 +89,10 @@ void place(ros::ServiceClient attach,ros::ServiceClient detach, ros::Publisher u
     Vector3f ffangle;
     int counter;
     int w=0;
-if(u.castleMode == false){
+    if(u.castleMode == false){
+        std::cout << " castlemod false ---------------------------------------------------------\n";
         if(rotType==0){ // Dritto
-            std::cout << " ang dritte ---------------------------------------------------------\n";
+            std::cout << " angol dritte ---------------------------------------------------------\n";
             ffangle<<u.legoAngle[blockNumber][0],u.legoAngle[blockNumber][1],u.legoAngle[blockNumber][2];
         }else if(rotType==1){ //Sotto sopra 
             std::cout << " ang sotto sopra ---------------------------------------------------------\n";
@@ -165,12 +102,13 @@ if(u.castleMode == false){
             }else if(blockNumber==0||blockNumber==4||blockNumber==5||blockNumber==9){
                 ffangle<<0,3.14,1.57;
             }else if(blockNumber==8){
+                std::cout << "block " << blockNumber << "-----------------------------------------\n";
                 ffangle<<0,3.92,1.57;
             }else{
                 std::cout << "Prese sotto sopra assenti per block=" << blockNumber << "\n";
             }
         }else if(rotType==2){ // Di lato
-            std::cout << " ang laterali ---------------------------------------------------------\n";
+            std::cout << " angol laterali ---------------------------------------------------------\n";
             if(blockNumber==1 || blockNumber==7){
                 std::cout << "Prese laterali assenti per block=" << blockNumber << "\n";
             }else if(blockNumber==2){
@@ -179,24 +117,32 @@ if(u.castleMode == false){
                     std::cout << " ang laterali 1x2 lato corto ---------------------------------------------------------\n";
                 }else{
                     ffangle<<u.lSideAngles[blockNumber][0],u.lSideAngles[blockNumber][1],u.lSideAngles[blockNumber][2];
-                    std::cout << " ang laterali 1x2 lato lungo ---------------------------------------------------------\n";
+                    std::cout << " pos laterali 1x2 lato lungo ---------------------------------------------------------\n";
                 }
             }else{
                 ffangle<<u.lSideAngles[blockNumber][0],u.lSideAngles[blockNumber][1],u.lSideAngles[blockNumber][2];
+                std::cout << "block " << blockNumber << "-----------------------------------------\n";
             }
         }
         std::cout << "-------------------------------angolazione d'arrivo = " << ffangle << "\n";
     }else{
-        std::cout << " castle on ---------------------------------------------------------\n";
-        if(blockNumber==4 && u.cTypeThree==3){
-            ffangle<<u.castleAngle[1][0],u.castleAngle[1][1],u.castleAngle[1][2]; // cicla tra le 2 posizioni inclinate
-        }else if(blockNumber == 7 ){ // y4
-            counter = u.cTypeOne%2; 
-            ffangle<<u.castleAngle[2+counter][0],u.castleAngle[2+counter][1],u.castleAngle[2+counter][2]; // cicla tra le 2 posizioni inclinate
-        }else if(blockNumber = 5){ //y3
-            counter = u.cTypeTwo%2; 
-            ffangle<<u.castleAngle[counter][0],u.castleAngle[counter][1],u.castleAngle[counter][2]; // cicla tra dritti e in piedi 
-        }else ffangle<<u.castleAngle[0][0],u.castleAngle[0][1],u.castleAngle[0][2]; // tutti gli altri blocchi vanno storti di 90 gradi 
+        std::cout << " castlemod on ---------------------------------------------------------\n";
+        if(rotType==0){
+          if(blockNumber==4 && u.cTypeThree==3){
+              ffangle<<u.castleAngle[1][0],u.castleAngle[1][1],u.castleAngle[1][2]; // cicla tra le 2 posizioni inclinate
+          }else if(blockNumber == 7 ){ // y4
+              counter = u.cTypeOne%2; 
+              ffangle<<u.castleAngle[2+counter][0],u.castleAngle[2+counter][1],u.castleAngle[2+counter][2]; // cicla tra le 2 posizioni inclinate
+          }else if(blockNumber = 5){ //y3
+              counter = u.cTypeTwo%2; 
+              ffangle<<u.castleAngle[counter][0],u.castleAngle[counter][1],u.castleAngle[counter][2]; // cicla tra dritti e in piedi 
+          }else ffangle<<u.castleAngle[0][0],u.castleAngle[0][1],u.castleAngle[0][2]; // tutti gli altri blocchi vanno storti di 90 gradi 
+        }else if(rotType==2){
+            std::cout << " angol laterali ---------------------------------------------------------\n";
+        
+        }else{
+            std::cout << " angolo sotto sopra ---------------------------------------------------------\n";
+        }
     }
     int rows;
     VectorXf vv(6);
@@ -209,73 +155,8 @@ if(u.castleMode == false){
     rows = Th.rows() - 1;
     for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
     cleanTh(Th);   
-    // Parte calibrazione
-    //-------------------------
-    int y=1;
-    float x;
-    while(y==1){
-        std::cout << "pos?";
-        std::cin >> y;
-        if(y==1){
-            std::cout << "posx=";
-            std::cin >> x;
-            vf(0)=x;
-            std::cout << "posy=";
-            std::cin >> x;
-            vf(1)=x;
-            std::cout << "posz=";
-            std::cin >> x;
-            vf(2)=x;
-        }
-        /*else{
-            std::cout << "posz?";
-            std::cin >> y;
-            while(y==1){
-                std::cout << "posz=";
-                std::cin >> x;
-                vf(2)=x;
-                movement(ur5_pub, vf, phiF, Th, vv, u, loop_rate,0);
-                rows = Th.rows() - 1;
-                for(int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-                cleanTh(Th);
-                std::cout << "aggiornare?";
-                std::cin >> y;
-            }
-        }*/
-        std::cout << "ang?";
-        std::cin >> y;
-        if(y==1){
-            std::cout << "ang1=";
-            std::cin >> x;
-            ffangle(0)=x;
-            std::cout << "ang2=";
-            std::cin >> x;
-            ffangle(1)=x;
-            std::cout << "ang3=";
-            std::cin >> x;
-            ffangle(2)=x;
-        }
-        movement(ur5_pub, vf, ffangle, Th, vv, u, loop_rate,w);
-        rows = Th.rows() - 1;
-        for (int i = 0; i < 6; i++) vv[i] = Th(rows, i + 1);
-        cleanTh(Th);
-        /*std::cout << "grip?";
-        std::cin >> y;
-        while(y==1){
-            std::cout << "gripper=";
-            std::cin >> gripperValue;
-            closeGripper(gripper,gripperValue);
-            std::cout << "new gripper?";
-            std::cin >> y;
-        }*/
-        std::cout << "vf=" << vf << "\n";
-        std::cout << "ffangle=" << ffangle << "\n";
-        std::cout << "continuare?";
-        std::cin >> y;
-    }
-    //-------------------------
 
-    movement(ur5_pub, vf, ffangle2, Th, vv, u, loop_rate,w);
+    movement(ur5_pub, vf, ffangle2, Th, vv, u, loop_rate,0);
     sleep(1.8);
     openGripper(gripper);
 
@@ -394,3 +275,4 @@ void take_place_link(ros::ServiceClient attach, ros::ServiceClient detach, ros::
     place(attach,detach, ur5_pub, vf2, phiF, Th, v, blockName, u, loop_rate, blockNumber,gripper,rotType,e);
     cleanTh(Th);
 };
+

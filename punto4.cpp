@@ -101,9 +101,11 @@ int main(int argc, char **argv)
         int ee_roll_appo = ((int)(block_angle(i,2)*1000))%10000;
         float ee_roll = ee_roll_appo/1000;
 
+        // calcolo con codifica di rtype e roll da roll inviato da visione 
         if(ee_roll<1) ee_roll=0;
         else if(ee_roll>2) ee_roll=3.14;
         else ee_roll=1.57;
+        int rtype= (int)(block_angle(i,2)/10);
 
         ee_angle<< block_angle(i,0),block_angle(i,1),ee_roll;
         int blockk = blockNumber[i];
@@ -121,42 +123,37 @@ int main(int argc, char **argv)
 
         char squareBlockNames[4][30];
         u.castleMode = true;
-        int rtype= (int)(block_angle(i,2)/10);
         switch (blockk) {
           case 7: // y4-z1
             fheigth = 0.1586;  // altezza standard blocco z1 + un blocco z2 
             std::strcpy(u.lastLego[7],squareBlockNames[u.cTypeOne]);
-            // forse metti un altro link 
-            if(rtype == 1 || rtype==2 ) vff <<u.cSidePos[5+u.cTypeOne][0],u.cSidePos[5+u.cTypeOne][1] ,fheigth; 
-            else vff <<u.castlePos[5+u.cTypeOne][0],u.castlePos[5+u.cTypeOne][1] ,fheigth;
+            // Il tipo 7 non può essere storto :) 
+            // if(rtype == 1 || rtype==2 ) vff <<u.cSidePos[5+u.cTypeOne][0],u.cSidePos[5+u.cTypeOne][1] ,fheigth; 
+            vff <<u.castlePos[5+u.cTypeOne][0],u.castlePos[5+u.cTypeOne][1] ,fheigth;
             u.cTypeOne++;
             break;
           case 9: // x2-y2
             fheigth = 0.119 + (u.legoHeights[blockk])*0.0436;  
             if(rtype==1 || rtype==2) vff <<u.cSidePos[0][0],u.cSidePos[0][1] ,fheigth;
-            vff <<u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
+            else vff <<u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
             break;
           case 5: // y3-z2
             fheigth = 0.115;  
             std::strcpy(u.lastLego[5],"end_table");
             std::strcpy(squareBlockNames[u.cTypeTwo],u.lastLego[5]);
-
             if(rtype==1 || rtype==2) vff <<u.cSidePos[1+u.cTypeTwo][0],u.cSidePos[1+u.cTypeTwo][1] ,fheigth;
             else vff <<u.castlePos[1+u.cTypeTwo][0],u.castlePos[1+u.cTypeTwo][1] ,fheigth;
-
             u.cTypeTwo++;
             break;
           case 4: // twinfillet
             if(u.cTypeThree==2){
               fheigth = 0.1586 + (u.legoHeights[9])*0.0436;  // sommo un blocco di z2 in più che rappresenta i twinfillet
-              if(rtype==1 || rtype==2) vff <<u.cSidePos[0][0],u.cSidePos[0][1] ,fheigth;
-              else vff <<u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
+              vff <<u.castlePos[0][0],u.castlePos[0][1] ,fheigth;
             }else{
               fheigth = 0.115 + (u.legoHeights[9])*0.0436; // l'altezza della colonna dei blocchi di tipo 9  
-
-              if(rtype==1 || rtype==2) vff <<u.cSidePos[9+u.cTypeThree][0],u.cSidePos[9+u.cTypeThree][1] ,fheigth;
-              else vff <<u.castlePos[9+u.cTypeThree][0],u.castlePos[9+u.cTypeThree][1] ,fheigth;
-
+              //  spawna sempre rivolto verso l'alto 
+              // if(rtype==1 || rtype==2) vff <<u.cSidePos[9+u.cTypeThree][0],u.cSidePos[9+u.cTypeThree][1] ,fheigth;
+              vff <<u.castlePos[9+u.cTypeThree][0],u.castlePos[9+u.cTypeThree][1] ,fheigth;
               std::strcpy(u.lastLego[4],u.lastLego[9]);
             }
             u.cTypeThree++;
@@ -165,7 +162,9 @@ int main(int argc, char **argv)
             std::strcpy(u.lastLego[3],u.lastLego[4]); // copia l'ultimo twinfillet per fare il link dinamico 
             fheigth = 0.2022 + (u.legoHeights[9])*0.0436;  // sommo un blocco di z2 in più che rappresenta i twinfillet
             float deltaBandiera = -0.031;
-            vff <<deltaBandiera,u.castlePos[0][1],fheigth;
+            // forse c'è da fare un altro delta specifico per il lato !
+            if(rtype==1 || rtype==2) vff <<u.cSidePos[0][0],u.cSidePos[0][1] ,fheigth;
+            else vff <<deltaBandiera,u.castlePos[0][1],fheigth;
             break;
         }
         MatrixXf Th;
