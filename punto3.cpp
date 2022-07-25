@@ -122,7 +122,7 @@ int main(int argc, char **argv)
         float G=0.0155;
         if(rt==1 ){ // sotto sopra 
           std::cout << " blocco sottosopra ---------------------------------------------------------\n";
-          // fheigth = G + (u.legoHeights[blockk])*0.0436;  
+          fheigth = 0.075 + (u.legoHeights[blockk])*0.0436;  
           if(blockk==0){
             vff << -u.legoPos[blockk][0], -u.legoPos[blockk][1], fheigth;
             std::cout << "block: " << blockk << "\n";
